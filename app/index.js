@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 
 import { SplashScreen, router } from "expo-router";
-import { useFonts, NunitoSans_700Bold } from "@expo-google-fonts/nunito-sans";
+import { BarlowCondensed_700Bold } from "@expo-google-fonts/barlow-condensed";
+import {
+  useFonts,
+  NunitoSans_400Regular,
+  NunitoSans_700Bold,
+} from "@expo-google-fonts/nunito-sans";
 
 import SafeView from "@components/SafeView";
 import useFirebase from "@hooks/useFirebase";
@@ -12,6 +17,8 @@ export default function App() {
   const { user } = useFirebase();
 
   const [fontsLoaded] = useFonts({
+    BarlowCondensed_700Bold,
+    NunitoSans_400Regular,
     NunitoSans_700Bold,
   });
 
