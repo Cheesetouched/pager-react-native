@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import useFirestore from "@hooks/useFirestore";
 
-export default function useCheckHandle(handle) {
+export default function useCheckHandle(handle, minimumLength = 0) {
   const { checkHandle } = useFirestore();
 
   const { data, isInitialLoading, isFetching } = useQuery(
@@ -14,7 +14,10 @@ export default function useCheckHandle(handle) {
       return exists;
     },
     {
-      enabled: handle !== "" && typeof handle === "string",
+      enabled:
+        handle !== "" &&
+        typeof handle === "string" &&
+        handle.length >= minimumLength,
     },
   );
 

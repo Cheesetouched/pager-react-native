@@ -71,11 +71,7 @@ const Input = forwardRef(
           `bg-white rounded-xl border-2 items-center flex-row h-[50px] overflow-hidden`,
           `${containerStyle ? containerStyle : ""}`,
           `${
-            error
-              ? "border-red-500"
-              : focused
-              ? "border-black"
-              : "border-gray-200"
+            error ? "border-red-500" : focused ? "border-white" : "border-white"
           }`,
         )}
       >
@@ -114,7 +110,7 @@ const Input = forwardRef(
           ref={localRef}
           selectionColor="black"
           style={tw.style(
-            `text-center text-base flex-1 px-3`,
+            `text-center text-base flex-1 px-3 leading-snug`,
             `${style ? style : ""}`,
             { fontFamily: "NunitoSans_700Bold" },
           )}

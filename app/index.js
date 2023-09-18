@@ -6,6 +6,7 @@ import {
   useFonts,
   NunitoSans_400Regular,
   NunitoSans_700Bold,
+  NunitoSans_800ExtraBold,
 } from "@expo-google-fonts/nunito-sans";
 
 import SafeView from "@components/SafeView";
@@ -20,6 +21,7 @@ export default function App() {
     BarlowCondensed_700Bold,
     NunitoSans_400Regular,
     NunitoSans_700Bold,
+    NunitoSans_800ExtraBold,
   });
 
   useEffect(() => {

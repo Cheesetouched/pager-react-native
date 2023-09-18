@@ -17,17 +17,17 @@ export default function Button({
         }
       }}
       style={tw.style(
-        `flex h-11 justify-center rounded-xl`,
+        `flex h-[50px] justify-center rounded-xl`,
         `${style ? style : ""}`,
-        `${loading ? "bg-button/75" : "bg-button"}`,
+        `${loading ? "bg-neon/75" : "bg-neon"}`,
       )}
     >
       {loading ? (
         <ActivityIndicator color="white" />
       ) : (
         <Text
-          style={tw.style(`text-black text-center text-base`, {
-            fontFamily: "NunitoSans_700Bold",
+          style={tw.style(`text-black text-center text-base leading-snug`, {
+            fontFamily: "NunitoSans_800ExtraBold",
           })}
         >
           {children}

@@ -6,29 +6,43 @@ import { useDebounce } from "@uidotdev/usehooks";
 
 import tw from "@utils/tailwind";
 import Input from "@components/Input";
+import Button from "@components/Button";
 import CheckIcon from "@assets/svgs/CheckIcon";
 import CloseIcon from "@assets/svgs/CloseIcon";
+import useAppContext from "@hooks/useAppContext";
 import useCheckHandle from "@queries/useCheckHandle";
-import Button from "@components/Button";
+
+const minimumHandleLength = 4;
 
 export default function Handle() {
+  const { alert } = useAppContext();
   const [handle, setHandle] = useState("");
   const [error, setError] = useState(false);
   const debounced = useDebounce(handle, 500);
 
-  const { checking, exists, ready } = useCheckHandle(debounced);
+  const { checking, exists, ready } = useCheckHandle(
+    debounced,
+    minimumHandleLength,
+  );
 
   function submit() {
-    if (handle === "" || !ready || exists) {
-      setError(true);
-    } else {
-      router.push({
-        pathname: "/onboarding/phone",
-        params: {
-          action: "reserve",
-        },
+    if (handle !== "" && handle.length < minimumHandleLength) {
+      alert.current.show({
+        title: "oops!",
+        message: "handle needs to be minimum 4 characters",
       });
     }
+
+    if (handle === "" || !ready || exists) {
+      return setError(true);
+    }
+
+    router.push({
+      pathname: "/onboarding/phone",
+      params: {
+        action: "reserve",
+      },
+    });
   }
 
   useEffect(() => {
