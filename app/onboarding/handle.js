@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { router } from "expo-router";
 import { useDebounce } from "@uidotdev/usehooks";
@@ -12,7 +18,7 @@ import CloseIcon from "@assets/svgs/CloseIcon";
 import useAppContext from "@hooks/useAppContext";
 import useCheckHandle from "@queries/useCheckHandle";
 
-const minimumHandleLength = 4;
+const minimumHandleLength = 1;
 
 export default function Handle() {
   const { alert } = useAppContext();
@@ -92,6 +98,34 @@ export default function Handle() {
         <Button disabled={checking} onPress={submit}>
           Next
         </Button>
+
+        <TouchableOpacity
+          style={tw`flex flex-row justify-center gap-x-1 `}
+          onPress={() =>
+            router.push({
+              pathname: "/onboarding/phone",
+              params: {
+                action: "login",
+              },
+            })
+          }
+        >
+          <Text
+            style={tw.style(`text-base text-text-gray font-normal`, {
+              fontFamily: "NunitoSans_400Regular",
+            })}
+          >
+            been here already?
+          </Text>
+
+          <Text
+            style={tw.style(`text-base text-text-gray underline`, {
+              fontFamily: "NunitoSans_700Bold",
+            })}
+          >
+            login here
+          </Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );

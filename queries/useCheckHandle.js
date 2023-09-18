@@ -17,7 +17,7 @@ export default function useCheckHandle(handle, minimumLength = 0) {
       enabled:
         handle !== "" &&
         typeof handle === "string" &&
-        handle.length >= minimumLength,
+        handle.length > minimumLength,
     },
   );
 
