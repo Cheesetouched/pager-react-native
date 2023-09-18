@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { SplashScreen, router } from "expo-router";
+import { useFonts, NunitoSans_700Bold } from "@expo-google-fonts/nunito-sans";
 
 import SafeView from "@components/SafeView";
 import useFirebase from "@hooks/useFirebase";
@@ -10,15 +11,19 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   const { user } = useFirebase();
 
+  const [fontsLoaded] = useFonts({
+    NunitoSans_700Bold,
+  });
+
   useEffect(() => {
-    if (user !== undefined) {
+    if (fontsLoaded && user !== undefined) {
       if (user) {
         router.replace("/home");
       } else {
         router.replace("/onboarding/handle");
       }
     }
-  }, [user]);
+  }, [fontsLoaded, user]);
 
   return <SafeView />;
 }
