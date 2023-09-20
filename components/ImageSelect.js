@@ -59,7 +59,7 @@ export default function ImageSelect({
       }}
       style={tw.style(
         `flex bg-text-gray rounded-3xl overflow-hidden justify-center`,
-        `${error ? "border-4 border-red-500/75" : "border-2 border-neon"}`,
+        `${error ? "border-4 border-red-400" : "border-2 border-neon"}`,
         `${style ? style : ""}`,
       )}
     >

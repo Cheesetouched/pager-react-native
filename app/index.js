@@ -11,11 +11,13 @@ import {
 
 import SafeView from "@components/SafeView";
 import useFirebase from "@hooks/useFirebase";
+import useLocalStorage from "@hooks/useLocalStorage";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const { user } = useFirebase();
+  const { getJson } = useLocalStorage();
 
   const [fontsLoaded] = useFonts({
     BarlowCondensed_700Bold,
@@ -27,12 +29,18 @@ export default function App() {
   useEffect(() => {
     if (fontsLoaded && user !== undefined) {
       if (user) {
-        router.replace("/home");
+        getJson("checkpoint").then((checkpoint) => {
+          if (checkpoint) {
+            router.replace(checkpoint);
+          } else {
+            router.replace("/home");
+          }
+        });
       } else {
-        router.replace("/onboarding/handle");
+        router.replace("/handle");
       }
     }
-  }, [fontsLoaded, user]);
+  }, [fontsLoaded, getJson, user]);
 
   return <SafeView />;
 }

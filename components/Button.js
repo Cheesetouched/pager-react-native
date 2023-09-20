@@ -23,7 +23,7 @@ export default function Button({
       )}
     >
       {loading ? (
-        <ActivityIndicator color="white" />
+        <ActivityIndicator color="black" />
       ) : (
         <Text
           style={tw.style(`text-black text-center text-lg leading-snug`, {
