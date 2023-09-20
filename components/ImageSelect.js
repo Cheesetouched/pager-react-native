@@ -9,7 +9,14 @@ import Image from "@components/Image";
 import { resize } from "@utils/helpers";
 import useAppContext from "@hooks/useAppContext";
 
-export default function ImageSelect({ error = false, onSelect, style }) {
+export default function ImageSelect({
+  allowsEditing = false,
+  aspect = [1, 1],
+  disabled = false,
+  error = false,
+  onSelect,
+  style,
+}) {
   const { alert } = useAppContext();
   const [image, setImage] = useState(null);
 
@@ -22,6 +29,8 @@ export default function ImageSelect({ error = false, onSelect, style }) {
 
   const pickImage = useCallback(async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing,
+      aspect,
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 0.2,
     });
@@ -39,11 +48,15 @@ export default function ImageSelect({ error = false, onSelect, style }) {
         });
       }
     }
-  }, [onError, onSelect]);
+  }, [allowsEditing, aspect, onError, onSelect]);
 
   return (
     <TouchableOpacity
-      onPress={pickImage}
+      onPress={() => {
+        if (!disabled) {
+          pickImage();
+        }
+      }}
       style={tw.style(
         `flex bg-text-gray rounded-3xl overflow-hidden justify-center`,
         `${error ? "border-4 border-red-500/75" : "border-2 border-neon"}`,

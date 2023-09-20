@@ -1,18 +1,17 @@
 import { useCallback, useRef, useState } from "react";
 import { Text, TextInput, View } from "react-native";
 
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
-import useStorage from "@hooks/useStorage";
+import useUploadDp from "@mutations/useUploadDp";
 import CurvyArrow from "@assets/svgs/CurvyArrow";
 import ImageSelect from "@components/ImageSelect";
 
 export default function Details() {
   const scrollRef = useRef();
-  const { uploadDp } = useStorage();
   const [name, setName] = useState("");
   const params = useLocalSearchParams();
   const [error, setError] = useState({});
@@ -36,7 +35,22 @@ export default function Details() {
       image: false,
       name: false,
     });
+
+    uploadDp(selected?.uri);
   }
+
+  const { uploading, uploadDp } = useUploadDp({
+    onSuccess: (dp) => {
+      router.push({
+        pathname: `/permissions`,
+        params: {
+          ...params,
+          dp,
+          name,
+        },
+      });
+    },
+  });
 
   return (
     <KeyboardAwareScrollView
@@ -68,6 +82,8 @@ export default function Details() {
         <CurvyArrow style={tw`my-5`} />
 
         <ImageSelect
+          allowsEditing
+          disabled={uploading}
           error={error?.image}
           onSelect={onImageSelected}
           style="h-[150px] w-[150px]"
@@ -91,7 +107,7 @@ export default function Details() {
         ) : null}
       </View>
 
-      <Button onPress={submit} style="mb-4">
+      <Button loading={uploading} onPress={submit} style="mb-4">
         next
       </Button>
     </KeyboardAwareScrollView>

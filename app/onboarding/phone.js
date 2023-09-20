@@ -262,7 +262,7 @@ export default function Phone() {
               onPress={submitNumber}
               style="mt-3"
             >
-              Next
+              next
             </Button>
           </View>
         </>
