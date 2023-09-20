@@ -48,6 +48,7 @@ export default function Handle() {
       pathname: "/phone",
       params: {
         action: "reserve",
+        handle,
       },
     });
   }
@@ -79,7 +80,11 @@ export default function Handle() {
             free rn?
           </Text>
 
-          <Text style={tw.style(`flex text-white text-lg font-medium mt-3`)}>
+          <Text
+            style={tw.style(`flex text-white text-lg font-medium mt-3`, {
+              fontFamily: "NunitoSans_400Regular",
+            })}
+          >
             find out when your friends are free
           </Text>
         </View>
@@ -109,10 +114,9 @@ export default function Handle() {
             style={tw`flex flex-row justify-center gap-x-1 `}
             onPress={() =>
               router.push({
-                pathname: "/onboarding/phone",
+                pathname: "/phone",
                 params: {
                   action: "login",
-                  handle,
                 },
               })
             }

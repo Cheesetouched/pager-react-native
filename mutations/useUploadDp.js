@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import useStorage from "@hooks/useStorage";
 
-export default function usePhoneAuth(props = {}) {
+export default function useUploadDp(props = {}) {
   const { onSuccess } = props;
   const { uploadDp } = useStorage();
 

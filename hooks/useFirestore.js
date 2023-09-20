@@ -1,6 +1,13 @@
 import { useCallback } from "react";
 
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 
 import useFirebase from "@hooks/useFirebase";
 
@@ -14,6 +21,19 @@ export default function useFirestore() {
         const q = query(usersRef, where("handle", "==", handle));
         const users = await getDocs(q);
         return { exists: users.size > 0 };
+      } catch (error) {
+        throw error;
+      }
+    },
+    [firestore],
+  );
+
+  const createUser = useCallback(
+    async (uid, data) => {
+      try {
+        const userRef = doc(firestore, "users", uid);
+        await setDoc(userRef, data);
+        return { success: true };
       } catch (error) {
         throw error;
       }
@@ -43,5 +63,5 @@ export default function useFirestore() {
     [firestore],
   );
 
-  return { checkHandle, getUserByNumber };
+  return { checkHandle, createUser, getUserByNumber };
 }
