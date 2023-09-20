@@ -29,7 +29,7 @@ export default function App() {
       if (user) {
         router.replace("/home");
       } else {
-        router.replace("/onboarding/handle");
+        router.replace("/onboarding/details");
       }
     }
   }, [fontsLoaded, user]);

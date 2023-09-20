@@ -26,7 +26,7 @@ export default function Button({
         <ActivityIndicator color="white" />
       ) : (
         <Text
-          style={tw.style(`text-black text-center text-base leading-snug`, {
+          style={tw.style(`text-black text-center text-lg leading-snug`, {
             fontFamily: "NunitoSans_800ExtraBold",
           })}
         >

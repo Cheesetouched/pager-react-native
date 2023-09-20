@@ -34,7 +34,7 @@ export default function Handle() {
   function submit() {
     if (handle !== "" && handle.length < minimumHandleLength) {
       alert.current.show({
-        title: "oops!",
+        title: "oops 😕",
         message: "handle needs to be minimum 4 characters",
       });
     }
@@ -96,7 +96,7 @@ export default function Handle() {
         />
 
         <Button disabled={checking} onPress={submit}>
-          Next
+          next
         </Button>
 
         <TouchableOpacity
@@ -106,6 +106,7 @@ export default function Handle() {
               pathname: "/onboarding/phone",
               params: {
                 action: "login",
+                handle,
               },
             })
           }

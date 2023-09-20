@@ -35,8 +35,8 @@ export default function Phone() {
   const recaptchaRef = useRef();
   const countryListRef = useRef();
   const { alert } = useAppContext();
+  const params = useLocalSearchParams();
   const [number, setNumber] = useState();
-  const { action } = useLocalSearchParams();
   const [mode, setMode] = useState("number");
   const [phoneError, setPhoneError] = useState(false);
   const [country, setCountry] = useState({ dial_code: "+91", flag: "🇮🇳" });
@@ -133,11 +133,11 @@ export default function Phone() {
 
   const { getUser, gettingUser } = useUserByNumber({
     onSuccess: ({ exists }) => {
-      if (action === "reserve") {
+      if (params?.action === "reserve") {
         if (exists) {
           alert.current.show({
-            title: "Oops!",
-            message: `Profile with the number ${country?.dial_code} ${number} already exists.`,
+            title: "oops 😕",
+            message: `Someone with the number ${country?.dial_code} ${number} already exists.`,
           });
         } else {
           signInWithPhone({
@@ -153,8 +153,8 @@ export default function Phone() {
           });
         } else {
           alert.current.show({
-            title: "Oops!",
-            message: `We couldn't find a profile with the number ${country?.dial_code} ${number}. Try again?`,
+            title: "oops 😕",
+            message: `We couldn't find a user with the number ${country?.dial_code} ${number}. Try again?`,
             onCtaPress: () => setMode("number"),
           });
         }
@@ -168,10 +168,17 @@ export default function Phone() {
 
   const { otpError, verifying, verifyOtp } = useVerifyOtp({
     onSuccess: () => {
-      if (action === "reserve") {
+      if (params?.action === "reserve") {
         router.push({
-          pathname: "/onboarding/google",
-          params: null,
+          pathname: "/onboarding/details",
+          params: {
+            ...params,
+            phone: {
+              countryCode: country?.dial_code,
+              number,
+              full: `${country?.dial_code}${number}`,
+            },
+          },
         });
       } else {
         router.push("/home");
@@ -391,7 +398,7 @@ export default function Phone() {
           </View>
 
           <Button loading={verifying} onPress={submitOtp}>
-            Next
+            next
           </Button>
         </View>
       )}
