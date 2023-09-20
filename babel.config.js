@@ -10,7 +10,7 @@ module.exports = function (api) {
             "@assets": "./assets",
             "@components": "./components",
             "@hooks": "./hooks",
-            "@mutatios": "./mutations",
+            "@mutations": "./mutations",
             "@queries": "./queries",
             "@utils": "./utils",
           },

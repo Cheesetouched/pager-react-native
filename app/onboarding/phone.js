@@ -16,8 +16,8 @@ import Button from "@components/Button";
 import firebaseConfig from "@utils/firebase";
 import BackIcon from "@assets/svgs/BackIcon";
 import useAppContext from "@hooks/useAppContext";
-import usePhoneAuth from "@mutations/usePhoneAuth";
 import useVerifyOtp from "@mutations/useVerifyOtp";
+import usePhoneAuth from "@mutations/usePhoneAuth";
 import CountryPicker from "@components/CountryPicker";
 import useUserByNumber from "@mutations/useUserByNumber";
 
