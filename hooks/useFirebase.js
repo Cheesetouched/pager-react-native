@@ -11,8 +11,10 @@ import {
 } from "firebase/auth";
 
 import firebaseConfig from "@utils/firebase";
+import { getStorage } from "firebase/storage";
 
 const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
 const firestore = getFirestore(app);
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -45,9 +47,10 @@ export default function useFirebase(props = {}) {
   return useMemo(
     () => ({
       auth,
+      firestore,
       logout,
       loggingOut,
-      firestore,
+      storage,
       user,
     }),
     [loggingOut, logout, user],
