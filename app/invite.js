@@ -1,56 +1,35 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Linking, Text, View } from "react-native";
-
-import * as Contacts from "expo-contacts";
 
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
+import useContacts from "@hooks/useContacts";
 import useAppContext from "@hooks/useAppContext";
 
 export default function Invite() {
   const { alert } = useAppContext();
-  const [permission, setPermission] = useState(null);
 
-  const ask = useCallback(async () => {
-    let finalStatus = permission?.status;
-
-    if (!permission?.status !== "granted") {
-      const request = await Contacts.requestPermissionsAsync();
-      finalStatus = request?.status;
-      setPermission(request);
-    }
-
-    if (finalStatus === "granted") {
-      getContacts();
-    } else {
-      alert.current.show({
-        title: "oops 😕",
-        message: "without contact access, you cannot add or invite friends",
-      });
-    }
-  }, [alert, getContacts, permission?.status]);
-
-  const getContacts = useCallback(async () => {
-    const { data } = await Contacts.getContactsAsync();
-  }, []);
-
-  useEffect(() => {
-    Contacts.getPermissionsAsync().then((data) => {
-      setPermission(data);
-
-      if (data.granted) {
-        getContacts();
-      }
+  const deniedAlert = useCallback(() => {
+    alert.current.show({
+      title: "oops 😕",
+      message: "without contact access, you cannot add or invite friends",
     });
-  }, [getContacts]);
+  }, [alert]);
+
+  const { permission, requestContacts } = useContacts({
+    onDenied: deniedAlert,
+  });
 
   return (
     <SafeView>
       {permission?.granted ? (
         <View></View>
       ) : (
-        <NoPermissionView canAskAgain={permission?.canAskAgain} onAsk={ask} />
+        <NoPermissionView
+          canAskAgain={permission?.canAskAgain}
+          onAsk={requestContacts}
+        />
       )}
     </SafeView>
   );

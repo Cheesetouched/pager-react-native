@@ -22,7 +22,6 @@ const auth = initializeAuth(app, {
 
 export default function useFirebase(props = {}) {
   const { onLogout } = props;
-
   const [user, setUser] = useState(undefined);
 
   const { isLoading: loggingOut, mutate: logout } = useMutation(

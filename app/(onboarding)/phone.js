@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useRootNavigation } from "expo-router";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 
 import tw from "@utils/tailwind";
@@ -40,6 +40,7 @@ export default function Phone() {
   const params = useLocalSearchParams();
   const [number, setNumber] = useState();
   const { saveJson } = useLocalStorage();
+  const navigation = useRootNavigation();
   const [mode, setMode] = useState("number");
   const [phoneError, setPhoneError] = useState(false);
   const [country, setCountry] = useState({ dial_code: "+91", flag: "🇮🇳" });
@@ -186,7 +187,10 @@ export default function Phone() {
           router.replace(routeData);
         });
       } else {
-        router.push("/home");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "home" }],
+        });
       }
     },
   });

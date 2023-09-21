@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { View } from "react-native";
 
-import { SplashScreen, router } from "expo-router";
+import { SplashScreen, router, useRootNavigation } from "expo-router";
 
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
@@ -10,12 +10,16 @@ import useFirebase from "@hooks/useFirebase";
 import useLocalStorage from "@hooks/useLocalStorage";
 
 export default function Home() {
+  const navigation = useRootNavigation();
   const { clear, get } = useLocalStorage();
 
   const { loggingOut, logout } = useFirebase({
     onLogout: () => {
       clear();
-      router.replace("/handle");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "(onboarding)/handle" }],
+      });
     },
   });
 
