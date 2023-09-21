@@ -24,7 +24,7 @@ export default function Home() {
 
     get("first_launch").then((first_launch) => {
       if (first_launch === null) {
-        //router.push("/invite");
+        router.push("/invite");
       }
     });
   }, [get]);
