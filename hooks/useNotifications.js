@@ -37,10 +37,10 @@ export default function useNotifications(props = {}) {
       setPermission(permission);
 
       if (permission.granted) {
-        onGranted();
+        requestNotifications();
       }
     });
-  }, [onGranted]);
+  }, [onGranted, requestNotifications]);
 
   useEffect(() => {
     const stateListener = AppState.addEventListener(
@@ -49,7 +49,7 @@ export default function useNotifications(props = {}) {
         if (appState === "active") {
           Notifications.getPermissionsAsync().then((permission) => {
             if (permission.granted) {
-              onGranted();
+              requestNotifications();
             }
           });
         }
@@ -59,7 +59,7 @@ export default function useNotifications(props = {}) {
     return () => {
       stateListener.remove();
     };
-  }, [onGranted]);
+  }, [onGranted, requestNotifications]);
 
   return useMemo(
     () => ({
