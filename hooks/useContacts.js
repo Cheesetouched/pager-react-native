@@ -3,6 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import * as Contacts from "expo-contacts";
 
 export default function useContacts(props = {}) {
+  // Make sure these prop functions are wrapped in a useCallback
+  // function, inside the hook consumer, to prevent unnecessary
+  // re-rendering
+
   const { onDenied } = props;
   const [contacts, setContacts] = useState(null);
   const [permission, setPermission] = useState(null);
