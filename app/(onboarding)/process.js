@@ -22,25 +22,27 @@ export default function Process() {
   });
 
   useEffect(() => {
-    const userData = {
-      ...params,
-    };
+    if (params && user?.uid) {
+      const userData = {
+        ...params,
+      };
 
-    userData["phone"] = {
-      country_code: userData?.country_code,
-      number: userData?.number,
-      full: userData?.full,
-    };
+      userData["phone"] = {
+        country_code: userData?.country_code,
+        number: userData?.number,
+        full: userData?.full,
+      };
 
-    delete userData?.full;
-    delete userData?.action;
-    delete userData?.number;
-    delete userData?.country_code;
+      delete userData?.full;
+      delete userData?.action;
+      delete userData?.number;
+      delete userData?.country_code;
 
-    createUser({
-      uid: user?.uid,
-      data: userData,
-    });
+      createUser({
+        uid: user?.uid,
+        data: userData,
+      });
+    }
   }, [createUser, params, user?.uid]);
 
   return (
