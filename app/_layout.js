@@ -27,6 +27,10 @@ export default function Layout() {
       <QueryClientProvider client={queryClient}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="invite"
+            options={{ presentation: "fullScreenModal" }}
+          />
         </Stack>
       </QueryClientProvider>
 

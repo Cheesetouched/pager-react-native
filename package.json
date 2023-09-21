@@ -35,7 +35,8 @@
     "react-native-webview": "13.2.2",
     "twrnc": "^3.6.4",
     "expo-notifications": "~0.20.1",
-    "expo-device": "~5.4.0"
+    "expo-device": "~5.4.0",
+    "expo-contacts": "~12.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

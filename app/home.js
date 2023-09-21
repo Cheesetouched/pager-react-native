@@ -10,7 +10,7 @@ import useFirebase from "@hooks/useFirebase";
 import useLocalStorage from "@hooks/useLocalStorage";
 
 export default function Home() {
-  const { clear } = useLocalStorage();
+  const { clear, get } = useLocalStorage();
 
   const { loggingOut, logout } = useFirebase({
     onLogout: () => {
@@ -21,7 +21,13 @@ export default function Home() {
 
   useEffect(() => {
     SplashScreen.hideAsync();
-  }, []);
+
+    get("first_launch").then((first_launch) => {
+      if (first_launch === null) {
+        //router.push("/invite");
+      }
+    });
+  }, [get]);
 
   return (
     <SafeView>

@@ -33,6 +33,10 @@ export default function Process() {
         full: userData?.full,
       };
 
+      userData["friends"] = [];
+      userData["sentRequests"] = [];
+      userData["pendingRequests"] = [];
+
       delete userData?.full;
       delete userData?.action;
       delete userData?.number;
