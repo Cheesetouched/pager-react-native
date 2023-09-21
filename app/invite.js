@@ -22,19 +22,28 @@ export default function Invite() {
     }
 
     if (finalStatus === "granted") {
+      getContacts();
     } else {
       alert.current.show({
         title: "oops 😕",
         message: "without contact access, you cannot add or invite friends",
       });
     }
-  }, [alert, permission?.status]);
+  }, [alert, getContacts, permission?.status]);
+
+  const getContacts = useCallback(async () => {
+    const { data } = await Contacts.getContactsAsync();
+  }, []);
 
   useEffect(() => {
     Contacts.getPermissionsAsync().then((data) => {
       setPermission(data);
+
+      if (data.granted) {
+        getContacts();
+      }
     });
-  }, []);
+  }, [getContacts]);
 
   return (
     <SafeView>
