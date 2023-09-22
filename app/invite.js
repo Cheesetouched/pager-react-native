@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from "react";
-import { Linking, Text, View } from "react-native";
+import { ActivityIndicator, Linking, Text, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
@@ -25,9 +25,8 @@ export default function Invite() {
     });
   }, [alert]);
 
-  const { contacts, permission, requestContacts, searchContacts } = useContacts(
-    { onDenied },
-  );
+  const { contacts, invites, permission, requestContacts, searchContacts } =
+    useContacts({ onDenied });
 
   return (
     <SafeView>
@@ -43,7 +42,7 @@ export default function Invite() {
                   style={tw`ml-3`}
                 />
               }
-              containerStyle="h-[45px] mb-5"
+              containerStyle="h-[45px] mb-7"
               maxLength={25}
               onChangeText={searchContacts}
               placeholder="search contacts"
@@ -53,13 +52,15 @@ export default function Invite() {
 
             <FlashList
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-              ListHeaderComponent={<ContactListHeader />}
+              ListHeaderComponent={
+                <ContactListHeader invites={invites} user={user} />
+              }
               ListEmptyComponent={<NoContacts />}
               data={contacts}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
               renderItem={({ item }) => (
-                <ContactCard data={item} uid={user.uid} />
+                <ContactCard data={item} uid={user?.uid} />
               )}
               showsVerticalScrollIndicator={false}
             />
@@ -79,8 +80,55 @@ export default function Invite() {
   );
 }
 
-const ContactListHeader = memo(() => {
-  return <View></View>;
+const ContactListHeader = memo(({ invites, user }) => {
+  return (
+    <View style={tw`flex`}>
+      {invites?.checking ? (
+        <View style={tw`flex mb-7 gap-y-3`}>
+          <ActivityIndicator />
+
+          <Text
+            style={tw.style(`text-white text-base text-center`, {
+              fontFamily: "NunitoSans_700Bold",
+            })}
+          >
+            checking if your friends are here
+          </Text>
+        </View>
+      ) : invites?.inviters?.length > 0 ? (
+        <View style={tw`pb-[15px]`}>
+          <Text
+            style={tw.style(`text-white text-base mb-[15px]`, {
+              fontFamily: "NunitoSans_800ExtraBold",
+            })}
+          >
+            invited you
+          </Text>
+
+          <View style={tw`min-h-[2px]`}>
+            <FlashList
+              ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+              data={invites?.inviters}
+              estimatedItemSize={68}
+              keyboardShouldPersistTaps="handled"
+              renderItem={({ item }) => (
+                <ContactCard data={item} uid={user?.uid} type="user" />
+              )}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        </View>
+      ) : null}
+
+      <Text
+        style={tw.style(`text-white text-base mb-[15px]`, {
+          fontFamily: "NunitoSans_800ExtraBold",
+        })}
+      >
+        your contacts
+      </Text>
+    </View>
+  );
 });
 
 function NoContacts() {

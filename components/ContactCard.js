@@ -2,7 +2,6 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 import tw from "@utils/tailwind";
 import Image from "@components/Image";
-import Countries from "@utils/countries";
 
 import useInviteUser from "@mutations/useInviteUser";
 import OutlineButton from "@components/OutlineButton";
@@ -20,7 +19,7 @@ const getInitials = (name) => {
   }
 };
 
-export default function ContactCard({ data, uid }) {
+export default function ContactCard({ data, type = "contact", uid }) {
   const { inviting, inviteUser } = useInviteUser();
 
   return (
@@ -28,9 +27,9 @@ export default function ContactCard({ data, uid }) {
       style={tw`flex flex-row items-center`}
       onPress={() => console.log(data)}
     >
-      {data?.image ? (
+      {data?.dp ? (
         <View style={tw`h-[50px] w-[50px]`}>
-          <Image src={data?.image} style="rounded-full" />
+          <Image src={data?.dp} style="rounded-full" />
         </View>
       ) : (
         <View
@@ -60,7 +59,7 @@ export default function ContactCard({ data, uid }) {
             fontFamily: "NunitoSans_400Regular",
           })}
         >
-          {`${Countries[data?.code]} ${data?.number}`}
+          {`${data?.phone?.country_code} ${data?.phone?.number}`}
         </Text>
       </View>
 
@@ -68,7 +67,7 @@ export default function ContactCard({ data, uid }) {
         loading={inviting}
         onPress={() =>
           inviteUser({
-            number: `${Countries[data?.code]}${data?.number}`,
+            number: `${data?.phone?.country_code}${data?.phone?.number}`,
             invited_by: uid,
           })
         }

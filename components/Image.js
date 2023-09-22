@@ -16,9 +16,7 @@ const NetworkImage = ({ src, style }) => {
         style={tw.style(`flex flex-1`, `${style ? style : ""}`)}
       />
 
-      {loading ? (
-        <ActivityIndicator color="white" style={tw`absolute self-center`} />
-      ) : null}
+      {loading ? <ActivityIndicator style={tw`absolute self-center`} /> : null}
     </View>
   );
 };

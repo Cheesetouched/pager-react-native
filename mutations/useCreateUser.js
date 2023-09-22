@@ -8,10 +8,9 @@ export default function useCreateUser(props = {}) {
   const { onSuccess } = props;
   const { createUser } = useFirestore();
 
-  const { isLoading, mutate } = useMutation(
-    ({ uid, data }) => createUser(uid, data),
-    { onSuccess },
-  );
+  const { isLoading, mutate } = useMutation(({ data }) => createUser(data), {
+    onSuccess,
+  });
 
   return useMemo(
     () => ({

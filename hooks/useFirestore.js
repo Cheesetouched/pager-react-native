@@ -4,6 +4,7 @@ import {
   arrayUnion,
   collection,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -29,12 +30,57 @@ export default function useFirestore() {
     [firestore],
   );
 
+  const checkInvites = useCallback(
+    async (number) => {
+      try {
+        const inviteRef = doc(firestore, "invites", number);
+        const invite = await getDoc(inviteRef);
+
+        if (invite.exists()) {
+          const invitedBy = invite.data().invited_by;
+
+          const inviters = await Promise.all(
+            invitedBy.map(async (inviter) => {
+              const userRef = doc(firestore, "users", inviter);
+              const user = await getDoc(userRef);
+              return { id: user.id, ...user.data() };
+            }),
+          );
+
+          return { success: true, inviters };
+        } else {
+          return { success: false };
+        }
+      } catch (error) {
+        throw error;
+      }
+    },
+    [firestore],
+  );
+
   const createUser = useCallback(
     async (uid, data) => {
       try {
         const userRef = doc(firestore, "users", uid);
         await setDoc(userRef, data);
         return { success: true };
+      } catch (error) {
+        throw error;
+      }
+    },
+    [firestore],
+  );
+
+  const getUser = useCallback(
+    async (id) => {
+      try {
+        const userRef = doc(firestore, "users", id);
+        const userDoc = await getDoc(userRef);
+
+        if (userDoc.exists()) {
+          return { success: true, user: { id: userDoc.id, ...userDoc.data() } };
+        }
+        return { success: false };
       } catch (error) {
         throw error;
       }
@@ -83,5 +129,12 @@ export default function useFirestore() {
     [firestore],
   );
 
-  return { checkHandle, createUser, getUserByNumber, inviteUser };
+  return {
+    checkHandle,
+    checkInvites,
+    createUser,
+    getUser,
+    getUserByNumber,
+    inviteUser,
+  };
 }

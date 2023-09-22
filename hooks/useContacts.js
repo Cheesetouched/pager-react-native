@@ -2,7 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import * as Contacts from "expo-contacts";
 
+import useUser from "@hooks/useUser";
+import Countries from "@utils/countries";
 import { cleanupPhone, resize } from "@utils/helpers";
+import useCheckInvites from "@queries/useCheckInvites";
 
 export default function useContacts(props = {}) {
   // Make sure these prop functions are wrapped in a useCallback
@@ -10,9 +13,11 @@ export default function useContacts(props = {}) {
   // re-rendering
 
   const { onDenied } = props;
+  const { userData } = useUser();
   const [contacts, setContacts] = useState(null);
   const [inMemory, setInMemory] = useState(null);
   const [permission, setPermission] = useState(null);
+  const invites = useCheckInvites(userData?.phone?.full);
 
   const getContacts = useCallback(async () => {
     Contacts.getContactsAsync({
@@ -40,20 +45,29 @@ export default function useContacts(props = {}) {
           contact?.name !== "" &&
           contact?.phoneNumbers?.length > 0
         ) {
+          const country_code = Countries[contact?.phoneNumbers[0]?.countryCode];
+          const number = cleanupPhone(contact?.phoneNumbers[0]?.digits);
+
           if (contact?.image) {
             withPhotos.push({
+              dp: await resize(contact?.image, 100, 100),
               id: contact?.id,
-              code: contact?.phoneNumbers[0]?.countryCode,
               name: contact?.name,
-              number: cleanupPhone(contact?.phoneNumbers[0]?.digits),
-              image: await resize(contact?.image, 100, 100),
+              phone: {
+                country_code,
+                full: `${country_code}${number}`,
+                number,
+              },
             });
           } else {
             withoutPhotos.push({
               id: contact?.id,
-              code: contact?.phoneNumbers[0]?.countryCode,
               name: contact?.name,
-              number: cleanupPhone(contact?.phoneNumbers[0]?.digits),
+              phone: {
+                country_code,
+                full: `${country_code}${number}`,
+                number,
+              },
             });
           }
         }
@@ -105,10 +119,11 @@ export default function useContacts(props = {}) {
   return useMemo(
     () => ({
       contacts,
+      invites,
       permission,
       requestContacts,
       searchContacts,
     }),
-    [contacts, permission, requestContacts, searchContacts],
+    [contacts, invites, permission, requestContacts, searchContacts],
   );
 }
