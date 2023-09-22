@@ -1,17 +1,22 @@
-import { useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import { Linking, Text, View } from "react-native";
 
+import { AntDesign } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 
 import tw from "@utils/tailwind";
+import Input from "@components/Input";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useContacts from "@hooks/useContacts";
+import useFirebase from "@hooks/useFirebase";
 import useAppContext from "@hooks/useAppContext";
 import ContactCard from "@components/ContactCard";
 
 export default function Invite() {
+  const { user } = useFirebase();
   const { alert } = useAppContext();
+  const [count, setCount] = useState(0);
 
   const onDenied = useCallback(() => {
     alert.current.show({
@@ -20,20 +25,45 @@ export default function Invite() {
     });
   }, [alert]);
 
-  const { contacts, permission, requestContacts } = useContacts({ onDenied });
+  const { contacts, permission, requestContacts, searchContacts } = useContacts(
+    { onDenied },
+  );
 
   return (
     <SafeView>
       <View style={tw`flex flex-1 px-4 pt-4`}>
         {permission?.granted ? (
-          <FlashList
-            ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-            data={contacts}
-            estimatedItemSize={68}
-            keyboardShouldPersistTaps="handled"
-            renderItem={({ item }) => <ContactCard data={item} />}
-            showsVerticalScrollIndicator={false}
-          />
+          <>
+            <Input
+              LeftComponent={
+                <AntDesign
+                  name="search1"
+                  size={18}
+                  color="#00000080"
+                  style={tw`ml-3`}
+                />
+              }
+              containerStyle="h-[45px] mb-5"
+              maxLength={25}
+              onChangeText={searchContacts}
+              placeholder="search contacts"
+              style="text-left"
+              trim
+            />
+
+            <FlashList
+              ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+              ListHeaderComponent={<ContactListHeader />}
+              ListEmptyComponent={<NoContacts />}
+              data={contacts}
+              estimatedItemSize={68}
+              keyboardShouldPersistTaps="handled"
+              renderItem={({ item }) => (
+                <ContactCard data={item} uid={user.uid} />
+              )}
+              showsVerticalScrollIndicator={false}
+            />
+          </>
         ) : (
           <NoPermissionView
             canAskAgain={permission?.canAskAgain}
@@ -41,7 +71,29 @@ export default function Invite() {
           />
         )}
       </View>
+
+      <Button onPress={() => setCount((old) => old + 1)}>
+        increase {count}
+      </Button>
     </SafeView>
+  );
+}
+
+const ContactListHeader = memo(() => {
+  return <View></View>;
+});
+
+function NoContacts() {
+  return (
+    <View style={tw`flex flex-1`}>
+      <Text
+        style={tw.style(`text-text-gray text-xl text-center`, {
+          fontFamily: "NunitoSans_700Bold",
+        })}
+      >
+        no contacts found 😕
+      </Text>
+    </View>
   );
 }
 

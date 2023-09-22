@@ -2,6 +2,10 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 import tw from "@utils/tailwind";
 import Image from "@components/Image";
+import Countries from "@utils/countries";
+
+import useInviteUser from "@mutations/useInviteUser";
+import OutlineButton from "@components/OutlineButton";
 
 const getInitials = (name) => {
   if (!name) return "?";
@@ -16,7 +20,9 @@ const getInitials = (name) => {
   }
 };
 
-export default function ContactCard({ data }) {
+export default function ContactCard({ data, uid }) {
+  const { inviting, inviteUser } = useInviteUser();
+
   return (
     <TouchableOpacity
       style={tw`flex flex-row items-center`}
@@ -40,7 +46,7 @@ export default function ContactCard({ data }) {
         </View>
       )}
 
-      <View style={tw`flex flex-1 ml-4`}>
+      <View style={tw`flex flex-1 ml-3`}>
         <Text
           style={tw.style(`text-base text-white`, {
             fontFamily: "NunitoSans_700Bold",
@@ -48,14 +54,29 @@ export default function ContactCard({ data }) {
         >
           {data?.name}
         </Text>
+
         <Text
           style={tw.style(`text-sm text-text-gray`, {
             fontFamily: "NunitoSans_400Regular",
           })}
         >
-          {data?.number}
+          {`${Countries[data?.code]} ${data?.number}`}
         </Text>
       </View>
+
+      <OutlineButton
+        loading={inviting}
+        onPress={() =>
+          inviteUser({
+            number: `${Countries[data?.code]}${data?.number}`,
+            invited_by: uid,
+          })
+        }
+        style="h-[35px] w-[75px]"
+        textStyle="text-xs"
+      >
+        invite
+      </OutlineButton>
     </TouchableOpacity>
   );
 }

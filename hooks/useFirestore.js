@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 
 import {
+  arrayUnion,
   collection,
   doc,
   getDocs,
@@ -63,5 +64,24 @@ export default function useFirestore() {
     [firestore],
   );
 
-  return { checkHandle, createUser, getUserByNumber };
+  const inviteUser = useCallback(
+    async (number, invited_by) => {
+      try {
+        const inviteRef = doc(firestore, "invites", number);
+
+        await setDoc(
+          inviteRef,
+          { invited_by: arrayUnion(invited_by) },
+          { merge: true },
+        );
+
+        return { success: true };
+      } catch (error) {
+        throw error;
+      }
+    },
+    [firestore],
+  );
+
+  return { checkHandle, createUser, getUserByNumber, inviteUser };
 }

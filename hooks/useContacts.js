@@ -11,6 +11,7 @@ export default function useContacts(props = {}) {
 
   const { onDenied } = props;
   const [contacts, setContacts] = useState(null);
+  const [inMemory, setInMemory] = useState(null);
   const [permission, setPermission] = useState(null);
 
   const getContacts = useCallback(async () => {
@@ -24,6 +25,7 @@ export default function useContacts(props = {}) {
     }).then(async (contacts) => {
       const processed = await processContacts(contacts);
       setContacts(processed);
+      setInMemory(processed);
     });
   }, [processContacts]);
 
@@ -41,13 +43,15 @@ export default function useContacts(props = {}) {
           if (contact?.image) {
             withPhotos.push({
               id: contact?.id,
+              code: contact?.phoneNumbers[0]?.countryCode,
               name: contact?.name,
               number: cleanupPhone(contact?.phoneNumbers[0]?.digits),
-              image: await resize(contact?.image, 250, 500),
+              image: await resize(contact?.image, 100, 100),
             });
           } else {
             withoutPhotos.push({
               id: contact?.id,
+              code: contact?.phoneNumbers[0]?.countryCode,
               name: contact?.name,
               number: cleanupPhone(contact?.phoneNumbers[0]?.digits),
             });
@@ -75,6 +79,19 @@ export default function useContacts(props = {}) {
     }
   }, [getContacts, onDenied, permission]);
 
+  const searchContacts = useCallback(
+    (text) => {
+      const filtered = inMemory.filter((contact) => {
+        const lowercase = contact?.name.toLowerCase();
+        const searchTerm = text.toString().toLowerCase();
+        return lowercase.indexOf(searchTerm) > -1;
+      });
+
+      setContacts(filtered);
+    },
+    [inMemory],
+  );
+
   useEffect(() => {
     Contacts.getPermissionsAsync().then((permission) => {
       setPermission(permission);
@@ -88,9 +105,10 @@ export default function useContacts(props = {}) {
   return useMemo(
     () => ({
       contacts,
-      requestContacts,
       permission,
+      requestContacts,
+      searchContacts,
     }),
-    [contacts, permission, requestContacts],
+    [contacts, permission, requestContacts, searchContacts],
   );
 }

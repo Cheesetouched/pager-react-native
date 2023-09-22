@@ -2,7 +2,7 @@ import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 
 import tw from "@utils/tailwind";
 
-export default function Button({
+export default function OutlineButton({
   children,
   disabled = false,
   loading = false,
@@ -20,15 +20,15 @@ export default function Button({
       style={tw.style(
         `flex h-[50px] justify-center rounded-xl`,
         `${style ? style : ""}`,
-        `${loading ? "bg-neon/75" : "bg-neon"}`,
+        `${loading ? "border border-neon/75" : "border border-neon"}`,
       )}
     >
       {loading ? (
-        <ActivityIndicator color="black" />
+        <ActivityIndicator color="gray" size="small" />
       ) : (
         <Text
           style={tw.style(
-            `text-black text-center text-lg leading-snug`,
+            `text-white text-center text-lg leading-snug`,
             `${textStyle ? textStyle : ""}`,
             {
               fontFamily: "NunitoSans_800ExtraBold",
