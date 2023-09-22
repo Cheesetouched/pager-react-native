@@ -1,26 +1,8 @@
 import * as ImageManipulator from "expo-image-manipulator";
 
-export async function resize(photo, extras = []) {
-  if (photo.height > 1000 && photo.width > 1000) {
-    const newPhoto = await ImageManipulator.manipulateAsync(
-      photo.uri,
-      [
-        {
-          resize: {
-            height: photo.height / 2,
-            width: photo.width / 2,
-          },
-        },
-        ...extras,
-      ],
-      { compress: 0.1, format: ImageManipulator.SaveFormat.PNG },
-    );
-
-    return resize(newPhoto);
-  }
-
-  return photo;
-}
+export const cleanupPhone = (phone) => {
+  return phone.trim().replace(/\s/g, "");
+};
 
 export async function getBlobFromUri(uri) {
   return await new Promise((resolve, reject) => {
@@ -35,4 +17,31 @@ export async function getBlobFromUri(uri) {
     xhr.open("GET", uri, true);
     xhr.send(null);
   });
+}
+
+export async function resize(
+  photo,
+  heightUnder = 1000,
+  widthUnder = 1000,
+  extras = [],
+) {
+  if (photo.height > heightUnder && photo.width > widthUnder) {
+    const newPhoto = await ImageManipulator.manipulateAsync(
+      photo.uri,
+      [
+        {
+          resize: {
+            height: photo.height / 2,
+            width: photo.width / 2,
+          },
+        },
+        ...extras,
+      ],
+      { compress: 0.1, format: ImageManipulator.SaveFormat.PNG },
+    );
+
+    return resize(newPhoto, heightUnder, widthUnder);
+  }
+
+  return photo;
 }

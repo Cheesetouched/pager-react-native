@@ -1,36 +1,46 @@
 import { useCallback } from "react";
 import { Linking, Text, View } from "react-native";
 
+import { FlashList } from "@shopify/flash-list";
+
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useContacts from "@hooks/useContacts";
 import useAppContext from "@hooks/useAppContext";
+import ContactCard from "@components/ContactCard";
 
 export default function Invite() {
   const { alert } = useAppContext();
 
-  const deniedAlert = useCallback(() => {
+  const onDenied = useCallback(() => {
     alert.current.show({
       title: "oops 😕",
       message: "without contact access, you cannot add or invite friends",
     });
   }, [alert]);
 
-  const { permission, requestContacts } = useContacts({
-    onDenied: deniedAlert,
-  });
+  const { contacts, permission, requestContacts } = useContacts({ onDenied });
 
   return (
     <SafeView>
-      {permission?.granted ? (
-        <View></View>
-      ) : (
-        <NoPermissionView
-          canAskAgain={permission?.canAskAgain}
-          onAsk={requestContacts}
-        />
-      )}
+      <View style={tw`flex flex-1 px-4 pt-4`}>
+        {permission?.granted ? (
+          <FlashList
+            ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+            data={contacts}
+            estimatedItemSize={68}
+            keyboardShouldPersistTaps="handled"
+            renderItem={({ item }) => <ContactCard data={item} />}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <NoPermissionView
+            canAskAgain={permission?.canAskAgain}
+            onAsk={requestContacts}
+          />
+        )}
+      </View>
     </SafeView>
   );
 }
