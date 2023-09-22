@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback } from "react";
 import { ActivityIndicator, Linking, Text, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -16,7 +16,6 @@ import ContactCard from "@components/ContactCard";
 export default function Invite() {
   const { user } = useFirebase();
   const { alert } = useAppContext();
-  const [count, setCount] = useState(0);
 
   const onDenied = useCallback(() => {
     alert.current.show({
@@ -59,9 +58,7 @@ export default function Invite() {
               data={contacts}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
-              renderItem={({ item }) => (
-                <ContactCard data={item} uid={user?.uid} />
-              )}
+              renderItem={({ item }) => <ContactCard data={item} />}
               showsVerticalScrollIndicator={false}
             />
           </>
@@ -72,10 +69,6 @@ export default function Invite() {
           />
         )}
       </View>
-
-      <Button onPress={() => setCount((old) => old + 1)}>
-        increase {count}
-      </Button>
     </SafeView>
   );
 }
@@ -111,9 +104,7 @@ const ContactListHeader = memo(({ invites, user }) => {
               data={invites?.inviters}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
-              renderItem={({ item }) => (
-                <ContactCard data={item} uid={user?.uid} type="user" />
-              )}
+              renderItem={({ item }) => <ContactCard data={item} type="user" />}
               showsVerticalScrollIndicator={false}
             />
           </View>
