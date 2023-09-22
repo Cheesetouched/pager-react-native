@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-import tw from "@utils/tailwind";
 import { router } from "expo-router";
-import Image from "@components/Image";
 
+import tw from "@utils/tailwind";
+import Image from "@components/Image";
 import useInviteUser from "@mutations/useInviteUser";
 import OutlineButton from "@components/OutlineButton";
 
