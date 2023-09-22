@@ -37,7 +37,8 @@
     "expo-notifications": "~0.20.1",
     "expo-device": "~5.4.0",
     "expo-contacts": "~12.2.0",
-    "@shopify/flash-list": "1.4.3"
+    "@shopify/flash-list": "1.4.3",
+    "expo-sms": "~11.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

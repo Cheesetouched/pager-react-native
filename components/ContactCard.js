@@ -1,6 +1,8 @@
+import { useCallback } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 import tw from "@utils/tailwind";
+import { router } from "expo-router";
 import Image from "@components/Image";
 
 import useInviteUser from "@mutations/useInviteUser";
@@ -20,7 +22,20 @@ const getInitials = (name) => {
 };
 
 export default function ContactCard({ data, type = "contact", uid }) {
-  const { inviting, inviteUser } = useInviteUser();
+  const onSuccess = useCallback(
+    (_, { number }) => {
+      router.push({
+        pathname: "/invite_options",
+        params: {
+          name: data?.name?.split(" ")[0].toLowerCase(),
+          number,
+        },
+      });
+    },
+    [data?.name],
+  );
+
+  const { inviting, inviteUser } = useInviteUser({ onSuccess });
 
   return (
     <TouchableOpacity
@@ -59,7 +74,9 @@ export default function ContactCard({ data, type = "contact", uid }) {
             fontFamily: "NunitoSans_400Regular",
           })}
         >
-          {`${data?.phone?.country_code} ${data?.phone?.number}`}
+          {data?.phone?.number?.includes("+")
+            ? data?.phone?.number
+            : `${data?.phone?.country_code} ${data?.phone?.number}`}
         </Text>
       </View>
 
@@ -67,7 +84,7 @@ export default function ContactCard({ data, type = "contact", uid }) {
         loading={inviting}
         onPress={() =>
           inviteUser({
-            number: `${data?.phone?.country_code}${data?.phone?.number}`,
+            number: data?.phone?.full,
             invited_by: uid,
           })
         }

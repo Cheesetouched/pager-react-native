@@ -47,6 +47,9 @@ export default function useContacts(props = {}) {
         ) {
           const country_code = Countries[contact?.phoneNumbers[0]?.countryCode];
           const number = cleanupPhone(contact?.phoneNumbers[0]?.digits);
+          const full = number?.includes("+")
+            ? number
+            : `${country_code}${number}`;
 
           if (contact?.image) {
             withPhotos.push({
@@ -55,7 +58,7 @@ export default function useContacts(props = {}) {
               name: contact?.name,
               phone: {
                 country_code,
-                full: `${country_code}${number}`,
+                full,
                 number,
               },
             });
@@ -65,7 +68,7 @@ export default function useContacts(props = {}) {
               name: contact?.name,
               phone: {
                 country_code,
-                full: `${country_code}${number}`,
+                full,
                 number,
               },
             });
