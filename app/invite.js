@@ -9,12 +9,10 @@ import Input from "@components/Input";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useContacts from "@hooks/useContacts";
-import useFirebase from "@hooks/useFirebase";
 import useAppContext from "@hooks/useAppContext";
 import ContactCard from "@components/ContactCard";
 
 export default function Invite() {
-  const { user } = useFirebase();
   const { alert } = useAppContext();
 
   const onDenied = useCallback(() => {
@@ -24,8 +22,14 @@ export default function Invite() {
     });
   }, [alert]);
 
-  const { contacts, invites, permission, requestContacts, searchContacts } =
-    useContacts({ onDenied });
+  const {
+    contacts,
+    contactSearch,
+    invites,
+    permission,
+    requestContacts,
+    searchContacts,
+  } = useContacts({ onDenied });
 
   return (
     <SafeView>
@@ -52,7 +56,10 @@ export default function Invite() {
             <FlashList
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
               ListHeaderComponent={
-                <ContactListHeader invites={invites} user={user} />
+                <ContactListHeader
+                  contactSearch={contactSearch}
+                  invites={invites}
+                />
               }
               ListEmptyComponent={<NoContacts />}
               data={contacts}
@@ -73,7 +80,7 @@ export default function Invite() {
   );
 }
 
-const ContactListHeader = memo(({ invites, user }) => {
+const ContactListHeader = memo(({ contactSearch, invites }) => {
   return (
     <View style={tw`flex`}>
       {invites?.checking ? (
@@ -85,7 +92,7 @@ const ContactListHeader = memo(({ invites, user }) => {
               fontFamily: "NunitoSans_700Bold",
             })}
           >
-            checking if your friends are here
+            finding your friends
           </Text>
         </View>
       ) : invites?.inviters?.length > 0 ? (
@@ -102,6 +109,29 @@ const ContactListHeader = memo(({ invites, user }) => {
             <FlashList
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
               data={invites?.inviters}
+              estimatedItemSize={68}
+              keyboardShouldPersistTaps="handled"
+              renderItem={({ item }) => <ContactCard data={item} type="user" />}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        </View>
+      ) : null}
+
+      {contactSearch?.results?.length > 0 ? (
+        <View style={tw`pb-[15px]`}>
+          <Text
+            style={tw.style(`text-white text-base mb-[15px]`, {
+              fontFamily: "NunitoSans_800ExtraBold",
+            })}
+          >
+            on the app
+          </Text>
+
+          <View style={tw`min-h-[2px]`}>
+            <FlashList
+              ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+              data={contactSearch?.results}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
               renderItem={({ item }) => <ContactCard data={item} type="user" />}

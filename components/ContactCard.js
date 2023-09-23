@@ -87,7 +87,7 @@ export default function ContactCard({ data, type = "contact" }) {
 
       {type === "user" ? (
         <OutlineButton style="h-[35px] w-[90px]" textStyle="text-xs">
-          see profile
+          add friend
         </OutlineButton>
       ) : (
         <OutlineButton

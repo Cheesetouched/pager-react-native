@@ -6,6 +6,7 @@ import useUser from "@hooks/useUser";
 import Countries from "@utils/countries";
 import { cleanupPhone, resize } from "@utils/helpers";
 import useCheckInvites from "@queries/useCheckInvites";
+import useContactsSearch from "@queries/useContactsSearch";
 
 export default function useContacts(props = {}) {
   // Make sure these prop functions are wrapped in a useCallback
@@ -17,6 +18,8 @@ export default function useContacts(props = {}) {
   const [contacts, setContacts] = useState(null);
   const [inMemory, setInMemory] = useState(null);
   const [permission, setPermission] = useState(null);
+  const [numbersOnly, setNumbersOnly] = useState(null);
+  const contactSearch = useContactsSearch(numbersOnly);
   const invites = useCheckInvites(userData?.phone?.full);
 
   const getContacts = useCallback(async () => {
@@ -28,13 +31,15 @@ export default function useContacts(props = {}) {
       ],
       sort: Contacts.SortTypes.UserDefault,
     }).then(async (contacts) => {
-      const processed = await processContacts(contacts);
+      const { processed, numbersOnly } = await processContacts(contacts);
       setContacts(processed);
       setInMemory(processed);
+      setNumbersOnly(numbersOnly);
     });
   }, [processContacts]);
 
   const processContacts = useCallback(async (contacts) => {
+    const allNumbers = [];
     const withPhotos = [];
     const withoutPhotos = [];
 
@@ -50,6 +55,8 @@ export default function useContacts(props = {}) {
           const full = number?.includes("+")
             ? number
             : `${country_code}${number}`;
+
+          allNumbers.push(full);
 
           if (contact?.image) {
             withPhotos.push({
@@ -77,7 +84,10 @@ export default function useContacts(props = {}) {
       }),
     );
 
-    return [...withPhotos, ...withoutPhotos];
+    return {
+      processed: [...withPhotos, ...withoutPhotos],
+      numbersOnly: allNumbers,
+    };
   }, []);
 
   const requestContacts = useCallback(async () => {
@@ -122,11 +132,19 @@ export default function useContacts(props = {}) {
   return useMemo(
     () => ({
       contacts,
+      contactSearch,
       invites,
       permission,
       requestContacts,
       searchContacts,
     }),
-    [contacts, invites, permission, requestContacts, searchContacts],
+    [
+      contacts,
+      contactSearch,
+      invites,
+      permission,
+      requestContacts,
+      searchContacts,
+    ],
   );
 }

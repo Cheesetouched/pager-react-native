@@ -9,7 +9,7 @@ const NetworkImage = ({ src, style }) => {
   const [loading, setLoading] = useState(true);
 
   return (
-    <View style={tw`relative flex flex-1`}>
+    <View style={tw`relative flex flex-1 justify-center`}>
       <Image
         onLoadEnd={() => setLoading(false)}
         source={src}
