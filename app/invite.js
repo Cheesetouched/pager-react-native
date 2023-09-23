@@ -24,8 +24,9 @@ export default function Invite() {
 
   const {
     contacts,
-    contactSearch,
+    friendsOnApp,
     invites,
+    loadingInvites,
     permission,
     requestContacts,
     searchContacts,
@@ -57,8 +58,9 @@ export default function Invite() {
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
               ListHeaderComponent={
                 <ContactListHeader
-                  contactSearch={contactSearch}
+                  friendsOnApp={friendsOnApp}
                   invites={invites}
+                  loadingInvites={loadingInvites}
                 />
               }
               ListEmptyComponent={<NoContacts />}
@@ -80,10 +82,10 @@ export default function Invite() {
   );
 }
 
-const ContactListHeader = memo(({ contactSearch, invites }) => {
+const ContactListHeader = memo(({ friendsOnApp, invites, loadingInvites }) => {
   return (
     <View style={tw`flex`}>
-      {invites?.checking ? (
+      {loadingInvites ? (
         <View style={tw`flex mb-7 gap-y-3`}>
           <ActivityIndicator />
 
@@ -95,7 +97,7 @@ const ContactListHeader = memo(({ contactSearch, invites }) => {
             finding your friends
           </Text>
         </View>
-      ) : invites?.inviters?.length > 0 ? (
+      ) : invites?.length > 0 ? (
         <View style={tw`pb-[15px]`}>
           <Text
             style={tw.style(`text-white text-base mb-[15px]`, {
@@ -108,7 +110,7 @@ const ContactListHeader = memo(({ contactSearch, invites }) => {
           <View style={tw`min-h-[2px]`}>
             <FlashList
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-              data={invites?.inviters}
+              data={invites}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
               renderItem={({ item }) => <ContactCard data={item} type="user" />}
@@ -118,7 +120,7 @@ const ContactListHeader = memo(({ contactSearch, invites }) => {
         </View>
       ) : null}
 
-      {contactSearch?.results?.length > 0 ? (
+      {friendsOnApp?.results?.length > 0 ? (
         <View style={tw`pb-[15px]`}>
           <Text
             style={tw.style(`text-white text-base mb-[15px]`, {
@@ -131,7 +133,7 @@ const ContactListHeader = memo(({ contactSearch, invites }) => {
           <View style={tw`min-h-[2px]`}>
             <FlashList
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-              data={contactSearch?.results}
+              data={friendsOnApp?.results}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
               renderItem={({ item }) => <ContactCard data={item} type="user" />}

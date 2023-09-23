@@ -15,12 +15,15 @@ export default function useContacts(props = {}) {
 
   const { onDenied } = props;
   const { userData } = useUser();
+  const [invites, setInvites] = useState([]);
   const [contacts, setContacts] = useState(null);
   const [inMemory, setInMemory] = useState(null);
   const [permission, setPermission] = useState(null);
   const [numbersOnly, setNumbersOnly] = useState(null);
-  const contactSearch = useContactsSearch(numbersOnly);
-  const invites = useCheckInvites(userData?.phone?.full);
+  // Breaking import order here because otherwise numbersOnly
+  // would be undefined when passed to the useContactsSearch hook
+  const friendsOnApp = useContactsSearch(numbersOnly);
+  const userInvites = useCheckInvites(userData?.phone?.full);
 
   const getContacts = useCallback(async () => {
     Contacts.getContactsAsync({
@@ -120,6 +123,22 @@ export default function useContacts(props = {}) {
   );
 
   useEffect(() => {
+    if (userInvites?.success) {
+      setInvites(userInvites?.inviters);
+    }
+
+    if (friendsOnApp?.success && userInvites?.success) {
+      const resultUids = friendsOnApp?.results?.map((hit) => hit?.objectID);
+
+      setInvites((current) =>
+        current.filter((inviter) => {
+          return !resultUids?.includes(inviter?.id);
+        }),
+      );
+    }
+  }, [friendsOnApp, userInvites]);
+
+  useEffect(() => {
     Contacts.getPermissionsAsync().then((permission) => {
       setPermission(permission);
 
@@ -132,19 +151,21 @@ export default function useContacts(props = {}) {
   return useMemo(
     () => ({
       contacts,
-      contactSearch,
+      friendsOnApp,
       invites,
+      loadingInvites: userInvites?.checking,
       permission,
       requestContacts,
       searchContacts,
     }),
     [
       contacts,
-      contactSearch,
+      friendsOnApp,
       invites,
       permission,
       requestContacts,
       searchContacts,
+      userInvites?.checking,
     ],
   );
 }

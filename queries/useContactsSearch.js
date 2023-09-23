@@ -21,7 +21,7 @@ export default function useContactsSearch(numbers) {
 
   return useMemo(
     () => ({
-      results: data,
+      ...data,
       searching: isInitialLoading || isFetching,
     }),
     [data, isFetching, isInitialLoading],

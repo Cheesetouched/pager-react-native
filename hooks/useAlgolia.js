@@ -41,7 +41,7 @@ export default function useAlgolia() {
       }
     });
 
-    return allHits;
+    return { success: true, results: allHits };
   }, []);
 
   return { contactsSearch };
