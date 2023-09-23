@@ -46,7 +46,7 @@ export default function Invite() {
                   style={tw`ml-3`}
                 />
               }
-              containerStyle="h-[45px] mb-7"
+              containerStyle="h-[45px] mb-3"
               maxLength={25}
               onChangeText={searchContacts}
               placeholder="search contacts"
@@ -64,6 +64,7 @@ export default function Invite() {
                 />
               }
               ListEmptyComponent={<NoContacts />}
+              contentContainerStyle={tw`pt-4`}
               data={contacts}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
@@ -121,9 +122,9 @@ const ContactListHeader = memo(({ friendsOnApp, invites, loadingInvites }) => {
       ) : null}
 
       {friendsOnApp?.results?.length > 0 ? (
-        <View style={tw`pb-[15px]`}>
+        <View style={tw`pb-5`}>
           <Text
-            style={tw.style(`text-white text-base mb-[15px]`, {
+            style={tw.style(`text-white text-base mb-5`, {
               fontFamily: "NunitoSans_800ExtraBold",
             })}
           >
@@ -144,7 +145,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites, loadingInvites }) => {
       ) : null}
 
       <Text
-        style={tw.style(`text-white text-base mb-[15px]`, {
+        style={tw.style(`text-white text-base mb-5`, {
           fontFamily: "NunitoSans_800ExtraBold",
         })}
       >
