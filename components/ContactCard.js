@@ -28,14 +28,13 @@ const getInitials = (name) => {
 export default function ContactCard({ data, type = "contact" }) {
   const { userData } = useUser();
   const { alert } = useAppContext();
-  const { adding, addFriend } = useAddFriend();
+  const { addFriend } = useAddFriend();
 
-  const isFriend = useMemo(() => {
-    if (
-      userData?.sentRequests?.includes(data?.id || data?.objectID) ||
-      userData?.friends?.includes(data?.id || data?.objectID)
-    ) {
-      return true;
+  const status = useMemo(() => {
+    if (userData?.friends?.includes(data?.id || data?.objectID)) {
+      return "friends";
+    } else if (userData?.sentRequests?.includes(data?.id || data?.objectID)) {
+      return "sent";
     } else {
       return false;
     }
@@ -100,15 +99,22 @@ export default function ContactCard({ data, type = "contact" }) {
       </View>
 
       {type === "user" ? (
-        isFriend ? (
+        status === "friends" ? (
           <AntDesign name="checkcircle" size={24} color="#D2FE55" />
+        ) : status === "sent" ? (
+          <Text
+            style={tw.style(`text-neon`, {
+              fontFamily: "NunitoSans_700Bold",
+            })}
+          >
+            request sent
+          </Text>
         ) : (
           <OutlineButton
-            loading={adding}
             onPress={() =>
               addFriend({
                 adderUid: userData?.id,
-                addeeUid: data?.id,
+                addeeUid: data?.id || data?.objectID,
               })
             }
             style="h-[35px] w-[90px]"
