@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 import { useMutation } from "@tanstack/react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,7 +12,6 @@ import {
 } from "firebase/auth";
 
 import firebaseConfig from "@utils/firebase";
-import { getStorage } from "firebase/storage";
 
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);

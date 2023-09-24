@@ -6,8 +6,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import tw from "@utils/tailwind";
 import SafeView from "@components/SafeView";
 import useFirebase from "@hooks/useFirebase";
-import useCreateUser from "@mutations/useCreateUser";
 import useLocalStorage from "@hooks/useLocalStorage";
+import useCreateUser from "@hooks/mutations/useCreateUser";
 
 export default function Process() {
   const { user } = useFirebase();

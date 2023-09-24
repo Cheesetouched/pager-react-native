@@ -17,7 +17,7 @@ import SafeView from "@components/SafeView";
 import CheckIcon from "@assets/svgs/CheckIcon";
 import CloseIcon from "@assets/svgs/CloseIcon";
 import useAppContext from "@hooks/useAppContext";
-import useCheckHandle from "@queries/useCheckHandle";
+import useCheckHandle from "@hooks/queries/useCheckHandle";
 
 const minimumHandleLength = 1;
 

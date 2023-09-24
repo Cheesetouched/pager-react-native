@@ -7,8 +7,8 @@ import tw from "@utils/tailwind";
 import useUser from "@hooks/useUser";
 import Image from "@components/Image";
 import useAppContext from "@hooks/useAppContext";
-import useInviteUser from "@mutations/useInviteUser";
 import OutlineButton from "@components/OutlineButton";
+import useInviteUser from "@hooks/mutations/useInviteUser";
 
 const getInitials = (name) => {
   if (!name) return "?";

@@ -7,10 +7,10 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
-import useUploadDp from "@mutations/useUploadDp";
 import CurvyArrow from "@assets/svgs/CurvyArrow";
 import ImageSelect from "@components/ImageSelect";
 import useLocalStorage from "@hooks/useLocalStorage";
+import useUploadDp from "@hooks/mutations/useUploadDp";
 
 export default function Details() {
   const scrollRef = useRef();

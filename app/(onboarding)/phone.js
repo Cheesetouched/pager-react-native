@@ -17,11 +17,11 @@ import SafeView from "@components/SafeView";
 import firebaseConfig from "@utils/firebase";
 import BackIcon from "@assets/svgs/BackIcon";
 import useAppContext from "@hooks/useAppContext";
-import useVerifyOtp from "@mutations/useVerifyOtp";
-import usePhoneAuth from "@mutations/usePhoneAuth";
 import useLocalStorage from "@hooks/useLocalStorage";
 import CountryPicker from "@components/CountryPicker";
-import useUserByNumber from "@mutations/useUserByNumber";
+import useVerifyOtp from "@hooks/mutations/useVerifyOtp";
+import usePhoneAuth from "@hooks/mutations/usePhoneAuth";
+import useUserByNumber from "@hooks/mutations/useUserByNumber";
 
 function getErrorMessage(code) {
   if (code === "auth/invalid-verification-code") {

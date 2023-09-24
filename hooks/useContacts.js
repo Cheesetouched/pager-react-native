@@ -5,8 +5,8 @@ import * as Contacts from "expo-contacts";
 import useUser from "@hooks/useUser";
 import Countries from "@utils/countries";
 import { cleanupPhone, resize } from "@utils/helpers";
-import useCheckInvites from "@queries/useCheckInvites";
-import useContactsSearch from "@queries/useContactsSearch";
+import useCheckInvites from "@hooks/queries/useCheckInvites";
+import useContactsSearch from "@hooks/queries/useContactsSearch";
 
 export default function useContacts(props = {}) {
   // Make sure these prop functions are wrapped in a useCallback
@@ -130,13 +130,18 @@ export default function useContacts(props = {}) {
     if (contactsSearch?.success && invites?.success) {
       const inviterUids = invites?.inviters?.map((inviter) => inviter?.id);
 
+      // Removing people from the list if they are already in the
+      // invite list or if the person is the logged in user
       setFriendsOnApp((current) =>
         current.filter((friend) => {
-          return !inviterUids?.includes(friend?.objectID);
+          return (
+            !inviterUids?.includes(friend?.objectID) &&
+            friend?.phone?.full !== userData?.phone?.full
+          );
         }),
       );
     }
-  }, [contactsSearch, invites]);
+  }, [contactsSearch, invites, userData?.phone?.full]);
 
   useEffect(() => {
     Contacts.getPermissionsAsync().then((permission) => {

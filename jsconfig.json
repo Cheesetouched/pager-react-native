@@ -12,10 +12,10 @@
         "./hooks/*"
       ],
       "@mutations/*": [
-        "./mutations/*"
+        "hooks/mutations/*"
       ],
       "@queries/*": [
-        "./queries/*"
+        "hooks/queries/*"
       ],
       "@utils/*": [
         "./utils/*"
