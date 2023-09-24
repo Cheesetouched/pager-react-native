@@ -26,72 +26,81 @@ export default function useContacts(props = {}) {
   const invites = useCheckInvites(userData?.phone?.full);
 
   const getContacts = useCallback(async () => {
-    Contacts.getContactsAsync({
-      fields: [
-        Contacts.Fields.Name,
-        Contacts.Fields.Image,
-        Contacts.Fields.PhoneNumbers,
-      ],
-      sort: Contacts.SortTypes.UserDefault,
-    }).then(async (contacts) => {
-      const { processed, numbersOnly } = await processContacts(contacts);
-      setContacts(processed);
-      setInMemory(processed);
-      setNumbersOnly(numbersOnly);
-    });
-  }, [processContacts]);
+    if (userData) {
+      Contacts.getContactsAsync({
+        fields: [
+          Contacts.Fields.Name,
+          Contacts.Fields.Image,
+          Contacts.Fields.PhoneNumbers,
+        ],
+        sort: Contacts.SortTypes.UserDefault,
+      }).then(async (contacts) => {
+        const { processed, numbersOnly } = await processContacts(contacts);
+        setContacts(processed);
+        setInMemory(processed);
+        setNumbersOnly(numbersOnly);
+      });
+    }
+  }, [processContacts, userData]);
 
-  const processContacts = useCallback(async (contacts) => {
-    const allNumbers = [];
-    const withPhotos = [];
-    const withoutPhotos = [];
+  const processContacts = useCallback(
+    async (contacts) => {
+      const allNumbers = [];
+      const withPhotos = [];
+      const withoutPhotos = [];
 
-    await Promise.all(
-      contacts?.data?.map(async (contact) => {
-        if (
-          contact?.name &&
-          contact?.name !== "" &&
-          contact?.phoneNumbers?.length > 0
-        ) {
-          const country_code = Countries[contact?.phoneNumbers[0]?.countryCode];
-          const number = cleanupPhone(contact?.phoneNumbers[0]?.digits);
-          const full = number?.includes("+")
-            ? number
-            : `${country_code}${number}`;
+      await Promise.all(
+        contacts?.data?.map(async (contact) => {
+          if (
+            contact?.name &&
+            contact?.name !== "" &&
+            contact?.phoneNumbers?.length > 0
+          ) {
+            const country_code =
+              Countries[contact?.phoneNumbers[0]?.countryCode];
+            const number = cleanupPhone(contact?.phoneNumbers[0]?.digits);
+            const full = number?.includes("+")
+              ? number
+              : `${country_code}${number}`;
 
-          allNumbers.push(full);
+            // Removing the number of the logged in user
+            if (full !== userData?.phone?.full) {
+              allNumbers.push(full);
+            }
 
-          if (contact?.image) {
-            withPhotos.push({
-              dp: await resize(contact?.image, 100, 100),
-              id: contact?.id,
-              name: contact?.name,
-              phone: {
-                country_code,
-                full,
-                number,
-              },
-            });
-          } else {
-            withoutPhotos.push({
-              id: contact?.id,
-              name: contact?.name,
-              phone: {
-                country_code,
-                full,
-                number,
-              },
-            });
+            if (contact?.image) {
+              withPhotos.push({
+                dp: await resize(contact?.image, 100, 100),
+                id: contact?.id,
+                name: contact?.name,
+                phone: {
+                  country_code,
+                  full,
+                  number,
+                },
+              });
+            } else {
+              withoutPhotos.push({
+                id: contact?.id,
+                name: contact?.name,
+                phone: {
+                  country_code,
+                  full,
+                  number,
+                },
+              });
+            }
           }
-        }
-      }),
-    );
+        }),
+      );
 
-    return {
-      processed: [...withPhotos, ...withoutPhotos],
-      numbersOnly: allNumbers,
-    };
-  }, []);
+      return {
+        processed: [...withPhotos, ...withoutPhotos],
+        numbersOnly: allNumbers,
+      };
+    },
+    [userData],
+  );
 
   const requestContacts = useCallback(async () => {
     let finalPermission = permission;

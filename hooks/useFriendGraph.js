@@ -1,26 +1,34 @@
 import { useCallback, useMemo } from "react";
 
-import {} from "firebase/firestore";
+import { arrayUnion } from "firebase/firestore";
 
-import useFirebase from "@hooks/useFirebase";
-import UserHelper from "@utils/firestore/users";
+import useUsers from "@hooks/firestore/useUsers";
 
 export default function useFriendGraph() {
-  const Users = UserHelper();
-  const { firestore } = useFirebase();
+  const Users = useUsers();
 
-  const addFriend = useCallback(async (adderUid, addeeUid) => {
-    try {
-      Users;
-    } catch (error) {
-      throw error;
-    }
-  }, []);
+  const addFriend = useCallback(
+    async (adderUid, addeeUid) => {
+      try {
+        await Promise.all([
+          Users.updateUser(adderUid, {
+            sentRequests: arrayUnion(addeeUid),
+          }),
+          Users.updateUser(addeeUid, {
+            pendingRequests: arrayUnion(adderUid),
+          }),
+        ]);
+      } catch (error) {
+        throw error;
+      }
+    },
+    [Users],
+  );
 
   return useMemo(
     () => ({
       addFriend,
     }),
-    [],
+    [addFriend],
   );
 }

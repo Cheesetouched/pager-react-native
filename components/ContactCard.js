@@ -1,13 +1,15 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Text, View } from "react-native";
 
 import { router } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
 
 import tw from "@utils/tailwind";
 import useUser from "@hooks/useUser";
 import Image from "@components/Image";
 import useAppContext from "@hooks/useAppContext";
 import OutlineButton from "@components/OutlineButton";
+import useAddFriend from "@hooks/mutations/useAddFriend";
 import useInviteUser from "@hooks/mutations/useInviteUser";
 
 const getInitials = (name) => {
@@ -26,6 +28,18 @@ const getInitials = (name) => {
 export default function ContactCard({ data, type = "contact" }) {
   const { userData } = useUser();
   const { alert } = useAppContext();
+  const { adding, addFriend } = useAddFriend();
+
+  const isFriend = useMemo(() => {
+    if (
+      userData?.sentRequests?.includes(data?.id || data?.objectID) ||
+      userData?.friends?.includes(data?.id || data?.objectID)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [data, userData]);
 
   const onSuccess = useCallback(
     (_, { number }) => {
@@ -86,9 +100,23 @@ export default function ContactCard({ data, type = "contact" }) {
       </View>
 
       {type === "user" ? (
-        <OutlineButton style="h-[35px] w-[90px]" textStyle="text-xs">
-          add friend
-        </OutlineButton>
+        isFriend ? (
+          <AntDesign name="checkcircle" size={24} color="#D2FE55" />
+        ) : (
+          <OutlineButton
+            loading={adding}
+            onPress={() =>
+              addFriend({
+                adderUid: userData?.id,
+                addeeUid: data?.id,
+              })
+            }
+            style="h-[35px] w-[90px]"
+            textStyle="text-xs"
+          >
+            add friend
+          </OutlineButton>
+        )
       ) : (
         <OutlineButton
           loading={inviting}

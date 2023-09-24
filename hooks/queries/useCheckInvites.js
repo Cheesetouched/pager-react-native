@@ -16,11 +16,13 @@ export default function useCheckInvites(number) {
       const eligibleInviters = [];
       const result = await checkInvites(number);
 
-      result.inviters.map((inviter) => {
-        if (!inviter?.friends?.includes(user?.uid)) {
-          eligibleInviters.push(inviter);
-        }
-      });
+      if (result?.inviters?.length > 0) {
+        result.inviters.map((inviter) => {
+          if (!inviter?.friends?.includes(user?.uid)) {
+            eligibleInviters.push(inviter);
+          }
+        });
+      }
 
       return { ...result, inviters: eligibleInviters };
     },

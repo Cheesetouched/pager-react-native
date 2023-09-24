@@ -180,7 +180,7 @@ function NoPermissionView({ onAsk, canAskAgain }) {
         let's get your buddies on 🥳
       </Text>
 
-      <View style={tw`flex flex-1 justify-center px-5`}>
+      <View style={tw`flex flex-1 justify-center`}>
         <Text
           style={tw.style(`flex text-white text-center text-2xl font-medium`, {
             fontFamily: "NunitoSans_700Bold",
