@@ -15,15 +15,15 @@ export default function useContacts(props = {}) {
 
   const { onDenied } = props;
   const { userData } = useUser();
-  const [invites, setInvites] = useState([]);
   const [contacts, setContacts] = useState(null);
   const [inMemory, setInMemory] = useState(null);
   const [permission, setPermission] = useState(null);
   const [numbersOnly, setNumbersOnly] = useState(null);
+  const [friendsOnApp, setFriendsOnApp] = useState([]);
   // Breaking import order here because otherwise numbersOnly
   // would be undefined when passed to the useContactsSearch hook
-  const friendsOnApp = useContactsSearch(numbersOnly);
-  const userInvites = useCheckInvites(userData?.phone?.full);
+  const contactsSearch = useContactsSearch(numbersOnly);
+  const invites = useCheckInvites(userData?.phone?.full);
 
   const getContacts = useCallback(async () => {
     Contacts.getContactsAsync({
@@ -123,20 +123,20 @@ export default function useContacts(props = {}) {
   );
 
   useEffect(() => {
-    if (userInvites?.success) {
-      setInvites(userInvites?.inviters);
+    if (contactsSearch?.success) {
+      setFriendsOnApp(contactsSearch?.results);
     }
 
-    if (friendsOnApp?.success && userInvites?.success) {
-      const resultUids = friendsOnApp?.results?.map((hit) => hit?.objectID);
+    if (contactsSearch?.success && invites?.success) {
+      const inviterUids = invites?.inviters?.map((inviter) => inviter?.id);
 
-      setInvites((current) =>
-        current.filter((inviter) => {
-          return !resultUids?.includes(inviter?.id);
+      setFriendsOnApp((current) =>
+        current.filter((friend) => {
+          return !inviterUids?.includes(friend?.objectID);
         }),
       );
     }
-  }, [friendsOnApp, userInvites]);
+  }, [contactsSearch, invites]);
 
   useEffect(() => {
     Contacts.getPermissionsAsync().then((permission) => {
@@ -153,7 +153,6 @@ export default function useContacts(props = {}) {
       contacts,
       friendsOnApp,
       invites,
-      loadingInvites: userInvites?.checking,
       permission,
       requestContacts,
       searchContacts,
@@ -165,7 +164,6 @@ export default function useContacts(props = {}) {
       permission,
       requestContacts,
       searchContacts,
-      userInvites?.checking,
     ],
   );
 }

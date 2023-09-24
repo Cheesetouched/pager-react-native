@@ -83,10 +83,10 @@ export default function Invite() {
   );
 }
 
-const ContactListHeader = memo(({ friendsOnApp, invites, loadingInvites }) => {
+const ContactListHeader = memo(({ friendsOnApp, invites }) => {
   return (
     <View style={tw`flex`}>
-      {loadingInvites ? (
+      {invites?.checking ? (
         <View style={tw`flex mb-7 gap-y-3`}>
           <ActivityIndicator />
 
@@ -98,7 +98,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites, loadingInvites }) => {
             finding your friends
           </Text>
         </View>
-      ) : invites?.length > 0 ? (
+      ) : invites?.inviters?.length > 0 ? (
         <View style={tw`pb-[15px]`}>
           <Text
             style={tw.style(`text-white text-base mb-[15px]`, {
@@ -111,7 +111,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites, loadingInvites }) => {
           <View style={tw`min-h-[2px]`}>
             <FlashList
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-              data={invites}
+              data={invites?.inviters}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
               renderItem={({ item }) => <ContactCard data={item} type="user" />}
@@ -121,7 +121,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites, loadingInvites }) => {
         </View>
       ) : null}
 
-      {friendsOnApp?.results?.length > 0 ? (
+      {friendsOnApp?.length > 0 ? (
         <View style={tw`pb-5`}>
           <Text
             style={tw.style(`text-white text-base mb-5`, {
@@ -134,7 +134,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites, loadingInvites }) => {
           <View style={tw`min-h-[2px]`}>
             <FlashList
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-              data={friendsOnApp?.results}
+              data={friendsOnApp}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
               renderItem={({ item }) => <ContactCard data={item} type="user" />}
