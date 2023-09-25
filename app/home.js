@@ -29,7 +29,7 @@ export default function Home() {
     if (userData) {
       get("first_launch").then((first_launch) => {
         if (first_launch === null) {
-          router.push("/invite");
+          router.push("/friends");
         }
       });
     }

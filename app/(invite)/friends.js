@@ -64,7 +64,7 @@ export default function Invite() {
                 />
               }
               ListEmptyComponent={<NoContacts />}
-              contentContainerStyle={tw`pt-4`}
+              contentContainerStyle={tw`pt-4 pb-16`}
               data={contacts}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
@@ -169,9 +169,9 @@ function NoContacts() {
   );
 }
 
-function NoPermissionView({ onAsk, canAskAgain }) {
+function NoPermissionView({ canAskAgain, onAsk }) {
   return (
-    <View style={tw`flex flex-1 px-4 pt-4`}>
+    <View style={tw`flex flex-1 px-4 pt-4 pb-12`}>
       <Text
         style={tw.style(`flex text-text-1 text-2xl font-medium self-center`, {
           fontFamily: "NunitoSans_700Bold",
