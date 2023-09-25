@@ -78,9 +78,9 @@ export default function useFirestore() {
         const userDoc = await getDoc(userRef);
 
         if (userDoc.exists()) {
-          return { success: true, user: { id: userDoc.id, ...userDoc.data() } };
+          return { id: userDoc.id, ...userDoc.data() };
         }
-        return { success: false };
+        return null;
       } catch (error) {
         throw error;
       }

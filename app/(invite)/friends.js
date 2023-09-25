@@ -5,12 +5,14 @@ import { AntDesign } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 
 import tw from "@utils/tailwind";
+import useUser from "@hooks/useUser";
 import Input from "@components/Input";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useContacts from "@hooks/useContacts";
 import useAppContext from "@hooks/useAppContext";
 import ContactCard from "@components/ContactCard";
+import RequestCard from "@components/RequestCard";
 
 export default function Invite() {
   const { alert } = useAppContext();
@@ -84,6 +86,8 @@ export default function Invite() {
 }
 
 const ContactListHeader = memo(({ friendsOnApp, invites }) => {
+  const { userData } = useUser();
+
   return (
     <View style={tw`flex`}>
       {invites?.checking ? (
@@ -137,7 +141,13 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
               data={friendsOnApp}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
-              renderItem={({ item }) => <ContactCard data={item} type="user" />}
+              renderItem={({ item }) => {
+                if (userData?.pendingRequests?.includes(item?.objectID)) {
+                  return <RequestCard data={item} />;
+                } else {
+                  return <ContactCard data={item} type="user" />;
+                }
+              }}
               showsVerticalScrollIndicator={false}
             />
           </View>
@@ -171,7 +181,7 @@ function NoContacts() {
 
 function NoPermissionView({ canAskAgain, onAsk }) {
   return (
-    <View style={tw`flex flex-1 px-4 pt-4 pb-12`}>
+    <View style={tw`flex flex-1 px-4 pb-12`}>
       <Text
         style={tw.style(`flex text-text-1 text-2xl font-medium self-center`, {
           fontFamily: "NunitoSans_700Bold",

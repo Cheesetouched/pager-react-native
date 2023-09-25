@@ -1,10 +1,11 @@
-import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 import tw from "@utils/tailwind";
 
 export default function OutlineButton({
   children,
   disabled = false,
+  icon = null,
   loading = false,
   onPress,
   style,
@@ -26,17 +27,23 @@ export default function OutlineButton({
       {loading ? (
         <ActivityIndicator color="gray" size="small" />
       ) : (
-        <Text
-          style={tw.style(
-            `text-white text-center text-lg leading-snug`,
-            `${textStyle ? textStyle : ""}`,
-            {
-              fontFamily: "NunitoSans_800ExtraBold",
-            },
-          )}
-        >
-          {children}
-        </Text>
+        <View>
+          {icon ? icon : null}
+
+          {children ? (
+            <Text
+              style={tw.style(
+                `text-white text-center text-lg leading-snug`,
+                `${textStyle ? textStyle : ""}`,
+                {
+                  fontFamily: "NunitoSans_800ExtraBold",
+                },
+              )}
+            >
+              {children}
+            </Text>
+          ) : null}
+        </View>
       )}
     </TouchableOpacity>
   );

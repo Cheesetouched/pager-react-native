@@ -19,8 +19,7 @@ export default function useUser() {
 
   return useMemo(
     () => ({
-      success: data?.success,
-      userData: data?.user,
+      userData: data,
       userLoading: isInitialLoading || isFetching,
     }),
     [data, isFetching, isInitialLoading],

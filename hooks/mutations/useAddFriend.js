@@ -16,14 +16,8 @@ export default function useAddFriend(props = {}) {
       onMutate: ({ adderUid, addeeUid }) =>
         update(["user", adderUid], (old) => ({
           ...old,
-          user: {
-            ...old?.user,
-            sentRequests: [...old?.user?.sentRequests, addeeUid],
-          },
+          sentRequests: [...old?.sentRequests, addeeUid],
         })),
-      onError: (_, __, test) => {
-        console.log("context", test);
-      },
       onSuccess,
     },
   );

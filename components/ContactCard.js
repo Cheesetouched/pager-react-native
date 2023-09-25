@@ -56,10 +56,7 @@ export default function ContactCard({ data, type = "contact" }) {
   const { inviting, inviteUser } = useInviteUser({ onSuccess });
 
   return (
-    <View
-      style={tw`flex flex-row items-center`}
-      onPress={() => console.log(data)}
-    >
+    <View style={tw`flex flex-row items-center`}>
       {data?.dp ? (
         <View style={tw`h-[50px] w-[50px]`}>
           <Image src={data?.dp} style="rounded-full" />
@@ -92,7 +89,9 @@ export default function ContactCard({ data, type = "contact" }) {
             fontFamily: "NunitoSans_400Regular",
           })}
         >
-          {data?.phone?.number?.includes("+")
+          {type === "request"
+            ? `@${data?.handle}`
+            : data?.phone?.number?.includes("+")
             ? data?.phone?.number
             : `${data?.phone?.country_code} ${data?.phone?.number}`}
         </Text>
