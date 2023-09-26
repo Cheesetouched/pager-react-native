@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 
 import { SplashScreen, router } from "expo-router";
-import { BarlowCondensed_700Bold } from "@expo-google-fonts/barlow-condensed";
+import { Lalezar_400Regular } from "@expo-google-fonts/lalezar";
 import {
   useFonts,
-  NunitoSans_400Regular,
-  NunitoSans_700Bold,
-  NunitoSans_800ExtraBold,
-} from "@expo-google-fonts/nunito-sans";
+  Cabin_400Regular,
+  Cabin_600SemiBold,
+  Cabin_700Bold,
+} from "@expo-google-fonts/cabin";
 
 import SafeView from "@components/SafeView";
 import useFirebase from "@hooks/useFirebase";
@@ -20,10 +20,10 @@ export default function App() {
   const { getJson } = useLocalStorage();
 
   const [fontsLoaded] = useFonts({
-    BarlowCondensed_700Bold,
-    NunitoSans_400Regular,
-    NunitoSans_700Bold,
-    NunitoSans_800ExtraBold,
+    Lalezar_400Regular,
+    Cabin_400Regular,
+    Cabin_600SemiBold,
+    Cabin_700Bold,
   });
 
   useEffect(() => {

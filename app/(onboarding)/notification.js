@@ -58,7 +58,7 @@ export default function Notification() {
       <View style={tw`flex flex-1 px-4 pt-4`}>
         <Text
           style={tw.style(`flex text-text-1 text-3xl font-medium self-center`, {
-            fontFamily: "NunitoSans_700Bold",
+            fontFamily: "Cabin_600SemiBold",
           })}
         >
           can we notify you? 🫠
@@ -69,7 +69,7 @@ export default function Notification() {
             style={tw.style(
               `flex text-white text-center text-2xl font-medium`,
               {
-                fontFamily: "NunitoSans_700Bold",
+                fontFamily: "Cabin_600SemiBold",
               },
             )}
           >
@@ -80,7 +80,7 @@ export default function Notification() {
             style={tw.style(
               `flex text-white text-center text-lg font-medium mt-5`,
               {
-                fontFamily: "NunitoSans_400Regular",
+                fontFamily: "Cabin_400Regular",
               },
             )}
           >
@@ -89,7 +89,7 @@ export default function Notification() {
 
           <Text
             style={tw.style(`text-center text-lg underline text-red-400 mt-2`, {
-              fontFamily: "NunitoSans_700Bold",
+              fontFamily: "Cabin_600SemiBold",
             })}
           >
             without that, this app is not useful.

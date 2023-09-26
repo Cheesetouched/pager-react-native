@@ -20,7 +20,7 @@ export default function RequestCard({ data }) {
       <View style={tw`flex flex-1 ml-3`}>
         <Text
           style={tw.style(`text-base text-white`, {
-            fontFamily: "NunitoSans_700Bold",
+            fontFamily: "Cabin_600SemiBold",
           })}
         >
           {data?.name}
@@ -28,7 +28,7 @@ export default function RequestCard({ data }) {
 
         <Text
           style={tw.style(`text-sm text-text-gray`, {
-            fontFamily: "NunitoSans_400Regular",
+            fontFamily: "Cabin_400Regular",
           })}
         >
           @{data?.handle}

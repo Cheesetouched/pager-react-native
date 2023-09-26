@@ -21,7 +21,7 @@ export default function Button({
       style={tw.style(
         `flex h-[50px] justify-center rounded-xl`,
         `${style ? style : ""}`,
-        `${loading ? "bg-neon/75" : "bg-neon"}`,
+        `${loading ? "bg-accent/75" : "bg-accent"}`,
       )}
     >
       {loading ? (
@@ -33,10 +33,10 @@ export default function Button({
           {children ? (
             <Text
               style={tw.style(
-                `text-black text-center text-lg leading-snug`,
+                `text-white text-center text-lg leading-snug`,
                 `${textStyle ? textStyle : ""}`,
                 {
-                  fontFamily: "NunitoSans_800ExtraBold",
+                  fontFamily: "Cabin_700Bold",
                 },
               )}
             >

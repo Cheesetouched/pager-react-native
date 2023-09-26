@@ -31,13 +31,13 @@ const CountryModal = forwardRef(({ onSelect }, ref) => {
       }}
       show={show}
       style={{
-        countryName: tw.style({ fontFamily: "NunitoSans_400Regular" }),
-        dialCode: tw.style({ fontFamily: "NunitoSans_700Bold" }),
+        countryName: tw.style({ fontFamily: "Cabin_400Regular" }),
+        dialCode: tw.style({ fontFamily: "Cabin_600SemiBold" }),
         flag: tw`text-xl`,
         line: tw`my-3`,
         modal: tw`h-[80%] px-4 pt-4 pb-10`,
         textInput: tw.style(`h-12 px-4`, {
-          fontFamily: "NunitoSans_400Regular",
+          fontFamily: "Cabin_400Regular",
         }),
       }}
     />

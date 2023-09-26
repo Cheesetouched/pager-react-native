@@ -63,11 +63,11 @@ export default function ContactCard({ data, type = "contact" }) {
         </View>
       ) : (
         <View
-          style={tw`bg-neon items-center justify-center h-[50px] w-[50px] rounded-full`}
+          style={tw`bg-accent items-center justify-center h-[50px] w-[50px] rounded-full`}
         >
           <Text
             style={tw.style(`text-xl`, {
-              fontFamily: "NunitoSans_800ExtraBold",
+              fontFamily: "Cabin_700Bold",
             })}
           >
             {getInitials(data?.name)}
@@ -78,7 +78,7 @@ export default function ContactCard({ data, type = "contact" }) {
       <View style={tw`flex flex-1 ml-3`}>
         <Text
           style={tw.style(`text-base text-white`, {
-            fontFamily: "NunitoSans_700Bold",
+            fontFamily: "Cabin_600SemiBold",
           })}
         >
           {data?.name}
@@ -86,7 +86,7 @@ export default function ContactCard({ data, type = "contact" }) {
 
         <Text
           style={tw.style(`text-sm text-text-gray`, {
-            fontFamily: "NunitoSans_400Regular",
+            fontFamily: "Cabin_400Regular",
           })}
         >
           {type === "request"
@@ -102,8 +102,8 @@ export default function ContactCard({ data, type = "contact" }) {
           <AntDesign name="checkcircle" size={24} color="#D2FE55" />
         ) : status === "sent" ? (
           <Text
-            style={tw.style(`text-neon`, {
-              fontFamily: "NunitoSans_700Bold",
+            style={tw.style(`text-accent`, {
+              fontFamily: "Cabin_600SemiBold",
             })}
           >
             request sent

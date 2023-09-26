@@ -112,7 +112,7 @@ const Input = forwardRef(
           style={tw.style(
             `text-center text-base flex-1 px-3 leading-snug`,
             `${style ? style : ""}`,
-            { fontFamily: "NunitoSans_700Bold" },
+            { fontFamily: "Cabin_600SemiBold" },
           )}
           value={value}
         />

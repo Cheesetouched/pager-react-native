@@ -96,7 +96,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
 
           <Text
             style={tw.style(`text-white text-base text-center`, {
-              fontFamily: "NunitoSans_700Bold",
+              fontFamily: "Cabin_600SemiBold",
             })}
           >
             finding your friends
@@ -106,7 +106,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
         <View style={tw`pb-[15px]`}>
           <Text
             style={tw.style(`text-white text-base mb-[15px]`, {
-              fontFamily: "NunitoSans_800ExtraBold",
+              fontFamily: "Cabin_700Bold",
             })}
           >
             invited you
@@ -129,7 +129,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
         <View style={tw`pb-5`}>
           <Text
             style={tw.style(`text-white text-base mb-5`, {
-              fontFamily: "NunitoSans_800ExtraBold",
+              fontFamily: "Cabin_700Bold",
             })}
           >
             on the app
@@ -156,7 +156,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
 
       <Text
         style={tw.style(`text-white text-base mb-5`, {
-          fontFamily: "NunitoSans_800ExtraBold",
+          fontFamily: "Cabin_700Bold",
         })}
       >
         your contacts
@@ -170,7 +170,7 @@ function NoContacts() {
     <View style={tw`flex flex-1`}>
       <Text
         style={tw.style(`text-text-gray text-xl text-center`, {
-          fontFamily: "NunitoSans_700Bold",
+          fontFamily: "Cabin_600SemiBold",
         })}
       >
         no contacts found 😕
@@ -184,7 +184,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
     <View style={tw`flex flex-1 px-4 pb-12`}>
       <Text
         style={tw.style(`flex text-text-1 text-2xl font-medium self-center`, {
-          fontFamily: "NunitoSans_700Bold",
+          fontFamily: "Cabin_600SemiBold",
         })}
       >
         let's get your buddies on 🥳
@@ -193,7 +193,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
       <View style={tw`flex flex-1 justify-center`}>
         <Text
           style={tw.style(`flex text-white text-center text-2xl font-medium`, {
-            fontFamily: "NunitoSans_700Bold",
+            fontFamily: "Cabin_600SemiBold",
           })}
         >
           we need contact access
@@ -203,7 +203,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
           style={tw.style(
             `flex text-white text-center text-lg font-medium mt-5`,
             {
-              fontFamily: "NunitoSans_400Regular",
+              fontFamily: "Cabin_400Regular",
             },
           )}
         >
@@ -213,7 +213,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
 
         <Text
           style={tw.style(`text-center text-lg underline text-red-400 mt-2`, {
-            fontFamily: "NunitoSans_700Bold",
+            fontFamily: "Cabin_600SemiBold",
           })}
         >
           without that, this app is not useful.

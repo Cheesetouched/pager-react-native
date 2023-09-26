@@ -73,16 +73,16 @@ export default function Handle() {
       >
         <View style={tw`flex flex-1 justify-center items-center`}>
           <Text
-            style={tw.style(`flex text-text-1 text-7xl`, {
-              fontFamily: "BarlowCondensed_700Bold",
+            style={tw.style(`flex text-text-1 text-6xl leading-tight`, {
+              fontFamily: "Lalezar_400Regular",
             })}
           >
-            free rn?
+            pager
           </Text>
 
           <Text
             style={tw.style(`flex text-white text-lg font-medium mt-3`, {
-              fontFamily: "NunitoSans_400Regular",
+              fontFamily: "Cabin_400Regular",
             })}
           >
             find out when your friends are free
@@ -123,7 +123,7 @@ export default function Handle() {
           >
             <Text
               style={tw.style(`text-base text-text-gray font-normal`, {
-                fontFamily: "NunitoSans_400Regular",
+                fontFamily: "Cabin_400Regular",
               })}
             >
               been here already?
@@ -131,7 +131,7 @@ export default function Handle() {
 
             <Text
               style={tw.style(`text-base text-text-gray underline`, {
-                fontFamily: "NunitoSans_700Bold",
+                fontFamily: "Cabin_600SemiBold",
               })}
             >
               login here

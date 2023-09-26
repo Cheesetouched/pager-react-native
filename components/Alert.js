@@ -29,7 +29,7 @@ const Alert = forwardRef((_, ref) => {
         <View style={tw`bg-bg flex rounded-3xl p-5 ${width}`}>
           <Text
             style={tw.style(`text-white text-xl text-center`, {
-              fontFamily: "NunitoSans_700Bold",
+              fontFamily: "Cabin_600SemiBold",
             })}
           >
             {data?.title}
@@ -39,7 +39,7 @@ const Alert = forwardRef((_, ref) => {
             <Text
               style={{
                 ...tw`text-text-gray text-center text-sm mt-5 mb-6`,
-                fontFamily: "NunitoSans_400Regular",
+                fontFamily: "Cabin_400Regular",
               }}
             >
               {data?.message}

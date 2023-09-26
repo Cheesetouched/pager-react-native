@@ -7,8 +7,8 @@ import {
   View,
 } from "react-native";
 
-import { router, useLocalSearchParams, useRootNavigation } from "expo-router";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
+import { router, useLocalSearchParams, useRootNavigation } from "expo-router";
 
 import tw from "@utils/tailwind";
 import Input from "@components/Input";
@@ -222,7 +222,7 @@ export default function Phone() {
 
           <Text
             style={tw.style(`text-base text-white font-semibold`, {
-              fontFamily: "NunitoSans_700Bold",
+              fontFamily: "Cabin_600SemiBold",
             })}
           >
             back
@@ -234,7 +234,7 @@ export default function Phone() {
             <View style={tw`flex flex-1 justify-center items-center`}>
               <Text
                 style={tw.style(`flex text-text-1 text-5xl`, {
-                  fontFamily: "BarlowCondensed_700Bold",
+                  fontFamily: "Lalezar_400Regular",
                 })}
               >
                 verify number
@@ -283,7 +283,7 @@ export default function Phone() {
               <View style={tw`flex justify-center items-center`}>
                 <Text
                   style={tw.style(`flex text-text-1 text-5xl`, {
-                    fontFamily: "BarlowCondensed_700Bold",
+                    fontFamily: "Lalezar_400Regular",
                   })}
                 >
                   got a code?
@@ -400,7 +400,7 @@ export default function Phone() {
               {otpError ? (
                 <Text
                   style={tw.style(`text-center text-text-gray text-sm mt-6`, {
-                    fontFamily: "NunitoSans_400Regular",
+                    fontFamily: "Cabin_400Regular",
                   })}
                 >
                   {getErrorMessage(otpError?.code)}
@@ -428,7 +428,7 @@ function SelectedCountry({ country, onPress }) {
     >
       <Text
         style={tw.style(`text-sm text-center `, {
-          fontFamily: "NunitoSans_700Bold",
+          fontFamily: "Cabin_600SemiBold",
         })}
       >
         {country?.flag}
@@ -436,7 +436,7 @@ function SelectedCountry({ country, onPress }) {
 
       <Text
         style={tw.style(`text-sm text-center `, {
-          fontFamily: "NunitoSans_700Bold",
+          fontFamily: "Cabin_600SemiBold",
         })}
       >
         {country?.dial_code}

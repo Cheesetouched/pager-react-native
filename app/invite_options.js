@@ -18,7 +18,7 @@ export default function InviteOptions() {
       <View style={tw`flex flex-1 px-6 pt-4`}>
         <Text
           style={tw.style(`flex text-text-1 text-2xl font-medium self-center`, {
-            fontFamily: "NunitoSans_700Bold",
+            fontFamily: "Cabin_600SemiBold",
           })}
         >
           {`invite ${name} with`}
@@ -39,7 +39,7 @@ export default function InviteOptions() {
 
             <Text
               style={tw.style(`text-white text-lg`, {
-                fontFamily: "NunitoSans_700Bold",
+                fontFamily: "Cabin_600SemiBold",
               })}
             >
               WhatsApp
@@ -57,7 +57,7 @@ export default function InviteOptions() {
 
             <Text
               style={tw.style(`text-white text-lg`, {
-                fontFamily: "NunitoSans_700Bold",
+                fontFamily: "Cabin_600SemiBold",
               })}
             >
               SMS

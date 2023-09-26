@@ -9,14 +9,15 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@expo-google-fonts/barlow-condensed": "^0.2.3",
-    "@expo-google-fonts/nunito-sans": "^0.2.3",
+    "@expo-google-fonts/cabin": "^0.2.3",
+    "@expo-google-fonts/lalezar": "^0.2.3",
     "@react-native-async-storage/async-storage": "1.18.2",
     "@shopify/flash-list": "1.4.3",
     "@tanstack/react-query": "^4.35.3",
     "@uidotdev/usehooks": "^2.3.0",
     "algoliasearch": "^4.20.0",
     "expo": "~49.0.11",
+    "expo-blur": "~12.4.1",
     "expo-constants": "~14.4.2",
     "expo-contacts": "~12.2.0",
     "expo-device": "~5.4.0",
@@ -41,8 +42,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
     "react-native-webview": "13.2.2",
-    "twrnc": "^3.6.4",
-    "expo-blur": "~12.4.1"
+    "twrnc": "^3.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

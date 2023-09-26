@@ -75,7 +75,7 @@ export default function Details() {
         <View style={tw`flex flex-1 items-center`}>
           <Text
             style={tw.style(`flex text-text-1 text-2xl font-medium`, {
-              fontFamily: "NunitoSans_700Bold",
+              fontFamily: "Cabin_600SemiBold",
             })}
           >
             {selected ? "damn! looking cute 😳" : "select a photo of yourself"}
@@ -84,7 +84,7 @@ export default function Details() {
           {!selected ? (
             <Text
               style={tw.style(`flex text-white text-base font-medium mt-2`, {
-                fontFamily: "NunitoSans_400Regular",
+                fontFamily: "Cabin_400Regular",
               })}
             >
               (your friends will see it)
@@ -111,7 +111,7 @@ export default function Details() {
                 selectionColor="white"
                 style={tw.style(
                   `flex flex-1 text-3xl leading-snug text-center text-white`,
-                  { fontFamily: "NunitoSans_700Bold" },
+                  { fontFamily: "Cabin_600SemiBold" },
                 )}
                 value={name}
               />

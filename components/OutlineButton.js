@@ -21,7 +21,7 @@ export default function OutlineButton({
       style={tw.style(
         `flex h-[50px] justify-center rounded-xl`,
         `${style ? style : ""}`,
-        `${loading ? "border border-neon/75" : "border border-neon"}`,
+        `${loading ? "border border-accent/75" : "border border-accent"}`,
       )}
     >
       {loading ? (
@@ -36,7 +36,7 @@ export default function OutlineButton({
                 `text-white text-center text-lg leading-snug`,
                 `${textStyle ? textStyle : ""}`,
                 {
-                  fontFamily: "NunitoSans_800ExtraBold",
+                  fontFamily: "Cabin_700Bold",
                 },
               )}
             >

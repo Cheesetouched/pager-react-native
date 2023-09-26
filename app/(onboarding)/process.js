@@ -55,8 +55,8 @@ export default function Process() {
         <ActivityIndicator size="large" />
 
         <Text
-          style={tw.style(`flex text-neon text-2xl mt-8`, {
-            fontFamily: "NunitoSans_700Bold",
+          style={tw.style(`flex text-accent text-2xl mt-8`, {
+            fontFamily: "Cabin_600SemiBold",
           })}
         >
           setting you up... 🤗
