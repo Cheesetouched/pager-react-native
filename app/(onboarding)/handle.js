@@ -85,7 +85,7 @@ export default function Handle() {
           </Text>
         </View>
 
-        <View style={tw`flex flex-col pb-4 gap-y-6`}>
+        <View style={tw`flex flex-col gap-y-6`}>
           <Input
             autoFocus
             error={error}
@@ -105,35 +105,35 @@ export default function Handle() {
           <Button disabled={checking} onPress={submit} variant="dark">
             Reserve Handle
           </Button>
-
-          <TouchableOpacity
-            style={tw`flex flex-row justify-center gap-x-1`}
-            onPress={() =>
-              router.push({
-                pathname: "/phone",
-                params: {
-                  action: "login",
-                },
-              })
-            }
-          >
-            <Text
-              style={tw.style(`text-base text-text-2 font-normal`, {
-                fontFamily: "Cabin_400Regular",
-              })}
-            >
-              Already a user?
-            </Text>
-
-            <Text
-              style={tw.style(`text-base text-gray underline`, {
-                fontFamily: "Cabin_600SemiBold",
-              })}
-            >
-              Login here
-            </Text>
-          </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+          style={tw`flex flex-row justify-center gap-x-1 my-4`}
+          onPress={() =>
+            router.push({
+              pathname: "/phone",
+              params: {
+                action: "login",
+              },
+            })
+          }
+        >
+          <Text
+            style={tw.style(`text-base text-text-2 font-normal`, {
+              fontFamily: "Cabin_400Regular",
+            })}
+          >
+            Already a user?
+          </Text>
+
+          <Text
+            style={tw.style(`text-base text-gray underline`, {
+              fontFamily: "Cabin_600SemiBold",
+            })}
+          >
+            Login here
+          </Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     </SafeView>
   );

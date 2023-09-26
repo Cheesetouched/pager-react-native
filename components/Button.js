@@ -21,7 +21,7 @@ export default function Button({
           onPress();
         }
       }}
-      style={tw.style(`h-[50px]`, `${style ? style : ""}`)}
+      style={tw.style(`h-[50px] shadow-md`, `${style ? style : ""}`)}
     >
       <LinearGradient
         colors={[`${variant === "main" ? "#52A98F" : "#333333"}`, "#242424"]}
