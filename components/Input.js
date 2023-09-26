@@ -68,7 +68,7 @@ const Input = forwardRef(
     return (
       <View
         style={tw.style(
-          `bg-white rounded-xl border-2 items-center flex-row h-[50px] overflow-hidden`,
+          `bg-white rounded-[10px] border-2 items-center flex-row h-[45px] overflow-hidden`,
           `${containerStyle ? containerStyle : ""}`,
           `${
             error ? "border-red-500" : focused ? "border-white" : "border-white"

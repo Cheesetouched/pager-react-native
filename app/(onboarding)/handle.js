@@ -7,10 +7,12 @@ import {
   View,
 } from "react-native";
 
+import { ImageBackground } from "expo-image";
 import { useDebounce } from "@uidotdev/usehooks";
 import { SplashScreen, router } from "expo-router";
 
 import tw from "@utils/tailwind";
+import Logo from "@assets/logo.png";
 import Input from "@components/Input";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
@@ -69,27 +71,21 @@ export default function Handle() {
     <SafeView>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={tw`flex flex-1 px-4 pt-4`}
+        style={tw`flex flex-1 px-8 pt-4`}
       >
         <View style={tw`flex flex-1 justify-center items-center`}>
+          <ImageBackground source={Logo} style={tw`h-[90px] w-[90px]`} />
+
           <Text
-            style={tw.style(`flex text-text-1 text-6xl leading-tight`, {
+            style={tw.style(`flex text-text-1 text-5xl leading-tight mt-2`, {
               fontFamily: "Lalezar_400Regular",
             })}
           >
             pager
           </Text>
-
-          <Text
-            style={tw.style(`flex text-white text-lg font-medium mt-3`, {
-              fontFamily: "Cabin_400Regular",
-            })}
-          >
-            find out when your friends are free
-          </Text>
         </View>
 
-        <View style={tw`flex flex-col pb-4 gap-y-4`}>
+        <View style={tw`flex flex-col pb-4 gap-y-6`}>
           <Input
             autoFocus
             error={error}
@@ -100,18 +96,18 @@ export default function Handle() {
               setError(false);
               setHandle(text);
             }}
-            placeholder="Enter username"
+            placeholder="Enter a handle"
             rightIcon={ready ? exists ? <CloseIcon /> : <CheckIcon /> : null}
             trim
             whitespace={false}
           />
 
-          <Button disabled={checking} onPress={submit}>
-            next
+          <Button disabled={checking} onPress={submit} variant="dark">
+            Reserve Handle
           </Button>
 
           <TouchableOpacity
-            style={tw`flex flex-row justify-center gap-x-1 `}
+            style={tw`flex flex-row justify-center gap-x-1`}
             onPress={() =>
               router.push({
                 pathname: "/phone",
@@ -122,19 +118,19 @@ export default function Handle() {
             }
           >
             <Text
-              style={tw.style(`text-base text-text-gray font-normal`, {
+              style={tw.style(`text-base text-text-2 font-normal`, {
                 fontFamily: "Cabin_400Regular",
               })}
             >
-              been here already?
+              Already a user?
             </Text>
 
             <Text
-              style={tw.style(`text-base text-text-gray underline`, {
+              style={tw.style(`text-base text-gray underline`, {
                 fontFamily: "Cabin_600SemiBold",
               })}
             >
-              login here
+              Login here
             </Text>
           </TouchableOpacity>
         </View>

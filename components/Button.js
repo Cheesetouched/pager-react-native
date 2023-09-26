@@ -1,5 +1,7 @@
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
+import { LinearGradient } from "expo-linear-gradient";
+
 import tw from "@utils/tailwind";
 
 export default function Button({
@@ -10,6 +12,7 @@ export default function Button({
   onPress,
   style,
   textStyle,
+  variant = "main",
 }) {
   return (
     <TouchableOpacity
@@ -18,33 +21,34 @@ export default function Button({
           onPress();
         }
       }}
-      style={tw.style(
-        `flex h-[50px] justify-center rounded-xl`,
-        `${style ? style : ""}`,
-        `${loading ? "bg-accent/75" : "bg-accent"}`,
-      )}
+      style={tw.style(`h-[50px]`, `${style ? style : ""}`)}
     >
-      {loading ? (
-        <ActivityIndicator color="black" />
-      ) : (
-        <View>
-          {icon ? icon : null}
+      <LinearGradient
+        colors={[`${variant === "main" ? "#52A98F" : "#333333"}`, "#242424"]}
+        style={tw.style(`flex flex-1 justify-center rounded-full`)}
+      >
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          <View>
+            {icon ? icon : null}
 
-          {children ? (
-            <Text
-              style={tw.style(
-                `text-white text-center text-lg leading-snug`,
-                `${textStyle ? textStyle : ""}`,
-                {
-                  fontFamily: "Cabin_700Bold",
-                },
-              )}
-            >
-              {children}
-            </Text>
-          ) : null}
-        </View>
-      )}
+            {children ? (
+              <Text
+                style={tw.style(
+                  `text-white text-center text-base leading-none`,
+                  `${textStyle ? textStyle : ""}`,
+                  {
+                    fontFamily: "Cabin_700Bold",
+                  },
+                )}
+              >
+                {children}
+              </Text>
+            ) : null}
+          </View>
+        )}
+      </LinearGradient>
     </TouchableOpacity>
   );
 }
