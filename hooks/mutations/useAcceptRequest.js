@@ -7,9 +7,9 @@ import useFriendGraph from "@hooks/useFriendGraph";
 import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 
 export default function useAcceptRequest(props = {}) {
-  const { onSuccess } = props;
   const { user } = useFirebase();
   const update = useOptimisticUpdate();
+  const { onMutate, onSuccess } = props;
   const { acceptRequest } = useFriendGraph();
 
   const { isLoading, mutate } = useMutation(
@@ -18,16 +18,15 @@ export default function useAcceptRequest(props = {}) {
     },
     {
       onMutate: (senderUid) => {
-        update(["requests", user?.uid], (old) =>
-          old?.filter((request) => request?.id !== senderUid),
-        );
-
         update(["user", user?.uid], (old) => ({
           ...old,
+          friends: [...old?.friends, senderUid],
           pendingRequests: old?.pendingRequests?.filter(
             (uid) => uid !== senderUid,
           ),
         }));
+
+        onMutate();
       },
       onSuccess,
     },
