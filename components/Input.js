@@ -110,7 +110,7 @@ const Input = forwardRef(
           ref={localRef}
           selectionColor="black"
           style={tw.style(
-            `text-center text-base flex-1 px-3 leading-snug`,
+            `text-center text-base flex-1 px-3 leading-tight`,
             `${style ? style : ""}`,
             { fontFamily: "Cabin_600SemiBold" },
           )}

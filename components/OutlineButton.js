@@ -33,7 +33,7 @@ export default function OutlineButton({
           {children ? (
             <Text
               style={tw.style(
-                `text-white text-center text-lg leading-snug`,
+                `text-white text-center text-lg leading-tight`,
                 `${textStyle ? textStyle : ""}`,
                 {
                   fontFamily: "Cabin_700Bold",

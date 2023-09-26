@@ -199,7 +199,7 @@ export default function Phone() {
     <SafeView>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={tw`flex flex-1 px-4 pt-4`}
+        style={tw`flex flex-1 px-8 pt-4`}
       >
         <FirebaseRecaptchaVerifierModal
           attemptInvisibleVerification
@@ -233,21 +233,19 @@ export default function Phone() {
           <>
             <View style={tw`flex flex-1 justify-center items-center`}>
               <Text
-                style={tw.style(`flex text-text-1 text-5xl`, {
+                style={tw.style(`flex text-text-1 text-4xl leading-tight`, {
                   fontFamily: "Lalezar_400Regular",
                 })}
               >
-                verify number
+                Verify your number
               </Text>
 
-              <Text
-                style={tw.style(`flex text-white text-3xl font-medium mt-5`)}
-              >
+              <Text style={tw.style(`flex text-white text-3xl font-medium`)}>
                 👉👈 🥺
               </Text>
             </View>
 
-            <View style={tw`flex flex-col pb-4 gap-y-4`}>
+            <View style={tw`flex flex-col pb-4 gap-y-6`}>
               <Input
                 LeftComponent={
                   <SelectedCountry
@@ -256,6 +254,7 @@ export default function Phone() {
                   />
                 }
                 autoFocus
+                containerStyle="border-0"
                 error={phoneError}
                 loading={gettingUser || signingIn}
                 maxLength={10}
@@ -263,7 +262,7 @@ export default function Phone() {
                   setNumber(text);
                   setPhoneError(false);
                 }}
-                placeholder="Enter phone number"
+                placeholder="Your number please"
                 ref={phoneRef}
                 style="text-left"
                 type="numeric"
@@ -273,7 +272,7 @@ export default function Phone() {
                 disabled={gettingUser || signingIn}
                 onPress={submitNumber}
               >
-                next
+                Next
               </Button>
             </View>
           </>
@@ -282,21 +281,23 @@ export default function Phone() {
             <View style={tw`flex flex-1 justify-center`}>
               <View style={tw`flex justify-center items-center`}>
                 <Text
-                  style={tw.style(`flex text-text-1 text-5xl`, {
+                  style={tw.style(`flex text-text-1 text-4xl leading-tight`, {
                     fontFamily: "Lalezar_400Regular",
                   })}
                 >
-                  got a code?
+                  Got a code?
                 </Text>
 
                 <Text
-                  style={tw.style(`flex text-white text-lg font-medium mt-3`)}
+                  style={tw.style(`flex text-white text-base font-medium`, {
+                    fontFamily: "Cabin_400Regular",
+                  })}
                 >
-                  enter it below
+                  Enter it below
                 </Text>
               </View>
 
-              <View style={tw`flex flex-row mt-10 justify-between`}>
+              <View style={tw`flex flex-row mt-5 justify-between`}>
                 <Input
                   autoFocus
                   containerStyle="w-[45px]"
@@ -399,7 +400,7 @@ export default function Phone() {
 
               {otpError ? (
                 <Text
-                  style={tw.style(`text-center text-text-gray text-sm mt-6`, {
+                  style={tw.style(`text-center text-gray-2 text-sm mt-6`, {
                     fontFamily: "Cabin_400Regular",
                   })}
                 >
@@ -409,7 +410,7 @@ export default function Phone() {
             </View>
 
             <Button loading={verifying} onPress={submitOtp}>
-              next
+              Next
             </Button>
           </View>
         )}
@@ -423,7 +424,7 @@ export default function Phone() {
 function SelectedCountry({ country, onPress }) {
   return (
     <TouchableOpacity
-      style={tw`p-3 flex-row h-full items-center bg-gray-100 gap-x-2`}
+      style={tw`p-3 flex-row h-full items-center bg-offwhite gap-x-2`}
       onPress={onPress}
     >
       <Text

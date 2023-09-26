@@ -110,7 +110,7 @@ export default function Details() {
                 placeholderTextColor={error?.name ? "#F87171" : "#A3A3A3"}
                 selectionColor="white"
                 style={tw.style(
-                  `flex flex-1 text-3xl leading-snug text-center text-white`,
+                  `flex flex-1 text-3xl leading-tight text-center text-white`,
                   { fontFamily: "Cabin_600SemiBold" },
                 )}
                 value={name}

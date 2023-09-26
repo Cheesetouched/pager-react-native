@@ -21,14 +21,17 @@ export default function Button({
           onPress();
         }
       }}
-      style={tw.style(`h-[50px] shadow-md`, `${style ? style : ""}`)}
+      style={tw.style(
+        `h-[50px] bg-[#242424] rounded-full shadow-lg`,
+        `${style ? style : ""}`,
+      )}
     >
       <LinearGradient
         colors={[`${variant === "main" ? "#52A98F" : "#333333"}`, "#242424"]}
         style={tw.style(`flex flex-1 justify-center rounded-full`)}
       >
         {loading ? (
-          <ActivityIndicator />
+          <ActivityIndicator color="white" />
         ) : (
           <View>
             {icon ? icon : null}

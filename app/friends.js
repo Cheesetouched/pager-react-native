@@ -169,7 +169,7 @@ function NoContacts() {
   return (
     <View style={tw`flex flex-1`}>
       <Text
-        style={tw.style(`text-text-gray text-xl text-center`, {
+        style={tw.style(`text-gray-2 text-xl text-center`, {
           fontFamily: "Cabin_600SemiBold",
         })}
       >

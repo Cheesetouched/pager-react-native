@@ -85,7 +85,7 @@ export default function ContactCard({ data, type = "contact" }) {
         </Text>
 
         <Text
-          style={tw.style(`text-sm text-text-gray`, {
+          style={tw.style(`text-sm text-gray-2`, {
             fontFamily: "Cabin_400Regular",
           })}
         >

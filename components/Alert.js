@@ -38,7 +38,7 @@ const Alert = forwardRef((_, ref) => {
           {data?.message && (
             <Text
               style={{
-                ...tw`text-text-gray text-center text-sm mt-5 mb-6`,
+                ...tw`text-gray-2 text-center text-sm mt-5 mb-6`,
                 fontFamily: "Cabin_400Regular",
               }}
             >
