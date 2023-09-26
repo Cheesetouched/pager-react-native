@@ -1,5 +1,5 @@
 {
-  "name": "free-rn",
+  "name": "pager",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
@@ -33,7 +33,7 @@
     "lodash.chunk": "^4.2.0",
     "lodash.flatten": "^4.4.0",
     "react": "18.2.0",
-    "react-native": "0.72.4",
+    "react-native": "0.72.5",
     "react-native-country-codes-picker": "^2.3.3",
     "react-native-gesture-handler": "~2.12.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",

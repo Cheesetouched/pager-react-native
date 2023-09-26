@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "free rn?",
-    "slug": "free-rn",
-    "scheme": "free-rn",
+    "name": "pager",
+    "slug": "pager",
+    "scheme": "pager",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,13 +10,13 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#181818"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "buildNumber": "1",
       "supportsTablet": false,
-      "bundleIdentifier": "com.bantr.freern",
+      "bundleIdentifier": "app.getpager",
       "config": {
         "usesNonExemptEncryption": false
       }
@@ -26,7 +26,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.bantr.freern",
+      "package": "capp.getpager",
       "versionCode": 1
     },
     "plugins": ["expo-router"],

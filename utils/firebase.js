@@ -1,9 +1,9 @@
 export default {
-  apiKey: "AIzaSyDVa6RP2HgJqDJ9vChOBGXWxrv5Zq3rZww",
-  authDomain: "free-rn.firebaseapp.com",
-  projectId: "free-rn",
-  storageBucket: "free-rn.appspot.com",
-  messagingSenderId: "881894725362",
-  appId: "1:881894725362:web:86505317cb0ec4f0aa226b",
-  measurementId: "G-9ZMXTNBT5L",
+  apiKey: "AIzaSyDVxH1NoGlSMnyHqpWFQCrzZe7UJf2GrGM",
+  authDomain: "getpager.app",
+  projectId: "getpager",
+  storageBucket: "getpager.appspot.com",
+  messagingSenderId: "41043792190",
+  appId: "1:41043792190:web:01b5a574b359e85c7c1c6f",
+  measurementId: "G-8DBN4W1XW9",
 };
