@@ -254,7 +254,6 @@ export default function Phone() {
                   />
                 }
                 autoFocus
-                containerStyle="border-0"
                 error={phoneError}
                 loading={gettingUser || signingIn}
                 maxLength={10}

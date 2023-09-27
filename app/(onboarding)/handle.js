@@ -74,7 +74,7 @@ export default function Handle() {
         style={tw`flex flex-1 px-8 pt-4`}
       >
         <View style={tw`flex flex-1 justify-center items-center`}>
-          <ImageBackground source={Logo} style={tw`h-[90px] w-[90px]`} />
+          <ImageBackground source={Logo} style={tw`h-[100px] w-[100px]`} />
 
           <Text
             style={tw.style(`flex text-text-1 text-5xl leading-tight mt-2`, {
@@ -128,7 +128,7 @@ export default function Handle() {
 
           <Text
             style={tw.style(`text-base text-gray underline`, {
-              fontFamily: "Cabin_600SemiBold",
+              fontFamily: "Cabin_700Bold",
             })}
           >
             Login here
