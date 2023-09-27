@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { SplashScreen, router, useLocalSearchParams } from "expo-router";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -14,42 +14,32 @@ import useUploadDp from "@hooks/mutations/useUploadDp";
 
 export default function Details() {
   const scrollRef = useRef();
-  const [name, setName] = useState("");
   const params = useLocalSearchParams();
-  const [error, setError] = useState({});
   const { saveJson } = useLocalStorage();
+  const [error, setError] = useState(false);
   const [selected, setSelected] = useState();
 
   const onImageSelected = useCallback((data) => {
+    setError(false);
     setSelected(data);
-    setError((old) => ({ ...old, image: false }));
   }, []);
 
   function submit() {
     if (!selected) {
-      return setError((old) => ({ ...old, image: true }));
+      return setError(true);
     }
 
-    if (name === "") {
-      return setError((old) => ({ ...old, name: true }));
-    }
-
-    setError({
-      image: false,
-      name: false,
-    });
-
+    setError(false);
     uploadDp(selected?.uri);
   }
 
   const { uploading, uploadDp } = useUploadDp({
     onSuccess: (dp) => {
       const routeData = {
-        pathname: `/notification`,
+        pathname: `/name`,
         params: {
           ...params,
           dp,
-          name,
         },
       };
 
@@ -66,7 +56,7 @@ export default function Details() {
   return (
     <SafeView>
       <KeyboardAwareScrollView
-        contentContainerStyle={tw`flex flex-1 px-4 pt-4`}
+        contentContainerStyle={tw`flex flex-1 px-8 pt-4`}
         innerRef={(ref) => {
           scrollRef.current = ref;
         }}
@@ -74,53 +64,37 @@ export default function Details() {
       >
         <View style={tw`flex flex-1 items-center`}>
           <Text
-            style={tw.style(`flex text-text-1 text-2xl font-medium`, {
-              fontFamily: "Cabin_600SemiBold",
-            })}
+            style={tw.style(
+              `flex text-text-1 text-4xl font-medium leading-tight mt-2`,
+              {
+                fontFamily: "Lalezar_400Regular",
+              },
+            )}
           >
-            {selected ? "damn! looking cute 😳" : "select a photo of yourself"}
+            {selected ? "Nice one!" : "Add a photo"}
           </Text>
 
-          {!selected ? (
-            <Text
-              style={tw.style(`flex text-white text-base font-medium mt-2`, {
-                fontFamily: "Cabin_400Regular",
-              })}
-            >
-              (your friends will see it)
-            </Text>
-          ) : null}
+          <Text
+            style={tw.style(`flex text-gray-4 text-base font-medium`, {
+              fontFamily: "Cabin_400Regular",
+            })}
+          >
+            This is how your friends will see you here
+          </Text>
 
-          <CurvyArrow style={tw`my-5`} />
+          <CurvyArrow style={tw`mt-3 my-8`} />
 
           <ImageSelect
             allowsEditing
             disabled={uploading}
-            error={error?.image}
+            error={error}
             onSelect={onImageSelected}
             style="h-[150px] w-[150px]"
           />
-
-          {selected ? (
-            <View style={tw`flex flex-row mt-10`}>
-              <TextInput
-                maxLength={25}
-                onChangeText={setName}
-                placeholder="your name?"
-                placeholderTextColor={error?.name ? "#F87171" : "#A3A3A3"}
-                selectionColor="white"
-                style={tw.style(
-                  `flex flex-1 text-3xl leading-tight text-center text-white`,
-                  { fontFamily: "Cabin_600SemiBold" },
-                )}
-                value={name}
-              />
-            </View>
-          ) : null}
         </View>
 
         <Button loading={uploading} onPress={submit} style="mb-4">
-          next
+          Next
         </Button>
       </KeyboardAwareScrollView>
     </SafeView>

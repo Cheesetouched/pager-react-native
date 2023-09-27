@@ -58,7 +58,7 @@ export default function ImageSelect({
         }
       }}
       style={tw.style(
-        `flex bg-gray-3 rounded-3xl overflow-hidden justify-center`,
+        `flex bg-gray-3 rounded-[35px] overflow-hidden justify-center`,
         `${error ? "border-4 border-red-400" : "border-2 border-accent"}`,
         `${style ? style : ""}`,
       )}
@@ -66,7 +66,12 @@ export default function ImageSelect({
       {image ? (
         <Image src={image} />
       ) : (
-        <Entypo name="camera" size={25} color="white" style={tw`self-center`} />
+        <Entypo
+          name="camera"
+          size={25}
+          color="#797979"
+          style={tw`self-center`}
+        />
       )}
     </TouchableOpacity>
   );
