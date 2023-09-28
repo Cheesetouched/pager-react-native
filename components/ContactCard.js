@@ -63,10 +63,10 @@ export default function ContactCard({ data, type = "contact" }) {
         </View>
       ) : (
         <View
-          style={tw`bg-accent items-center justify-center h-[50px] w-[50px] rounded-full`}
+          style={tw`bg-gray-3 items-center justify-center h-[50px] w-[50px] rounded-full`}
         >
           <Text
-            style={tw.style(`text-xl`, {
+            style={tw.style(`text-xl text-white`, {
               fontFamily: "Cabin_700Bold",
             })}
           >
@@ -89,7 +89,7 @@ export default function ContactCard({ data, type = "contact" }) {
             fontFamily: "Cabin_400Regular",
           })}
         >
-          {type === "request"
+          {data?.handle
             ? `@${data?.handle}`
             : data?.phone?.number?.includes("+")
             ? data?.phone?.number
@@ -116,10 +116,10 @@ export default function ContactCard({ data, type = "contact" }) {
                 addeeUid: data?.id || data?.objectID,
               })
             }
-            style="h-[35px] w-[90px]"
+            style="h-[35px] w-[90px] rounded-full"
             textStyle="text-xs"
           >
-            add friend
+            Add friend
           </OutlineButton>
         )
       ) : (
@@ -138,10 +138,10 @@ export default function ContactCard({ data, type = "contact" }) {
               });
             }
           }}
-          style="h-[35px] w-[75px]"
+          style="h-[35px] w-[75px] rounded-full"
           textStyle="text-xs"
         >
-          invite
+          Invite
         </OutlineButton>
       )}
     </View>

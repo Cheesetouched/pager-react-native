@@ -53,7 +53,7 @@ export default function Friends() {
 
   return (
     <SafeView>
-      <View style={tw`flex flex-1 px-8 pt-4`}>
+      <View style={tw`flex flex-1 px-4 pt-4`}>
         {permission?.granted ? (
           <>
             <Input
@@ -68,7 +68,7 @@ export default function Friends() {
               containerStyle="h-[45px] mb-3"
               maxLength={25}
               onChangeText={searchContacts}
-              placeholder="search contacts"
+              placeholder="Search for people"
               style="text-left"
               trim
             />
@@ -149,7 +149,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
               fontFamily: "Cabin_700Bold",
             })}
           >
-            on the app
+            On Pager
           </Text>
 
           <View style={tw`min-h-[2px]`}>
@@ -176,7 +176,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
           fontFamily: "Cabin_700Bold",
         })}
       >
-        your contacts
+        In your contacts
       </Text>
     </View>
   );
@@ -186,7 +186,7 @@ function NoContacts() {
   return (
     <View style={tw`flex flex-1`}>
       <Text
-        style={tw.style(`text-gray-2 text-xl text-center`, {
+        style={tw.style(`text-gray-2 text-base text-center`, {
           fontFamily: "Cabin_600SemiBold",
         })}
       >
