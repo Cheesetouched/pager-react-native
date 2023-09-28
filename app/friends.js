@@ -1,9 +1,9 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { ActivityIndicator, Linking, Text, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 import tw from "@utils/tailwind";
 import useUser from "@hooks/useUser";
@@ -11,15 +11,15 @@ import Input from "@components/Input";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useContacts from "@hooks/useContacts";
-import useAppContext from "@hooks/useAppContext";
+import ExampleUser1 from "@assets/example_1.png";
+import ExampleUser2 from "@assets/example_2.png";
 import ContactCard from "@components/ContactCard";
 import RequestCard from "@components/RequestCard";
-import NotifExample from "@components/NotifExample";
+import ExampleUser from "@components/ExampleUser";
 import PermissionBox from "@components/PermissionBox";
 
 export default function Friends() {
   const { userData } = useUser();
-  const { alert } = useAppContext();
   const params = useLocalSearchParams();
 
   const userPhone = useMemo(() => {
@@ -30,13 +30,6 @@ export default function Friends() {
     }
   }, [params, userData]);
 
-  const onDenied = useCallback(() => {
-    alert.current.show({
-      title: "oops 😕",
-      message: "without contact access, you cannot add or invite friends",
-    });
-  }, [alert]);
-
   const {
     contacts,
     friendsOnApp,
@@ -46,7 +39,7 @@ export default function Friends() {
     ready,
     requestContacts,
     searchContacts,
-  } = useContacts({ userPhone, onDenied });
+  } = useContacts({ userPhone });
 
   if (!ready) {
     return <SafeView />;
@@ -238,7 +231,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
               },
             )}
           >
-            You sure?
+            Oops!
           </Text>
 
           <Text
@@ -249,19 +242,22 @@ function NoPermissionView({ canAskAgain, onAsk }) {
               },
             )}
           >
-            You can go further without syncing contact but it’ll be pretty dead.
+            You can go further without syncing contacts but it’ll be pretty
+            dead.
           </Text>
 
-          <Text
-            style={tw.style(
-              `flex text-gray-4 text-center text-sm font-medium mt-5`,
-              {
-                fontFamily: "Cabin_400Regular",
-              },
-            )}
-          >
-            You can sync contacts manually from settings.
-          </Text>
+          {!canAskAgain ? (
+            <Text
+              style={tw.style(
+                `flex text-gray-4 text-center text-sm font-medium mt-5`,
+                {
+                  fontFamily: "Cabin_400Regular",
+                },
+              )}
+            >
+              You can sync contacts manually from settings.
+            </Text>
+          ) : null}
 
           <Button
             onPress={() => {
@@ -278,11 +274,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
 
           <Button
             onPress={() => {
-              if (canAskAgain) {
-                onAsk();
-              } else {
-                Linking.openSettings();
-              }
+              router.push("/home");
             }}
             style="mt-5 mx-20"
             variant="dark"
@@ -290,17 +282,29 @@ function NoPermissionView({ canAskAgain, onAsk }) {
             Skip
           </Button>
 
-          <NotifExample
-            title="Someone paged!"
-            subtitle="Page back to see who it is 📟"
-            style={{ marginTop: 100, transform: [{ rotate: "-1.5deg" }] }}
-          />
+          <Text
+            style={tw.style(`text-lg text-white text-center mt-16`, {
+              fontFamily: "Cabin_700Bold",
+            })}
+          >
+            Free to Chat 👋🏻
+          </Text>
+
+          <View style={tw`relative mx-3`}>
+            <ExampleUser src={ExampleUser1} style={tw`absolute mt-5`}>
+              1hr 👋🏻
+            </ExampleUser>
+
+            <ExampleUser src={ExampleUser2} style={tw`absolute right-0 mt-14`}>
+              1hr 👋🏻
+            </ExampleUser>
+          </View>
         </View>
       ) : (
-        <View style={tw`flex flex-1 justify-center px-3`}>
+        <View style={tw`flex flex-1 justify-center`}>
           <View style={tw`mx-3`}>
             <PermissionBox
-              explanation="Pager will let you know when your friends are free to chat."
+              explanation="Bring on friends you want to use Pager with."
               onAllow={() => {
                 if (canAskAgain) {
                   onAsk();
@@ -309,17 +313,29 @@ function NoPermissionView({ canAskAgain, onAsk }) {
                 }
               }}
               onDeny={() => setDeniedView(true)}
-              title="Get notified"
+              title="Sync Contacts"
             />
           </View>
 
           <Text style={tw`text-5xl self-end mr-10 mt-5`}>👆</Text>
 
-          <NotifExample
-            title="One of your friends is free!"
-            subtitle="Mark yourself as free to see who it is!"
-            style={{ marginTop: 80, transform: [{ rotate: "-1.5deg" }] }}
-          />
+          <Text
+            style={tw.style(`text-lg text-white text-center mt-16`, {
+              fontFamily: "Cabin_700Bold",
+            })}
+          >
+            Free to Chat 👋🏻
+          </Text>
+
+          <View style={tw`relative mx-3`}>
+            <ExampleUser src={ExampleUser1} style={tw`absolute mt-5`}>
+              1hr 👋🏻
+            </ExampleUser>
+
+            <ExampleUser src={ExampleUser2} style={tw`absolute right-0 mt-14`}>
+              1hr 👋🏻
+            </ExampleUser>
+          </View>
         </View>
       )}
     </View>

@@ -96,7 +96,7 @@ export default function Notification() {
                 },
               )}
             >
-              oops!
+              Oops!
             </Text>
 
             <Text
