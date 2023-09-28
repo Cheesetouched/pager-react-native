@@ -99,7 +99,7 @@ export default function ContactCard({ data, type = "contact" }) {
 
       {type === "user" ? (
         status === "friends" ? (
-          <AntDesign name="checkcircle" size={24} color="#D2FE55" />
+          <AntDesign name="checkcircle" size={24} color="#52A98F" />
         ) : status === "sent" ? (
           <Text
             style={tw.style(`text-accent`, {

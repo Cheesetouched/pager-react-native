@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 
-import { SplashScreen, router, useRootNavigation } from "expo-router";
+import { SplashScreen, useRootNavigation } from "expo-router";
 
 import tw from "@utils/tailwind";
 import useUser from "@hooks/useUser";
@@ -11,9 +11,11 @@ import useFirebase from "@hooks/useFirebase";
 import useLocalStorage from "@hooks/useLocalStorage";
 
 export default function Home() {
+  const { clear } = useLocalStorage();
   const navigation = useRootNavigation();
-  const { clear, get } = useLocalStorage();
-  const { userData, userLoading } = useUser();
+  const { userData, userLoading } = useUser({
+    withFriends: true,
+  });
 
   const { loggingOut, logout } = useFirebase({
     onLogout: () => {
@@ -26,18 +28,10 @@ export default function Home() {
   });
 
   useEffect(() => {
-    if (userData) {
-      get("first_launch").then((first_launch) => {
-        if (first_launch === null) {
-          router.push("/friends");
-        }
-      });
-    }
-  }, [get, userData]);
-
-  useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
+
+  console.log(userData);
 
   return (
     <SafeView>

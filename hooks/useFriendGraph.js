@@ -49,6 +49,21 @@ export default function useFriendGraph() {
     [Users],
   );
 
+  const getFriends = useCallback(
+    async (friends) => {
+      try {
+        return await Promise.all(
+          friends.map(async (uid) => {
+            return await Users.get(uid);
+          }),
+        );
+      } catch (error) {
+        throw error;
+      }
+    },
+    [Users],
+  );
+
   const getRequests = useCallback(
     async (uid) => {
       try {
@@ -92,9 +107,10 @@ export default function useFriendGraph() {
     () => ({
       acceptRequest,
       addFriend,
+      getFriends,
       getRequests,
       rejectRequest,
     }),
-    [acceptRequest, addFriend, getRequests, rejectRequest],
+    [acceptRequest, addFriend, getFriends, getRequests, rejectRequest],
   );
 }
