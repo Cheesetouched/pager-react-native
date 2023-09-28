@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import * as Contacts from "expo-contacts";
 
-import useUser from "@hooks/useUser";
 import Countries from "@utils/countries";
 import { cleanupPhone, resize } from "@utils/helpers";
 import useCheckInvites from "@hooks/queries/useCheckInvites";
@@ -13,8 +12,7 @@ export default function useContacts(props = {}) {
   // function, inside the hook consumer, to prevent unnecessary
   // re-rendering
 
-  const { onDenied } = props;
-  const { userData } = useUser();
+  const { userPhone, onDenied } = props;
   const [contacts, setContacts] = useState(null);
   const [inMemory, setInMemory] = useState(null);
   const [permission, setPermission] = useState(null);
@@ -22,11 +20,11 @@ export default function useContacts(props = {}) {
   const [friendsOnApp, setFriendsOnApp] = useState([]);
   // Breaking import order here because otherwise numbersOnly
   // would be undefined when passed to the useContactsSearch hook
+  const invites = useCheckInvites(userPhone);
   const contactsSearch = useContactsSearch(numbersOnly);
-  const invites = useCheckInvites(userData?.phone?.full);
 
   const getContacts = useCallback(async () => {
-    if (userData) {
+    if (userPhone) {
       Contacts.getContactsAsync({
         fields: [
           Contacts.Fields.Name,
@@ -41,7 +39,7 @@ export default function useContacts(props = {}) {
         setNumbersOnly(numbersOnly);
       });
     }
-  }, [processContacts, userData]);
+  }, [processContacts, userPhone]);
 
   const processContacts = useCallback(
     async (contacts) => {
@@ -64,7 +62,7 @@ export default function useContacts(props = {}) {
               : `${country_code}${number}`;
 
             // Removing the number of the logged in user
-            if (full !== userData?.phone?.full) {
+            if (full !== userPhone) {
               allNumbers.push(full);
             }
 
@@ -99,7 +97,7 @@ export default function useContacts(props = {}) {
         numbersOnly: allNumbers,
       };
     },
-    [userData],
+    [userPhone],
   );
 
   const requestContacts = useCallback(async () => {
@@ -145,12 +143,12 @@ export default function useContacts(props = {}) {
         current.filter((friend) => {
           return (
             !inviterUids?.includes(friend?.objectID) &&
-            friend?.phone?.full !== userData?.phone?.full
+            friend?.phone?.full !== userPhone
           );
         }),
       );
     }
-  }, [contactsSearch, invites, userData?.phone?.full]);
+  }, [contactsSearch, invites, userPhone]);
 
   useEffect(() => {
     Contacts.getPermissionsAsync().then((permission) => {
@@ -168,6 +166,7 @@ export default function useContacts(props = {}) {
       friendsOnApp,
       invites,
       permission,
+      ready: typeof userPhone === "string",
       requestContacts,
       searchContacts,
     }),
@@ -178,6 +177,7 @@ export default function useContacts(props = {}) {
       permission,
       requestContacts,
       searchContacts,
+      userPhone,
     ],
   );
 }

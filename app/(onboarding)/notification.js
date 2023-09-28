@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Linking, Text, View } from "react-native";
 
 import {
@@ -11,12 +11,15 @@ import tw from "@utils/tailwind";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useAppContext from "@hooks/useAppContext";
+import NotifExample from "@components/NotifExample";
+import PermissionBox from "@components/PermissionBox";
 import useNotifications from "@hooks/useNotifications";
 
 export default function Notification() {
   const { alert } = useAppContext();
   const params = useLocalSearchParams();
   const navigation = useRootNavigation();
+  const [deniedView, setDeniedView] = useState(false);
 
   const onDenied = useCallback(() => {
     alert.current.show({
@@ -55,60 +58,105 @@ export default function Notification() {
 
   return (
     <SafeView>
-      <View style={tw`flex flex-1 px-4 pt-4`}>
-        <Text
-          style={tw.style(`flex text-text-1 text-3xl font-medium self-center`, {
-            fontFamily: "Cabin_600SemiBold",
-          })}
-        >
-          can we notify you? 🫠
-        </Text>
+      <View style={tw`flex flex-1 px-8 pt-4`}>
+        {!deniedView ? (
+          <>
+            <Text
+              style={tw.style(
+                `flex text-text-1 text-3xl font-medium self-center mt-2`,
+                {
+                  fontFamily: "Lalezar_400Regular",
+                },
+              )}
+            >
+              Find out when who is free
+            </Text>
 
-        <View style={tw`flex flex-1 justify-center px-5`}>
-          <Text
-            style={tw.style(
-              `flex text-white text-center text-2xl font-medium`,
-              {
-                fontFamily: "Cabin_600SemiBold",
-              },
-            )}
-          >
-            why?
-          </Text>
+            <Text
+              style={tw.style(
+                `flex text-gray-4 text-center text-sm font-medium`,
+                {
+                  fontFamily: "Cabin_400Regular",
+                },
+              )}
+            >
+              p.s. - pager is an app which works on notifications. it may not be
+              useful without it :\
+            </Text>
+          </>
+        ) : null}
 
-          <Text
-            style={tw.style(
-              `flex text-white text-center text-lg font-medium mt-5`,
-              {
-                fontFamily: "Cabin_400Regular",
-              },
-            )}
-          >
-            the app sends you a notification when your friends are free.{" "}
-          </Text>
+        {!permission?.canAskAgain || deniedView ? (
+          <View style={tw`flex flex-1 justify-center px-3`}>
+            <Text
+              style={tw.style(
+                `flex text-text-1 text-3xl font-medium self-center mt-2`,
+                {
+                  fontFamily: "Lalezar_400Regular",
+                },
+              )}
+            >
+              oops!
+            </Text>
 
-          <Text
-            style={tw.style(`text-center text-lg underline text-red-400 mt-2`, {
-              fontFamily: "Cabin_600SemiBold",
-            })}
-          >
-            without that, this app is not useful.
-          </Text>
-        </View>
+            <Text
+              style={tw.style(
+                `flex text-gray-4 text-center text-base font-medium mt-5`,
+                {
+                  fontFamily: "Cabin_400Regular",
+                },
+              )}
+            >
+              We know notifications are annoying. But pager is useless without
+              it.
+            </Text>
 
-        <Button
-          loading={loading}
-          onPress={() => {
-            if (permission?.canAskAgain) {
-              requestNotifications();
-            } else {
-              Linking.openSettings();
-            }
-          }}
-          style="mb-4"
-        >
-          {permission?.canAskAgain ? "allow" : "allow from settings"}
-        </Button>
+            <Button
+              onPress={() => {
+                if (permission?.canAskAgain) {
+                  requestNotifications();
+                } else {
+                  Linking.openSettings();
+                }
+              }}
+              style="mt-10 mx-20"
+            >
+              Allow
+            </Button>
+
+            <NotifExample
+              title="Someone paged!"
+              subtitle="Page back to see who it is 📟"
+              style={{ marginTop: 100, transform: [{ rotate: "-1.5deg" }] }}
+            />
+          </View>
+        ) : (
+          <View style={tw`flex flex-1 justify-center px-3`}>
+            <View style={tw`mx-3`}>
+              <PermissionBox
+                explanation="Pager will let you know when your friends are free to chat."
+                loading={loading}
+                onAllow={() => {
+                  if (permission?.canAskAgain) {
+                    requestNotifications();
+                  } else {
+                    Linking.openSettings();
+                  }
+                }}
+                onDeny={() => setDeniedView(true)}
+                title="Get notified"
+              />
+            </View>
+
+            <Text style={tw`text-5xl self-end mr-10 mt-5`}>👆</Text>
+
+            <NotifExample
+              title="One of your friends is free!"
+              subtitle="Mark yourself as free to see who it is!"
+              style={{ marginTop: 80, transform: [{ rotate: "-1.5deg" }] }}
+            />
+          </View>
+        )}
       </View>
     </SafeView>
   );

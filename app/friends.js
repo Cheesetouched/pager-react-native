@@ -1,8 +1,9 @@
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, Linking, Text, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
+import { useLocalSearchParams } from "expo-router";
 
 import tw from "@utils/tailwind";
 import useUser from "@hooks/useUser";
@@ -13,9 +14,21 @@ import useContacts from "@hooks/useContacts";
 import useAppContext from "@hooks/useAppContext";
 import ContactCard from "@components/ContactCard";
 import RequestCard from "@components/RequestCard";
+import NotifExample from "@components/NotifExample";
+import PermissionBox from "@components/PermissionBox";
 
-export default function Invite() {
+export default function Friends() {
+  const { userData } = useUser();
   const { alert } = useAppContext();
+  const params = useLocalSearchParams();
+
+  const userPhone = useMemo(() => {
+    if (params?.mode === "onboarding") {
+      return params?.full;
+    } else {
+      return userData?.phone?.full;
+    }
+  }, [params, userData]);
 
   const onDenied = useCallback(() => {
     alert.current.show({
@@ -30,13 +43,18 @@ export default function Invite() {
     invites,
     loadingInvites,
     permission,
+    ready,
     requestContacts,
     searchContacts,
-  } = useContacts({ onDenied });
+  } = useContacts({ userPhone, onDenied });
+
+  if (!ready) {
+    return <SafeView />;
+  }
 
   return (
     <SafeView>
-      <View style={tw`flex flex-1 px-4 pt-4`}>
+      <View style={tw`flex flex-1 px-8 pt-4`}>
         {permission?.granted ? (
           <>
             <Input
@@ -180,58 +198,130 @@ function NoContacts() {
 }
 
 function NoPermissionView({ canAskAgain, onAsk }) {
+  const [deniedView, setDeniedView] = useState(false);
+
   return (
-    <View style={tw`flex flex-1 px-4 pb-12`}>
-      <Text
-        style={tw.style(`flex text-text-1 text-2xl font-medium self-center`, {
-          fontFamily: "Cabin_600SemiBold",
-        })}
-      >
-        let's get your buddies on 🥳
-      </Text>
+    <View style={tw`flex flex-1`}>
+      {canAskAgain && !deniedView ? (
+        <>
+          <Text
+            style={tw.style(
+              `flex text-text-1 text-3xl font-medium self-center mt-2`,
+              {
+                fontFamily: "Lalezar_400Regular",
+              },
+            )}
+          >
+            Bring friends on
+          </Text>
 
-      <View style={tw`flex flex-1 justify-center`}>
-        <Text
-          style={tw.style(`flex text-white text-center text-2xl font-medium`, {
-            fontFamily: "Cabin_600SemiBold",
-          })}
-        >
-          we need contact access
-        </Text>
+          <Text
+            style={tw.style(
+              `flex text-gray-4 text-center text-sm font-medium`,
+              {
+                fontFamily: "Cabin_400Regular",
+              },
+            )}
+          >
+            p.s. - pager is an app to use with friends. literally.
+          </Text>
+        </>
+      ) : null}
 
-        <Text
-          style={tw.style(
-            `flex text-white text-center text-lg font-medium mt-5`,
-            {
-              fontFamily: "Cabin_400Regular",
-            },
-          )}
-        >
-          so that you can pick the friends that you'd like to hear from when
-          they are free or vice-versa.
-        </Text>
+      {!canAskAgain || deniedView ? (
+        <View style={tw`flex flex-1 justify-center`}>
+          <Text
+            style={tw.style(
+              `flex text-text-1 text-3xl font-medium self-center`,
+              {
+                fontFamily: "Lalezar_400Regular",
+              },
+            )}
+          >
+            You sure?
+          </Text>
 
-        <Text
-          style={tw.style(`text-center text-lg underline text-red-400 mt-2`, {
-            fontFamily: "Cabin_600SemiBold",
-          })}
-        >
-          without that, this app is not useful.
-        </Text>
-      </View>
+          <Text
+            style={tw.style(
+              `flex text-gray-4 text-center text-sm font-medium mt-5`,
+              {
+                fontFamily: "Cabin_400Regular",
+              },
+            )}
+          >
+            You can go further without syncing contact but it’ll be pretty dead.
+          </Text>
 
-      <Button
-        onPress={() => {
-          if (canAskAgain) {
-            onAsk();
-          } else {
-            Linking.openSettings();
-          }
-        }}
-        style="mb-4"
-      >
-        {canAskAgain ? "allow" : "allow from settings"}
-      </Button>
+          <Text
+            style={tw.style(
+              `flex text-gray-4 text-center text-sm font-medium mt-5`,
+              {
+                fontFamily: "Cabin_400Regular",
+              },
+            )}
+          >
+            You can sync contacts manually from settings.
+          </Text>
+
+          <Button
+            onPress={() => {
+              if (canAskAgain) {
+                onAsk();
+              } else {
+                Linking.openSettings();
+              }
+            }}
+            style="mt-10 mx-20"
+          >
+            {canAskAgain ? "Allow" : "Open Settings"}
+          </Button>
+
+          <Button
+            onPress={() => {
+              if (canAskAgain) {
+                onAsk();
+              } else {
+                Linking.openSettings();
+              }
+            }}
+            style="mt-5 mx-20"
+            variant="dark"
+          >
+            Skip
+          </Button>
+
+          <NotifExample
+            title="Someone paged!"
+            subtitle="Page back to see who it is 📟"
+            style={{ marginTop: 100, transform: [{ rotate: "-1.5deg" }] }}
+          />
+        </View>
+      ) : (
+        <View style={tw`flex flex-1 justify-center px-3`}>
+          <View style={tw`mx-3`}>
+            <PermissionBox
+              explanation="Pager will let you know when your friends are free to chat."
+              onAllow={() => {
+                if (canAskAgain) {
+                  onAsk();
+                } else {
+                  Linking.openSettings();
+                }
+              }}
+              onDeny={() => setDeniedView(true)}
+              title="Get notified"
+            />
+          </View>
+
+          <Text style={tw`text-5xl self-end mr-10 mt-5`}>👆</Text>
+
+          <NotifExample
+            title="One of your friends is free!"
+            subtitle="Mark yourself as free to see who it is!"
+            style={{ marginTop: 80, transform: [{ rotate: "-1.5deg" }] }}
+          />
+        </View>
+      )}
     </View>
   );
 }

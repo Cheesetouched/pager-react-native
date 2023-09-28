@@ -12,7 +12,7 @@ import ImageSelect from "@components/ImageSelect";
 import useLocalStorage from "@hooks/useLocalStorage";
 import useUploadDp from "@hooks/mutations/useUploadDp";
 
-export default function Details() {
+export default function Dp() {
   const scrollRef = useRef();
   const params = useLocalSearchParams();
   const { saveJson } = useLocalStorage();

@@ -174,7 +174,7 @@ export default function Phone() {
     onSuccess: () => {
       if (params?.action === "reserve") {
         const routeData = {
-          pathname: "/details",
+          pathname: "/dp",
           params: {
             ...params,
             country_code: country?.dial_code,

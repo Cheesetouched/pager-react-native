@@ -17,7 +17,7 @@ export default function Process() {
   const { createUser } = useCreateUser({
     onSuccess: () => {
       remove("checkpoint");
-      router.replace("home");
+      router.replace("friends");
     },
   });
 
@@ -51,15 +51,15 @@ export default function Process() {
 
   return (
     <SafeView>
-      <View style={tw`flex flex-1 px-4 pt-4 items-center justify-center`}>
+      <View style={tw`flex flex-1 px-4 items-center justify-center`}>
         <ActivityIndicator size="large" />
 
         <Text
-          style={tw.style(`flex text-accent text-2xl mt-8`, {
-            fontFamily: "Cabin_600SemiBold",
+          style={tw.style(`flex text-accent text-3xl mt-8 leading-loose`, {
+            fontFamily: "Lalezar_400Regular",
           })}
         >
-          setting you up... 🤗
+          Setting you up 🫡
         </Text>
       </View>
     </SafeView>
