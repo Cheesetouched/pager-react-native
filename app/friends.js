@@ -42,7 +42,13 @@ export default function Friends() {
   } = useContacts({ userPhone });
 
   if (!ready) {
-    return <SafeView />;
+    return (
+      <SafeView>
+        <View style={tw`flex flex-1 justify-center`}>
+          <ActivityIndicator size="large" />
+        </View>
+      </SafeView>
+    );
   }
 
   return (
@@ -301,7 +307,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
           </View>
         </View>
       ) : (
-        <View style={tw`flex flex-1 justify-center`}>
+        <View style={tw`flex flex-1 justify-center pb-10`}>
           <View style={tw`mx-3`}>
             <PermissionBox
               explanation="Bring on friends you want to use Pager with."
@@ -317,7 +323,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
             />
           </View>
 
-          <Text style={tw`text-5xl self-end mr-10 mt-5`}>👆</Text>
+          <Text style={tw`text-5xl self-end mr-14 mt-5 leading-tight`}>👆</Text>
 
           <Text
             style={tw.style(`text-lg text-white text-center mt-16`, {

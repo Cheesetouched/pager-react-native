@@ -255,7 +255,6 @@ export default function Phone() {
                 }
                 autoFocus
                 error={phoneError}
-                loading={gettingUser || signingIn}
                 maxLength={10}
                 onChangeText={(text) => {
                   setNumber(text);
@@ -269,6 +268,7 @@ export default function Phone() {
 
               <Button
                 disabled={gettingUser || signingIn}
+                loading={gettingUser || signingIn}
                 onPress={submitNumber}
               >
                 Next

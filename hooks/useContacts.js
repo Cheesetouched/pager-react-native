@@ -112,7 +112,9 @@ export default function useContacts(props = {}) {
     if (finalPermission.status === "granted") {
       getContacts();
     } else {
-      onDenied();
+      if (onDenied) {
+        onDenied();
+      }
     }
   }, [getContacts, onDenied, permission]);
 
