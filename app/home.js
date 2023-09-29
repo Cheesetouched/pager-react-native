@@ -20,6 +20,7 @@ import SearchIcon from "@assets/svgs/SearchIcon";
 export default function Home() {
   const [busy, setBusy] = useState();
   const [free, setFree] = useState();
+  const [ready, setReady] = useState(false);
   const { userData, userLoading } = useUser({ withFriends: true });
 
   useEffect(() => {
@@ -41,10 +42,19 @@ export default function Home() {
 
       setBusy(busy);
       setFree(free);
+
+      if (free?.length > 0 && !userData?.freeTill) {
+        router.push("/constraint");
+        setTimeout(() => {
+          setReady(true);
+        }, 200);
+      } else {
+        setReady(true);
+      }
     }
   }, [userData]);
 
-  if (!userData) {
+  if (!userData || !ready) {
     return (
       <SafeView>
         <View style={tw`flex flex-1 items-center justify-center`}>
@@ -64,10 +74,10 @@ export default function Home() {
             {busy ? (
               <FlatList
                 ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-                ListHeaderComponent={<FreeFriends free={busy} />}
+                ListHeaderComponent={<FreeFriends free={free} />}
                 columnWrapperStyle={tw`justify-between`}
                 contentContainerStyle={tw`pt-6 pb-10`}
-                data={[...busy, ...busy]}
+                data={busy}
                 estimatedItemSize={114}
                 numColumns={3}
                 renderItem={({ item }) => (

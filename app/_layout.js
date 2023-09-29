@@ -40,6 +40,11 @@ export default function Layout() {
               contentStyle: { backgroundColor: "#00000000" },
             }}
           />
+
+          <Stack.Screen
+            name="constraint"
+            options={{ presentation: "transparentModal" }}
+          />
         </Stack>
       </QueryClientProvider>
 
