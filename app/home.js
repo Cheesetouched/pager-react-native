@@ -12,9 +12,10 @@ import { SplashScreen, router } from "expo-router";
 import tw from "@utils/tailwind";
 import User from "@components/User";
 import useUser from "@hooks/useUser";
-import SafeView from "@components/SafeView";
-import SearchIcon from "@assets/svgs/SearchIcon";
 import Button from "@components/Button";
+import SafeView from "@components/SafeView";
+import InviteUser from "@components/InviteUser";
+import SearchIcon from "@assets/svgs/SearchIcon";
 
 export default function Home() {
   const [busy, setBusy] = useState();
@@ -60,27 +61,46 @@ export default function Home() {
       <View style={tw`flex flex-1 px-6 pt-4`}>
         <Header onSearch={() => router.push("/friends")} />
 
-        <View style={tw`flex flex-1 pb-2`}>
-          {busy ? (
-            <FlatList
-              ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-              ListHeaderComponent={<FreeFriends free={free} />}
-              columnWrapperStyle={tw`justify-between`}
-              contentContainerStyle={tw`pt-6 pb-10`}
-              data={[...busy, ...busy]}
-              estimatedItemSize={114}
-              numColumns={3}
-              renderItem={({ item }) => (
-                <User data={item} disabled title="😴" />
-              )}
-              showsVerticalScrollIndicator={false}
-            />
-          ) : null}
-        </View>
+        {userData?.friendList?.length > 0 ? (
+          <View style={tw`flex flex-1 mb-2`}>
+            {busy ? (
+              <FlatList
+                ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
+                ListHeaderComponent={<FreeFriends free={free} />}
+                columnWrapperStyle={tw`justify-between`}
+                contentContainerStyle={tw`pt-6 pb-10`}
+                data={[...busy, ...busy]}
+                estimatedItemSize={114}
+                numColumns={3}
+                renderItem={({ item }) => (
+                  <User data={item} disabled title="😴" />
+                )}
+                showsVerticalScrollIndicator={false}
+              />
+            ) : null}
+          </View>
+        ) : (
+          <View style={tw`flex flex-1 mb-2`}>
+            <Text
+              style={tw.style(`text-text-2 text-lg pt-6`, {
+                fontFamily: "Cabin_700Bold",
+              })}
+            >
+              Pretty empty in here...
+            </Text>
 
-        <Button textStyle="leading-tight" style="mb-4" variant="dark">
-          {` Page friends  📟`}
-        </Button>
+            <InviteUser
+              onPress={() => router.push("/friends")}
+              style={tw`mt-5`}
+            />
+          </View>
+        )}
+
+        {userData?.friendList?.length > 0 ? (
+          <Button textStyle="leading-tight" style="mb-4" variant="dark">
+            Page friends 📟
+          </Button>
+        ) : null}
       </View>
     </SafeView>
   );
@@ -103,7 +123,7 @@ const FreeFriends = memo(({ free }) => {
             ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
             style={tw`mb-8`}
             columnWrapperStyle={tw`justify-between`}
-            data={[...free, ...free]}
+            data={free}
             estimatedItemSize={114}
             numColumns={3}
             renderItem={({ item }) => <User data={item} free title="1hr 👋🏻" />}
