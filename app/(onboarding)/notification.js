@@ -10,24 +10,14 @@ import {
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
-import useAppContext from "@hooks/useAppContext";
 import NotifExample from "@components/NotifExample";
 import PermissionBox from "@components/PermissionBox";
 import useNotifications from "@hooks/useNotifications";
 
 export default function Notification() {
-  const { alert } = useAppContext();
   const params = useLocalSearchParams();
   const navigation = useRootNavigation();
   const [deniedView, setDeniedView] = useState(false);
-
-  const onDenied = useCallback(() => {
-    alert.current.show({
-      title: "oops 😕",
-      message:
-        "without notifications, we cannot notify you when your friends are free",
-    });
-  }, [alert]);
 
   const onGranted = useCallback(
     (pushToken) => {
@@ -48,7 +38,6 @@ export default function Notification() {
   );
 
   const { loading, permission, requestNotifications } = useNotifications({
-    onDenied,
     onGranted,
   });
 

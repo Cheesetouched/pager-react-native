@@ -200,7 +200,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
   const [deniedView, setDeniedView] = useState(false);
 
   return (
-    <View style={tw`flex flex-1`}>
+    <View style={tw`flex flex-1 px-3`}>
       {canAskAgain && !deniedView ? (
         <>
           <Text
@@ -310,8 +310,8 @@ function NoPermissionView({ canAskAgain, onAsk }) {
           </View>
         </View>
       ) : (
-        <View style={tw`flex flex-1 justify-center pb-10`}>
-          <View style={tw`mx-3`}>
+        <View style={tw`flex flex-1 justify-center px-3 pb-10`}>
+          <View style={tw`mx-10`}>
             <PermissionBox
               explanation="Bring on friends you want to use Pager with."
               onAllow={() => {

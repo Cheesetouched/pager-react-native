@@ -23,7 +23,9 @@ export default function useNotifications(props = {}) {
       if (pushToken) {
         return onGranted(pushToken);
       } else {
-        onDenied();
+        if (onDenied) {
+          onDenied();
+        }
       }
 
       Notifications.getPermissionsAsync().then((data) => {

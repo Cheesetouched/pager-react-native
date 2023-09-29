@@ -17,11 +17,11 @@ export default function User({
     <View style={tw`flex flex-col`}>
       <TouchableOpacity onPress={onPress}>
         <View
-          style={tw`bg-black rounded-full h-[${dimension}px] w-[${dimension}px] shadow-lg`}
+          style={tw`bg-gray-5 rounded-full h-[${dimension}px] w-[${dimension}px] shadow-lg`}
         >
           <Image
             src={data?.dp}
-            style={`rounded-full ${!free ? "opacity-40" : ""}`}
+            style={`rounded-full ${!free ? "opacity-50" : ""}`}
           />
         </View>
 

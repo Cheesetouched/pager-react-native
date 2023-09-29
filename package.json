@@ -22,7 +22,7 @@
     "expo-contacts": "~12.2.0",
     "expo-device": "~5.4.0",
     "expo-firebase-recaptcha": "^2.3.1",
-    "expo-image": "~1.3.3",
+    "expo-image": "~1.3.4",
     "expo-image-manipulator": "~11.3.0",
     "expo-image-picker": "~14.3.2",
     "expo-linking": "~5.0.2",

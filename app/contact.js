@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Linking, Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
 import { router, useLocalSearchParams } from "expo-router";
@@ -6,9 +6,9 @@ import { router, useLocalSearchParams } from "expo-router";
 import tw from "@utils/tailwind";
 import User from "@components/User";
 import PhoneIcon from "@assets/svgs/PhoneIcon";
-import FacetimeIcon from "@assets/svgs/FacetimeIcon";
 import IMessageIcon from "@assets/svgs/IMessageIcon";
 import WhatsAppIcon from "@assets/svgs/WhatsAppIcon";
+import FacetimeIcon from "@assets/svgs/FacetimeIcon";
 
 export default function Contact() {
   const { data } = useLocalSearchParams();
@@ -32,28 +32,34 @@ export default function Contact() {
       <View style={tw`flex flex-row mt-14 gap-x-8`}>
         <TouchableOpacity
           disabled={!parsed?.free}
-          style={tw`${parsed?.free ? "opacity-100" : "opacity-40"}`}
+          onPress={() => Linking.openURL(`facetime:${parsed?.phone?.full}`)}
+          style={tw`${parsed?.free ? "opacity-100" : "opacity-50"}`}
         >
           <FacetimeIcon />
         </TouchableOpacity>
 
         <TouchableOpacity
           disabled={!parsed?.free}
-          style={tw`${parsed?.free ? "opacity-100" : "opacity-40"}`}
+          onPress={() => Linking.openURL(`tel:${parsed?.phone?.full}`)}
+          style={tw`${parsed?.free ? "opacity-100" : "opacity-50"}`}
         >
           <PhoneIcon />
         </TouchableOpacity>
 
         <TouchableOpacity
           disabled={!parsed?.free}
-          style={tw`${parsed?.free ? "opacity-100" : "opacity-40"}`}
+          onPress={() => Linking.openURL(`sms:${parsed?.phone?.full}`)}
+          style={tw`${parsed?.free ? "opacity-100" : "opacity-50"}`}
         >
           <IMessageIcon />
         </TouchableOpacity>
 
         <TouchableOpacity
           disabled={!parsed?.free}
-          style={tw`${parsed?.free ? "opacity-100" : "opacity-40"}`}
+          onPress={() =>
+            Linking.openURL(`whatsapp://send?phone=${parsed?.phone?.full}`)
+          }
+          style={tw`${parsed?.free ? "opacity-100" : "opacity-50"}`}
         >
           <WhatsAppIcon />
         </TouchableOpacity>
