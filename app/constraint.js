@@ -1,10 +1,9 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { BlurView } from "expo-blur";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import tw from "@utils/tailwind";
-import Button from "@components/Button";
 
 export default function Constraint() {
   return (
