@@ -64,7 +64,7 @@ export default function Home() {
           {busy ? (
             <FlatList
               ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-              ListHeaderComponent={<FreeFriends free={busy} />}
+              ListHeaderComponent={<FreeFriends free={free} />}
               columnWrapperStyle={tw`justify-between`}
               contentContainerStyle={tw`pt-6 pb-10`}
               data={[...busy, ...busy]}
@@ -101,6 +101,7 @@ const FreeFriends = memo(({ free }) => {
 
           <FlatList
             ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
+            style={tw`mb-8`}
             columnWrapperStyle={tw`justify-between`}
             data={[...free, ...free]}
             estimatedItemSize={114}
@@ -111,7 +112,7 @@ const FreeFriends = memo(({ free }) => {
       ) : null}
 
       <Text
-        style={tw.style(`text-lg text-white leading-snug mt-8 mb-6`, {
+        style={tw.style(`text-lg text-white leading-snug mb-6`, {
           fontFamily: "Cabin_700Bold",
         })}
       >
