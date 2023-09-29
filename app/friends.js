@@ -289,9 +289,12 @@ function NoPermissionView({ canAskAgain, onAsk }) {
           </Button>
 
           <Text
-            style={tw.style(`text-lg text-white text-center mt-16`, {
-              fontFamily: "Cabin_700Bold",
-            })}
+            style={tw.style(
+              `text-lg text-white text-center mt-16 leading-snug`,
+              {
+                fontFamily: "Cabin_700Bold",
+              },
+            )}
           >
             Free to Chat 👋🏻
           </Text>
