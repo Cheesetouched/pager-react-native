@@ -1,9 +1,10 @@
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import tw from "@utils/tailwind";
+import Button from "@components/Button";
 
 export default function Constraint() {
   return (
@@ -21,6 +22,10 @@ export default function Constraint() {
             >
               You can only see who is free if you’re free...
             </Text>
+          </View>
+
+          <View style={tw`mb-10`}>
+            <Button>Yep, I'm free now</Button>
           </View>
         </SafeAreaView>
       </SafeAreaProvider>
