@@ -23,23 +23,6 @@ export default function Constraint() {
               You can only see who is free if you’re free...
             </Text>
           </View>
-
-          <View style={tw`mb-10`}>
-            <Button>Yep, I'm free now</Button>
-
-            <TouchableOpacity>
-              <Text
-                style={tw.style(
-                  `text-text-2 text-lg leading-tight text-center mt-5`,
-                  {
-                    fontFamily: "Cabin_700Bold",
-                  },
-                )}
-              >
-                Not free
-              </Text>
-            </TouchableOpacity>
-          </View>
         </SafeAreaView>
       </SafeAreaProvider>
     </BlurView>
