@@ -20,9 +20,7 @@ import SearchIcon from "@assets/svgs/SearchIcon";
 export default function Home() {
   const [busy, setBusy] = useState();
   const [free, setFree] = useState();
-  const { userData, userLoading } = useUser({
-    withFriends: true,
-  });
+  const { userData, userLoading } = useUser({ withFriends: true });
 
   useEffect(() => {
     SplashScreen.hideAsync();
