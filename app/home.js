@@ -64,14 +64,28 @@ export default function Home() {
             {busy ? (
               <FlatList
                 ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-                ListHeaderComponent={<FreeFriends free={free} />}
+                ListHeaderComponent={<FreeFriends free={busy} />}
                 columnWrapperStyle={tw`justify-between`}
                 contentContainerStyle={tw`pt-6 pb-10`}
                 data={[...busy, ...busy]}
                 estimatedItemSize={114}
                 numColumns={3}
                 renderItem={({ item }) => (
-                  <User data={item} disabled title="😴" />
+                  <User
+                    data={item}
+                    disabled
+                    onPress={() =>
+                      router.push({
+                        pathname: "/contact",
+                        params: {
+                          data: JSON.stringify({
+                            ...item,
+                            free: false,
+                          }),
+                        },
+                      })
+                    }
+                  />
                 )}
                 showsVerticalScrollIndicator={false}
               />
@@ -124,7 +138,23 @@ const FreeFriends = memo(({ free }) => {
             data={free}
             estimatedItemSize={114}
             numColumns={3}
-            renderItem={({ item }) => <User data={item} free title="1hr 👋🏻" />}
+            renderItem={({ item }) => (
+              <User
+                data={item}
+                free
+                onPress={() =>
+                  router.push({
+                    pathname: "/contact",
+                    params: {
+                      data: JSON.stringify({
+                        ...item,
+                        free: true,
+                      }),
+                    },
+                  })
+                }
+              />
+            )}
           />
         </>
       ) : null}

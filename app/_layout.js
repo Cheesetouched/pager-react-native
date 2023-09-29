@@ -27,9 +27,18 @@ export default function Layout() {
       <QueryClientProvider client={queryClient}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" options={{ headerShown: false }} />
+
           <Stack.Screen
             name="invite_options"
             options={{ presentation: "modal" }}
+          />
+
+          <Stack.Screen
+            name="contact"
+            options={{
+              presentation: "modal",
+              contentStyle: { backgroundColor: "#00000000" },
+            }}
           />
         </Stack>
       </QueryClientProvider>
