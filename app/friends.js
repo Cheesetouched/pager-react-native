@@ -226,7 +226,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
         <>
           <Text
             style={tw.style(
-              `flex text-text-1 text-3xl font-medium self-center mt-2`,
+              `flex text-text-1 text-3xl font-medium self-center mt-2 leading-snug`,
               {
                 fontFamily: "Lalezar_400Regular",
               },
@@ -249,7 +249,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
       ) : null}
 
       {!canAskAgain || deniedView ? (
-        <View style={tw`flex flex-1 justify-center`}>
+        <View style={tw`flex flex-1 justify-center px-3`}>
           <Text
             style={tw.style(
               `flex text-text-1 text-3xl font-medium self-center`,
@@ -332,7 +332,7 @@ function NoPermissionView({ canAskAgain, onAsk }) {
         </View>
       ) : (
         <View style={tw`flex flex-1 justify-center px-3 pb-10`}>
-          <View style={tw`mx-10`}>
+          <View style={tw`mx-5`}>
             <PermissionBox
               explanation="Bring on friends you want to use Pager with."
               onAllow={() => {

@@ -52,7 +52,7 @@ export default function Notification() {
           <>
             <Text
               style={tw.style(
-                `flex text-text-1 text-3xl font-medium self-center mt-2`,
+                `flex text-text-1 text-3xl font-medium self-center mt-2 leading-snug`,
                 {
                   fontFamily: "Lalezar_400Regular",
                 },
@@ -108,9 +108,9 @@ export default function Notification() {
                   Linking.openSettings();
                 }
               }}
-              style="mt-10 mx-20"
+              style="mt-10 mx-14"
             >
-              Allow
+              {permission?.canAskAgain ? "Allow" : "Allow from settings"}
             </Button>
 
             <NotifExample
@@ -137,7 +137,9 @@ export default function Notification() {
               />
             </View>
 
-            <Text style={tw`text-5xl self-end mr-10 mt-5`}>👆</Text>
+            <Text style={tw`text-5xl self-end mr-14 mt-5 leading-tight`}>
+              👆
+            </Text>
 
             <NotifExample
               title="One of your friends is free!"
