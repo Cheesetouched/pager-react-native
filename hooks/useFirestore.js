@@ -51,7 +51,7 @@ export default function useFirestore() {
 
           return { success: true, inviters };
         } else {
-          return { success: false };
+          return { success: true };
         }
       } catch (error) {
         throw error;
