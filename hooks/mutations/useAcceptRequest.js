@@ -13,9 +13,7 @@ export default function useAcceptRequest(props = {}) {
   const { acceptRequest } = useFriendGraph();
 
   const { isLoading, mutate } = useMutation(
-    (senderUid) => {
-      return "yo";
-    },
+    (senderUid) => acceptRequest(user?.uid, senderUid),
     {
       onMutate: (senderUid) => {
         update(["user", user?.uid], (old) => ({
@@ -26,7 +24,9 @@ export default function useAcceptRequest(props = {}) {
           ),
         }));
 
-        onMutate();
+        if (onMutate) {
+          onMutate();
+        }
       },
       onSuccess,
     },
@@ -34,8 +34,8 @@ export default function useAcceptRequest(props = {}) {
 
   return useMemo(
     () => ({
-      adding: isLoading,
-      addFriend: mutate,
+      accepting: isLoading,
+      acceptRequest: mutate,
     }),
     [isLoading, mutate],
   );

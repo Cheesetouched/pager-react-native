@@ -4,6 +4,7 @@ import * as Contacts from "expo-contacts";
 
 import Countries from "@utils/countries";
 import { cleanupPhone, resize } from "@utils/helpers";
+import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 import useCheckInvites from "@hooks/queries/useCheckInvites";
 import useContactsSearch from "@hooks/queries/useContactsSearch";
 
@@ -12,16 +13,16 @@ export default function useContacts(props = {}) {
   // function, inside the hook consumer, to prevent unnecessary
   // re-rendering
 
+  const update = useOptimisticUpdate();
   const { userPhone, onDenied } = props;
   const [contacts, setContacts] = useState(null);
   const [inMemory, setInMemory] = useState(null);
   const [permission, setPermission] = useState(null);
   const [numbersOnly, setNumbersOnly] = useState(null);
-  const [friendsOnApp, setFriendsOnApp] = useState([]);
   // Breaking import order here because otherwise numbersOnly
   // would be undefined when passed to the useContactsSearch hook
   const invites = useCheckInvites(userPhone);
-  const contactsSearch = useContactsSearch(numbersOnly);
+  const friendsOnApp = useContactsSearch(numbersOnly);
 
   const getContacts = useCallback(async () => {
     if (userPhone) {
@@ -132,25 +133,22 @@ export default function useContacts(props = {}) {
   );
 
   useEffect(() => {
-    if (contactsSearch?.success) {
-      setFriendsOnApp(contactsSearch?.results);
-    }
-
-    if (contactsSearch?.success && invites?.success) {
+    if (friendsOnApp?.success && invites?.success) {
       const inviterUids = invites?.inviters?.map((inviter) => inviter?.id);
 
       // Removing people from the list if they are already in the
       // invite list or if the person is the logged in user
-      setFriendsOnApp((current) =>
-        current.filter((friend) => {
+      update(["contactsSearch"], (current) => ({
+        ...current,
+        results: current?.results?.filter((friend) => {
           return (
             !inviterUids?.includes(friend?.objectID) &&
             friend?.phone?.full !== userPhone
           );
         }),
-      );
+      }));
     }
-  }, [contactsSearch, invites, userPhone]);
+  }, [invites, userPhone, friendsOnApp, update]);
 
   useEffect(() => {
     Contacts.getPermissionsAsync().then((permission) => {

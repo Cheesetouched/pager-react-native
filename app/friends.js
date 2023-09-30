@@ -126,7 +126,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
               fontFamily: "Cabin_700Bold",
             })}
           >
-            invited you
+            Invited you
           </Text>
 
           <View style={tw`min-h-[2px]`}>
@@ -134,15 +134,22 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
               data={invites?.inviters}
               estimatedItemSize={68}
+              extraData={userData}
               keyboardShouldPersistTaps="handled"
-              renderItem={({ item }) => <ContactCard data={item} type="user" />}
+              renderItem={({ item }) => {
+                if (userData?.pendingRequests?.includes(item?.id)) {
+                  return <RequestCard data={item} />;
+                } else {
+                  return <ContactCard data={item} type="user" />;
+                }
+              }}
               showsVerticalScrollIndicator={false}
             />
           </View>
         </View>
       ) : null}
 
-      {friendsOnApp?.length > 0 ? (
+      {friendsOnApp?.results?.length > 0 ? (
         <View style={tw`pb-5`}>
           <Text
             style={tw.style(`text-white text-base mb-5`, {
@@ -155,8 +162,9 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
           <View style={tw`min-h-[2px]`}>
             <FlashList
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-              data={friendsOnApp}
+              data={friendsOnApp?.results}
               estimatedItemSize={68}
+              extraData={userData}
               keyboardShouldPersistTaps="handled"
               renderItem={({ item }) => {
                 if (userData?.pendingRequests?.includes(item?.objectID)) {

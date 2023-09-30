@@ -9,7 +9,7 @@ import OutlineButton from "@components/OutlineButton";
 import useAcceptRequest from "@hooks/mutations/useAcceptRequest";
 
 export default function RequestCard({ data }) {
-  const { addFriend } = useAcceptRequest();
+  const { acceptRequest } = useAcceptRequest();
 
   return (
     <View style={tw`flex flex-row items-center`}>
@@ -45,7 +45,7 @@ export default function RequestCard({ data }) {
               style={tw`self-center`}
             />
           }
-          style="h-[35px] w-[35px]"
+          style="h-[35px] w-[35px] rounded-full"
         />
 
         <Button
@@ -53,11 +53,11 @@ export default function RequestCard({ data }) {
             <Entypo
               name="check"
               size={20}
-              color="black"
+              color="white"
               style={tw`self-center`}
             />
           }
-          onPress={() => addFriend(data?.id)}
+          onPress={() => acceptRequest(data?.id || data?.objectID)}
           style="h-[35px] w-[35px]"
         />
       </View>

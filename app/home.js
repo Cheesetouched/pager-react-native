@@ -155,18 +155,6 @@ export default function Home() {
           </View>
         )}
 
-        {userData?.friendList?.length === 0 ? (
-          <Button
-            loading={userLoading}
-            onPress={() => noFriendsRef?.current?.show()}
-            textStyle="leading-tight"
-            style="mb-4"
-            variant="dark"
-          >
-            Page friends 📟
-          </Button>
-        ) : null}
-
         {isFree(userData?.freeTill) ? (
           <View style={tw`items-center mb-2`}>
             <Text

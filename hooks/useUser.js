@@ -5,9 +5,9 @@ import useFirebase from "@hooks/useFirebase";
 import useFirestore from "@hooks/useFirestore";
 
 export default function useUser(props = {}) {
-  const { withFriends = false } = props;
   const { user } = useFirebase();
   const { getUser } = useFirestore();
+  const { withFriends = false } = props;
 
   const { data, isInitialLoading, isFetching } = useQuery(
     ["user", user?.uid],
