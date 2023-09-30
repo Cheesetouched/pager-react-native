@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -14,10 +14,14 @@ import User from "@components/User";
 import useUser from "@hooks/useUser";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
+import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
+import NoFriendsSheet from "@components/NoFriendsSheet";
 
 export default function Home() {
+  const noFriendsRef = useRef();
+  const pageSheetRef = useRef();
   const [busy, setBusy] = useState();
   const [free, setFree] = useState();
   const [ready, setReady] = useState(false);
@@ -118,12 +122,24 @@ export default function Home() {
           </View>
         )}
 
-        {userData?.friendList?.length > 0 ? (
-          <Button textStyle="leading-tight" style="mb-4" variant="dark">
-            Page friends 📟
-          </Button>
-        ) : null}
+        <Button
+          onPress={() => {
+            if (userData?.friendList?.length > 0) {
+              pageSheetRef?.current?.show();
+            } else {
+              noFriendsRef?.current?.show();
+            }
+          }}
+          textStyle="leading-tight"
+          style="mb-4"
+          variant="dark"
+        >
+          Page friends 📟
+        </Button>
       </View>
+
+      <PageSheet ref={pageSheetRef} />
+      <NoFriendsSheet ref={noFriendsRef} />
     </SafeView>
   );
 }

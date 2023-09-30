@@ -36,7 +36,7 @@ export default function User({
               fontFamily: "Cabin_700Bold",
             })}
           >
-            {title ? title : free ? "1hr 👋🏻" : "😴"}
+            {title ? title : free ? "👋🏻" : "😴"}
           </Text>
         </View>
       </TouchableOpacity>

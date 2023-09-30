@@ -1,6 +1,7 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { BlurView } from "expo-blur";
+import { router } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import tw from "@utils/tailwind";
@@ -24,8 +25,8 @@ export default function Constraint() {
             </Text>
           </View>
 
-          <View style={tw`mb-10`}>
-            <Button>Yep, I'm free now</Button>
+          <View style={tw`mb-4`}>
+            <Button onPress={router.back}>Yep, I'm free now</Button>
           </View>
         </SafeAreaView>
       </SafeAreaProvider>
