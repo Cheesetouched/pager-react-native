@@ -32,7 +32,7 @@ export default function Constraint() {
             <Button
               onPress={() => {
                 router.back();
-                //pageFriends();
+                pageFriends();
               }}
             >
               Yep, I'm free now

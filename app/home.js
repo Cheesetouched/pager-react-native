@@ -19,14 +19,12 @@ import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
 import NoFriendsSheet from "@components/NoFriendsSheet";
-import usePageFriends from "@hooks/mutations/usePageFriends";
 
 export default function Home() {
   const noFriendsRef = useRef();
   const pageSheetRef = useRef();
   const [busy, setBusy] = useState();
   const [free, setFree] = useState();
-  const { pageFriends } = usePageFriends();
   const [ready, setReady] = useState(false);
   const { userData, userLoading } = useUser({ withFriends: true });
 
@@ -124,6 +122,18 @@ export default function Home() {
             />
           </View>
         )}
+
+        {userData?.friendList?.length === 0 ? (
+          <Button
+            loading={userLoading}
+            onPress={() => noFriendsRef?.current?.show()}
+            textStyle="leading-tight"
+            style="mb-4"
+            variant="dark"
+          >
+            Page friends 📟
+          </Button>
+        ) : null}
 
         {isFree(userData?.freeTill) ? (
           <View></View>
