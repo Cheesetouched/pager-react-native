@@ -33,7 +33,6 @@ export default function useCheckInvites(number) {
         typeof number === "string" &&
         user?.uid !== undefined &&
         typeof user?.uid === "string",
-      staleTime: 10 * (1000 * 60),
     },
   );
 

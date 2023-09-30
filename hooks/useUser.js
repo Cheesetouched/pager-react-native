@@ -14,7 +14,6 @@ export default function useUser(props = {}) {
     () => getUser(user?.uid, withFriends),
     {
       enabled: user !== null && user !== undefined,
-      staleTime: 10 * (1000 * 60),
     },
   );
 

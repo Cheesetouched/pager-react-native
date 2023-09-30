@@ -12,7 +12,6 @@ export default function useGetFriends(friends) {
     async () => Users.getFriends(friends),
     {
       enabled: friends && typeof friends === "object" && friends?.length > 0,
-      staleTime: 10 * (1000 * 60),
     },
   );
 
