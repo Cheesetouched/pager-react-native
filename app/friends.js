@@ -3,7 +3,7 @@ import { ActivityIndicator, Linking, Text, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useRootNavigation } from "expo-router";
 
 import tw from "@utils/tailwind";
 import useUser from "@hooks/useUser";
@@ -23,6 +23,7 @@ export default function Friends() {
   const { userData } = useUser();
   const inviteSheetRef = useRef();
   const params = useLocalSearchParams();
+  const navigation = useRootNavigation();
 
   const onInvite = useCallback((number) => {
     inviteSheetRef?.current?.invite(number);
@@ -100,7 +101,12 @@ export default function Friends() {
 
             {params?.referrer === "onboarding" ? (
               <Button
-                onPress={() => router.push("/home")}
+                onPress={() => {
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ name: "home" }],
+                  });
+                }}
                 variant="dark"
                 style="mt-2 mb-4"
               >
@@ -111,7 +117,9 @@ export default function Friends() {
         ) : (
           <NoPermissionView
             canAskAgain={permission?.canAskAgain}
+            navigation={navigation}
             onAsk={requestContacts}
+            params={params}
           />
         )}
       </View>
@@ -227,7 +235,7 @@ function NoContacts() {
   );
 }
 
-function NoPermissionView({ canAskAgain, onAsk }) {
+function NoPermissionView({ canAskAgain, navigation, onAsk, params }) {
   const [deniedView, setDeniedView] = useState(false);
 
   return (
@@ -311,7 +319,14 @@ function NoPermissionView({ canAskAgain, onAsk }) {
 
           <Button
             onPress={() => {
-              router.push("/home");
+              if (params?.referrer === "onboarding") {
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: "home" }],
+                });
+              } else {
+                router.push("/home");
+              }
             }}
             style="mt-5 mx-20"
             variant="dark"
