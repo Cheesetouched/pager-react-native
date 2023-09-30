@@ -8,16 +8,18 @@ import {
 } from "react-native";
 
 import { SplashScreen, router } from "expo-router";
+import { differenceInMilliseconds } from "date-fns";
 
 import tw from "@utils/tailwind";
 import User from "@components/User";
 import useUser from "@hooks/useUser";
 import Button from "@components/Button";
-import { isFree } from "@utils/helpers";
 import SafeView from "@components/SafeView";
+import useInterval from "@hooks/useInterval";
 import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
+import { isFree, msToTime } from "@utils/helpers";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 
 export default function Home() {
@@ -25,6 +27,7 @@ export default function Home() {
   const pageSheetRef = useRef();
   const [busy, setBusy] = useState();
   const [free, setFree] = useState();
+  const [timer, setTimer] = useState(0);
   const [ready, setReady] = useState(false);
   const { userData, userLoading } = useUser({ withFriends: true });
 
@@ -36,6 +39,7 @@ export default function Home() {
     if (userData) {
       const busy = [];
       const free = [];
+      const isUserFree = isFree(userData?.freeTill);
 
       userData?.friendList?.map((friend) => {
         if (friend?.freeTill) {
@@ -48,7 +52,16 @@ export default function Home() {
       setBusy(busy);
       setFree(free);
 
-      if (free?.length > 0 && !isFree(userData?.freeTill)) {
+      if (isUserFree) {
+        setTimer(
+          differenceInMilliseconds(
+            new Date(userData?.freeTill),
+            new Date(Date.now()),
+          ),
+        );
+      }
+
+      if (free?.length > 0 && !isUserFree) {
         router.push("/constraint");
         setTimeout(() => {
           setReady(true);
@@ -58,6 +71,8 @@ export default function Home() {
       }
     }
   }, [userData]);
+
+  useInterval(() => setTimer((old) => old - 1000), timer ? 1000 : null);
 
   if (!userData || !ready) {
     return (
@@ -136,7 +151,9 @@ export default function Home() {
         ) : null}
 
         {isFree(userData?.freeTill) ? (
-          <View></View>
+          <View>
+            <Text style={tw`text-white`}>{msToTime(timer)}</Text>
+          </View>
         ) : (
           <Button
             loading={userLoading}

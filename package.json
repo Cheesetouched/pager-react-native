@@ -16,6 +16,7 @@
     "@tanstack/react-query": "^4.35.3",
     "@uidotdev/usehooks": "^2.3.0",
     "algoliasearch": "^4.20.0",
+    "date-fns": "^2.30.0",
     "expo": "~49.0.11",
     "expo-blur": "~12.4.1",
     "expo-constants": "~14.4.2",
@@ -25,6 +26,7 @@
     "expo-image": "~1.3.4",
     "expo-image-manipulator": "~11.3.0",
     "expo-image-picker": "~14.3.2",
+    "expo-linear-gradient": "~12.3.0",
     "expo-linking": "~5.0.2",
     "expo-notifications": "~0.20.1",
     "expo-router": "^2.0.0",
@@ -42,8 +44,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
     "react-native-webview": "13.2.2",
-    "twrnc": "^3.6.4",
-    "expo-linear-gradient": "~12.3.0"
+    "twrnc": "^3.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
