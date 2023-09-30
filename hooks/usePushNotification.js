@@ -59,7 +59,7 @@ export default function usePushNotification() {
 
       if (valid(sender?.pushToken)) {
         send(sender?.pushToken, {
-          data: { action: "request_accepted" },
+          data: { action: "request" },
           title: accepter?.name,
           body: "accepted your friend request!",
         });
@@ -77,7 +77,7 @@ export default function usePushNotification() {
 
       if (valid(addee?.pushToken)) {
         send(addee?.pushToken, {
-          data: { action: "request_sent" },
+          data: { action: "request" },
           title: adder?.name,
           body: "sent you a friend request!",
         });
@@ -86,7 +86,7 @@ export default function usePushNotification() {
     [Users, send],
   );
 
-  const send = useCallback(async (to, { data = {}, title, body }) => {
+  const send = useCallback(async (to, { data, title, body }) => {
     return await sendRequest({
       to,
       title,

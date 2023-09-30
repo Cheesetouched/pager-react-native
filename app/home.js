@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { SplashScreen, router } from "expo-router";
+import * as Notifications from "expo-notifications";
 import { differenceInMilliseconds } from "date-fns";
 
 import tw from "@utils/tailwind";
@@ -35,6 +36,7 @@ export default function Home() {
   const [delay, setDelay] = useState(null);
   const [ready, setReady] = useState(false);
   const { userData, userLoading } = useUser({ withFriends: true });
+  const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
   useEffect(() => {
     SplashScreen.hideAsync();
@@ -77,6 +79,15 @@ export default function Home() {
       }
     }
   }, [userData]);
+
+  useEffect(() => {
+    if (
+      lastNotificationResponse?.notification?.request?.content?.data?.action ===
+      "request"
+    ) {
+      router.push("/friends");
+    }
+  }, [lastNotificationResponse]);
 
   useInterval(() => {
     if (timer <= 1000) {
