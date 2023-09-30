@@ -2,14 +2,14 @@ import { useMemo } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 
-import useFriendGraph from "@hooks/useFriendGraph";
+import useUsers from "@hooks/firestore/useUsers";
 
 export default function useGetFriends(friends) {
-  const { getFriends } = useFriendGraph();
+  const Users = useUsers();
 
   const { data, isInitialLoading, isFetching } = useQuery(
     ["friends"],
-    async () => getFriends(friends),
+    async () => Users.getFriends(friends),
     {
       enabled: friends && typeof friends === "object" && friends?.length > 0,
       staleTime: 10 * (1000 * 60),

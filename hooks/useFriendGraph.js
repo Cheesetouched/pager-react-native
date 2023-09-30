@@ -3,9 +3,11 @@ import { useCallback, useMemo } from "react";
 import { arrayRemove, arrayUnion } from "firebase/firestore";
 
 import useUsers from "@hooks/firestore/useUsers";
+import usePushNotification from "@hooks/usePushNotification";
 
 export default function useFriendGraph() {
   const Users = useUsers();
+  const PushNotification = usePushNotification();
 
   const acceptRequest = useCallback(
     async (accepterUid, senderUid) => {
@@ -21,12 +23,13 @@ export default function useFriendGraph() {
           }),
         ]);
 
+        PushNotification.requestAccepted(accepterUid, senderUid);
         return result;
       } catch (error) {
         throw error;
       }
     },
-    [Users],
+    [PushNotification, Users],
   );
 
   const addFriend = useCallback(
@@ -41,28 +44,13 @@ export default function useFriendGraph() {
           }),
         ]);
 
+        PushNotification.requestSent(adderUid, addeeUid);
         return result;
       } catch (error) {
         throw error;
       }
     },
-    [Users],
-  );
-
-  const getFriends = useCallback(
-    async (friends) => {
-      try {
-        return await Promise.all(
-          friends.map(async (uid) => {
-            const user = await Users.get(uid);
-            return { ...user, freeTill: user?.freeTill?.toMillis() };
-          }),
-        );
-      } catch (error) {
-        throw error;
-      }
-    },
-    [Users],
+    [PushNotification, Users],
   );
 
   const getRequests = useCallback(
@@ -108,10 +96,9 @@ export default function useFriendGraph() {
     () => ({
       acceptRequest,
       addFriend,
-      getFriends,
       getRequests,
       rejectRequest,
     }),
-    [acceptRequest, addFriend, getFriends, getRequests, rejectRequest],
+    [acceptRequest, addFriend, getRequests, rejectRequest],
   );
 }

@@ -12,11 +12,11 @@ import {
 } from "firebase/firestore";
 
 import useFirebase from "@hooks/useFirebase";
-import useFriendGraph from "./useFriendGraph";
+import useUsers from "./firestore/useUsers";
 
 export default function useFirestore() {
+  const Users = useUsers();
   const { firestore } = useFirebase();
-  const { getFriends } = useFriendGraph();
 
   const checkHandle = useCallback(
     async (handle) => {
@@ -87,7 +87,7 @@ export default function useFirestore() {
           };
 
           if (withFriends) {
-            user["friendList"] = await getFriends(user?.friends);
+            user["friendList"] = await Users.getFriends(user?.friends);
           }
 
           return user;
@@ -98,7 +98,7 @@ export default function useFirestore() {
         throw error;
       }
     },
-    [firestore, getFriends],
+    [Users, firestore],
   );
 
   const getUserByNumber = useCallback(
