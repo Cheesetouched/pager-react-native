@@ -7,9 +7,11 @@ import Image from "@components/Image";
 import Button from "@components/Button";
 import OutlineButton from "@components/OutlineButton";
 import useAcceptRequest from "@hooks/mutations/useAcceptRequest";
+import useRejectRequest from "@hooks/mutations/useRejectRequest";
 
 export default function RequestCard({ data }) {
   const { acceptRequest } = useAcceptRequest();
+  const { rejectRequest } = useRejectRequest();
 
   return (
     <View style={tw`flex flex-row items-center`}>
@@ -45,6 +47,7 @@ export default function RequestCard({ data }) {
               style={tw`self-center`}
             />
           }
+          onPress={() => rejectRequest(data?.id || data?.objectID)}
           style="h-[35px] w-[35px] rounded-full"
         />
 

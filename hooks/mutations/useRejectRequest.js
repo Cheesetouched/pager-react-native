@@ -1,25 +1,23 @@
 import { useMemo } from "react";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import useFirebase from "@hooks/useFirebase";
 import useFriendGraph from "@hooks/useFriendGraph";
 import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 
-export default function useAcceptRequest(props = {}) {
+export default function useRejectRequest(props = {}) {
   const { user } = useFirebase();
   const update = useOptimisticUpdate();
-  const queryClient = useQueryClient();
   const { onMutate, onSuccess } = props;
-  const { acceptRequest } = useFriendGraph();
+  const { rejectRequest } = useFriendGraph();
 
   const { isLoading, mutate } = useMutation(
-    (senderUid) => acceptRequest(user?.uid, senderUid),
+    (senderUid) => rejectRequest(user?.uid, senderUid),
     {
       onMutate: (senderUid) => {
         update(["user", user?.uid], (old) => ({
           ...old,
-          friends: [...old?.friends, senderUid],
           pendingRequests: old?.pendingRequests?.filter(
             (uid) => uid !== senderUid,
           ),
@@ -29,20 +27,14 @@ export default function useAcceptRequest(props = {}) {
           onMutate();
         }
       },
-      onSuccess: () => {
-        queryClient.invalidateQueries(["user", user?.uid]);
-
-        if (onSuccess) {
-          onSuccess();
-        }
-      },
+      onSuccess,
     },
   );
 
   return useMemo(
     () => ({
-      accepting: isLoading,
-      acceptRequest: mutate,
+      rejecting: isLoading,
+      rejectRequest: mutate,
     }),
     [isLoading, mutate],
   );
