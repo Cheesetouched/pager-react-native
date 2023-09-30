@@ -6,10 +6,10 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
-import usePageFriends from "@hooks/mutations/usePageFriends";
+import useMarkFree from "@hooks/mutations/useMarkFree";
 
 export default function Constraint() {
-  const { pageFriends } = usePageFriends();
+  const { markFree } = useMarkFree();
 
   return (
     <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
@@ -31,8 +31,8 @@ export default function Constraint() {
           <View style={tw`mb-4`}>
             <Button
               onPress={() => {
+                markFree();
                 router.back();
-                pageFriends();
               }}
             >
               Yep, I'm free now

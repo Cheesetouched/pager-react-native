@@ -20,14 +20,19 @@ import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
 import { isFree, msToTime } from "@utils/helpers";
+import useMarkBusy from "@hooks/mutations/useMarkBusy";
 import NoFriendsSheet from "@components/NoFriendsSheet";
+import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 
 export default function Home() {
   const noFriendsRef = useRef();
   const pageSheetRef = useRef();
+  const { markBusy } = useMarkBusy();
   const [busy, setBusy] = useState();
   const [free, setFree] = useState();
+  const update = useOptimisticUpdate();
   const [timer, setTimer] = useState(0);
+  const [delay, setDelay] = useState(null);
   const [ready, setReady] = useState(false);
   const { userData, userLoading } = useUser({ withFriends: true });
 
@@ -53,12 +58,13 @@ export default function Home() {
       setFree(free);
 
       if (isUserFree) {
-        setTimer(
-          differenceInMilliseconds(
-            new Date(userData?.freeTill),
-            new Date(Date.now()),
-          ),
+        const diff = differenceInMilliseconds(
+          new Date(userData?.freeTill),
+          new Date(Date.now()),
         );
+
+        setDelay(1000);
+        setTimer(diff);
       }
 
       if (free?.length > 0 && !isUserFree) {
@@ -72,7 +78,18 @@ export default function Home() {
     }
   }, [userData]);
 
-  useInterval(() => setTimer((old) => old - 1000), timer ? 1000 : null);
+  useInterval(() => {
+    if (timer <= 1000) {
+      setDelay(null);
+
+      update(["user", userData?.id], (old) => ({
+        ...old,
+        freeTill: null,
+      }));
+    } else {
+      setTimer(timer - 1000);
+    }
+  }, delay);
 
   if (!userData || !ready) {
     return (
@@ -151,8 +168,32 @@ export default function Home() {
         ) : null}
 
         {isFree(userData?.freeTill) ? (
-          <View>
-            <Text style={tw`text-white`}>{msToTime(timer)}</Text>
+          <View style={tw`items-center mb-2`}>
+            <Text
+              style={tw.style(`text-white text-lg`, {
+                fontFamily: "Cabin_400Regular",
+              })}
+            >
+              You’re now marked free for
+            </Text>
+
+            <Text
+              style={tw.style(`text-text-1 text-2xl mt-3`, {
+                fontFamily: "Cabin_700Bold",
+              })}
+            >
+              {msToTime(timer)} mins
+            </Text>
+
+            <TouchableOpacity onPress={markBusy}>
+              <Text
+                style={tw.style(`text-gray-4 text-lg mt-5`, {
+                  fontFamily: "Cabin_400Regular",
+                })}
+              >
+                cancel
+              </Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <Button

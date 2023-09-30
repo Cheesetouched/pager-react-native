@@ -7,7 +7,20 @@ import useUsers from "@hooks/firestore/useUsers";
 export default function useCoreAction() {
   const Users = useUsers();
 
-  const pageFriends = useCallback(
+  const markBusy = useCallback(
+    async (uid) => {
+      try {
+        Users.update(uid, { freeTill: null });
+
+        return { success: true };
+      } catch (error) {
+        throw error;
+      }
+    },
+    [Users],
+  );
+
+  const markFree = useCallback(
     async (uid) => {
       try {
         Users.update(uid, {
@@ -24,8 +37,9 @@ export default function useCoreAction() {
 
   return useMemo(
     () => ({
-      pageFriends,
+      markBusy,
+      markFree,
     }),
-    [pageFriends],
+    [markBusy, markFree],
   );
 }

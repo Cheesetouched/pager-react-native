@@ -6,13 +6,13 @@ import useFirebase from "@hooks/useFirebase";
 import useCoreAction from "@hooks/useCoreAction";
 import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 
-export default function usePageFriends(props = {}) {
+export default function useMarkFree(props = {}) {
   const { onSuccess } = props;
   const { user } = useFirebase();
   const update = useOptimisticUpdate();
-  const { pageFriends } = useCoreAction();
+  const { markFree } = useCoreAction();
 
-  const { isLoading, mutate } = useMutation(() => pageFriends(user?.uid), {
+  const { isLoading, mutate } = useMutation(() => markFree(user?.uid), {
     onMutate: () => {
       update(["user", user?.uid], (old) => ({
         ...old,
@@ -24,8 +24,8 @@ export default function usePageFriends(props = {}) {
 
   return useMemo(
     () => ({
-      paging: isLoading,
-      pageFriends: mutate,
+      markingFree: isLoading,
+      markFree: mutate,
     }),
     [isLoading, mutate],
   );
