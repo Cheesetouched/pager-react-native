@@ -31,7 +31,7 @@ export default function useCoreAction() {
 
         PushNotification.notifyFriends(uid, {
           title: "Someone is free!",
-          message: "Mark yourself as free to see who it is!",
+          body: "Mark yourself as free to see who it is!",
         });
         return { success: true };
       } catch (error) {

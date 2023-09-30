@@ -62,7 +62,6 @@ export default function Name() {
             maxLength={25}
             placeholder="Your name please?"
             ref={nameRef}
-            trim
           />
 
           <Button onPress={submit}>Next</Button>

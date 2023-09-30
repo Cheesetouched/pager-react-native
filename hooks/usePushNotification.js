@@ -26,13 +26,13 @@ export default function usePushNotification() {
   const Users = useUsers();
 
   const notifyFriends = useCallback(
-    async (uid, { title, message }) => {
+    async (uid, { data, title, body }) => {
       const user = await Users.get(uid);
       const friends = await Users.getFriends(user?.friends);
 
       friends.map(({ pushToken }) => {
         if (valid(pushToken)) {
-          send(pushToken, { title, message });
+          send(pushToken, { data, title, body });
         }
       });
     },
@@ -40,11 +40,11 @@ export default function usePushNotification() {
   );
 
   const notifyUser = useCallback(
-    async (uid, { title, message }) => {
+    async (uid, { data, title, body }) => {
       const { pushToken } = await Users.get(uid);
 
       if (valid(pushToken)) {
-        send(pushToken, { title, message });
+        send(pushToken, { data, title, body });
       }
     },
     [Users, send],
@@ -59,8 +59,9 @@ export default function usePushNotification() {
 
       if (valid(sender?.pushToken)) {
         send(sender?.pushToken, {
+          data: { action: "request_accepted" },
           title: accepter?.name,
-          message: "accepted your friend request!",
+          body: "accepted your friend request!",
         });
       }
     },
@@ -76,19 +77,21 @@ export default function usePushNotification() {
 
       if (valid(addee?.pushToken)) {
         send(addee?.pushToken, {
+          data: { action: "request_sent" },
           title: adder?.name,
-          message: "sent you a friend request!",
+          body: "sent you a friend request!",
         });
       }
     },
     [Users, send],
   );
 
-  const send = useCallback(async (to, { title, message }) => {
+  const send = useCallback(async (to, { data = {}, title, body }) => {
     return await sendRequest({
       to,
       title,
-      message,
+      body,
+      data,
       sound: "default",
     });
   }, []);
