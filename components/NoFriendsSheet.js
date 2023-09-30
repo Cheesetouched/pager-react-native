@@ -28,7 +28,7 @@ const NoFriendsSheet = forwardRef((_, ref) => {
           style={tw`bg-black/50 flex flex-1`}
         />
 
-        <View style={tw`bg-bg h-60 p-10 rounded-full`}>
+        <View style={tw`bg-bg h-60 p-10`}>
           <Text
             style={tw.style(`text-center text-xl text-white px-5`, {
               fontFamily: "Cabin_700Bold",

@@ -41,11 +41,6 @@ export default function Layout() {
           <Stack.Screen name="index" options={{ headerShown: false }} />
 
           <Stack.Screen
-            name="invite_options"
-            options={{ presentation: "modal" }}
-          />
-
-          <Stack.Screen
             name="contact"
             options={{
               presentation: "modal",

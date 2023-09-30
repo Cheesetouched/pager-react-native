@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Linking, Text, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -16,11 +16,17 @@ import ExampleUser2 from "@assets/example_2.png";
 import ContactCard from "@components/ContactCard";
 import RequestCard from "@components/RequestCard";
 import ExampleUser from "@components/ExampleUser";
+import InviteSheet from "@components/InviteSheet";
 import PermissionBox from "@components/PermissionBox";
 
 export default function Friends() {
   const { userData } = useUser();
+  const inviteSheetRef = useRef();
   const params = useLocalSearchParams();
+
+  const onInvite = useCallback((number) => {
+    inviteSheetRef?.current?.invite(number);
+  }, []);
 
   const userPhone = useMemo(() => {
     if (params?.mode === "onboarding") {
@@ -34,7 +40,6 @@ export default function Friends() {
     contacts,
     friendsOnApp,
     invites,
-    loadingInvites,
     permission,
     ready,
     requestContacts,
@@ -79,7 +84,7 @@ export default function Friends() {
                 <ContactListHeader
                   friendsOnApp={friendsOnApp}
                   invites={invites}
-                  loadingInvites={loadingInvites}
+                  onInvite={onInvite}
                 />
               }
               ListEmptyComponent={<NoContacts />}
@@ -87,7 +92,9 @@ export default function Friends() {
               data={contacts}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
-              renderItem={({ item }) => <ContactCard data={item} />}
+              renderItem={({ item }) => (
+                <ContactCard data={item} onInvite={onInvite} />
+              )}
               showsVerticalScrollIndicator={false}
             />
           </>
@@ -98,11 +105,13 @@ export default function Friends() {
           />
         )}
       </View>
+
+      <InviteSheet ref={inviteSheetRef} />
     </SafeView>
   );
 }
 
-const ContactListHeader = memo(({ friendsOnApp, invites }) => {
+const ContactListHeader = memo(({ friendsOnApp, invites, onInvite }) => {
   const { userData } = useUser();
 
   return (
@@ -140,7 +149,9 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
                 if (userData?.pendingRequests?.includes(item?.id)) {
                   return <RequestCard data={item} />;
                 } else {
-                  return <ContactCard data={item} type="user" />;
+                  return (
+                    <ContactCard data={item} onInvite={onInvite} type="user" />
+                  );
                 }
               }}
               showsVerticalScrollIndicator={false}
@@ -170,7 +181,9 @@ const ContactListHeader = memo(({ friendsOnApp, invites }) => {
                 if (userData?.pendingRequests?.includes(item?.objectID)) {
                   return <RequestCard data={item} />;
                 } else {
-                  return <ContactCard data={item} type="user" />;
+                  return (
+                    <ContactCard data={item} onInvite={onInvite} type="user" />
+                  );
                 }
               }}
               showsVerticalScrollIndicator={false}

@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { Text, View } from "react-native";
 
-import { router } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 
 import tw from "@utils/tailwind";
@@ -25,7 +24,7 @@ const getInitials = (name) => {
   }
 };
 
-export default function ContactCard({ data, type = "contact" }) {
+export default function ContactCard({ data, onInvite, type = "contact" }) {
   const { userData } = useUser();
   const { alert } = useAppContext();
   const { addFriend } = useAddFriend();
@@ -41,16 +40,8 @@ export default function ContactCard({ data, type = "contact" }) {
   }, [data, userData]);
 
   const onSuccess = useCallback(
-    (_, { number }) => {
-      router.push({
-        pathname: "/invite_options",
-        params: {
-          name: data?.name?.split(" ")[0].toLowerCase(),
-          number,
-        },
-      });
-    },
-    [data?.name],
+    (_, { number }) => onInvite(number),
+    [onInvite],
   );
 
   const { inviting, inviteUser } = useInviteUser({ onSuccess });
