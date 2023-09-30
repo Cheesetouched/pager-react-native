@@ -97,6 +97,16 @@ export default function Friends() {
               )}
               showsVerticalScrollIndicator={false}
             />
+
+            {params?.referrer === "onboarding" ? (
+              <Button
+                onPress={() => router.push("/home")}
+                variant="dark"
+                style="mt-2 mb-4"
+              >
+                Take me to the app
+              </Button>
+            ) : null}
           </>
         ) : (
           <NoPermissionView

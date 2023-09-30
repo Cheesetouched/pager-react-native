@@ -17,7 +17,10 @@ export default function Process() {
   const { createUser } = useCreateUser({
     onSuccess: () => {
       remove("checkpoint");
-      router.replace("friends");
+      router.replace({
+        pathname: "/friends",
+        params: { referrer: "onboarding" },
+      });
     },
   });
 
