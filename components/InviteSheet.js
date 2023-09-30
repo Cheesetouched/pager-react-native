@@ -69,7 +69,6 @@ const InviteSheet = forwardRef((_, ref) => {
             <TouchableOpacity
               style={tw`items-center gap-y-3`}
               onPress={() => {
-                console.log(number);
                 Linking.openURL(
                   `whatsapp://send?text=${inviteText}&phone=${number}`,
                 );

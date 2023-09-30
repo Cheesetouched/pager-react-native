@@ -95,7 +95,7 @@ export default function useContacts(props = {}) {
 
       return {
         processed: [...withPhotos, ...withoutPhotos],
-        numbersOnly: allNumbers,
+        numbersOnly: [...new Set(allNumbers)],
       };
     },
     [userPhone],

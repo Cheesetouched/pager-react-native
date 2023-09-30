@@ -24,6 +24,7 @@ function numbersToQueries(numbers) {
 export default function useAlgolia() {
   const contactsSearch = useCallback(async (numbers) => {
     const allHits = [];
+    const objectIDs = [];
     const queryList = numbersToQueries(numbers);
 
     const chunkResults = await Promise.all(
@@ -37,7 +38,10 @@ export default function useAlgolia() {
 
     flattened.map((result) => {
       if (result.nbHits > 0) {
-        allHits.push(result.hits[0]);
+        if (!objectIDs.includes(result.hits[0]?.objectID)) {
+          objectIDs.push(result.hits[0]?.objectID);
+          allHits.push(result.hits[0]);
+        }
       }
     });
 
