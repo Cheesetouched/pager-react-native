@@ -47,7 +47,7 @@ export default function Home() {
       const isUserFree = isFree(userData?.freeTill);
 
       userData?.friendList?.map((friend) => {
-        if (friend?.freeTill) {
+        if (isFree(friend?.freeTill)) {
           free.push(friend);
         } else {
           busy.push(friend);

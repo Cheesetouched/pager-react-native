@@ -54,7 +54,8 @@ export default function useFriendGraph() {
       try {
         return await Promise.all(
           friends.map(async (uid) => {
-            return await Users.get(uid);
+            const user = await Users.get(uid);
+            return { ...user, freeTill: user?.freeTill?.toMillis() };
           }),
         );
       } catch (error) {
