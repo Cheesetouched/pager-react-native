@@ -80,7 +80,11 @@ export default function useFirestore() {
         const userDoc = await getDoc(userRef);
 
         if (userDoc.exists()) {
-          const user = { id: userDoc.id, ...userDoc.data() };
+          const user = {
+            id: userDoc.id,
+            ...userDoc.data(),
+            freeTill: userDoc?.data()?.freeTill?.toMillis(),
+          };
 
           if (withFriends) {
             user["friendList"] = await getFriends(user?.friends);

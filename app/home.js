@@ -13,17 +13,20 @@ import tw from "@utils/tailwind";
 import User from "@components/User";
 import useUser from "@hooks/useUser";
 import Button from "@components/Button";
+import { isFree } from "@utils/helpers";
 import SafeView from "@components/SafeView";
 import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
 import NoFriendsSheet from "@components/NoFriendsSheet";
+import usePageFriends from "@hooks/mutations/usePageFriends";
 
 export default function Home() {
   const noFriendsRef = useRef();
   const pageSheetRef = useRef();
   const [busy, setBusy] = useState();
   const [free, setFree] = useState();
+  const { pageFriends } = usePageFriends();
   const [ready, setReady] = useState(false);
   const { userData, userLoading } = useUser({ withFriends: true });
 
@@ -47,7 +50,7 @@ export default function Home() {
       setBusy(busy);
       setFree(free);
 
-      if (free?.length > 0 && !userData?.freeTill) {
+      if (free?.length > 0 && !isFree(userData?.freeTill)) {
         router.push("/constraint");
         setTimeout(() => {
           setReady(true);
@@ -122,20 +125,25 @@ export default function Home() {
           </View>
         )}
 
-        <Button
-          onPress={() => {
-            if (userData?.friendList?.length > 0) {
-              pageSheetRef?.current?.show();
-            } else {
-              noFriendsRef?.current?.show();
-            }
-          }}
-          textStyle="leading-tight"
-          style="mb-4"
-          variant="dark"
-        >
-          Page friends 📟
-        </Button>
+        {isFree(userData?.freeTill) ? (
+          <View></View>
+        ) : (
+          <Button
+            loading={userLoading}
+            onPress={() => {
+              if (userData?.friendList?.length > 0) {
+                pageSheetRef?.current?.show();
+              } else {
+                noFriendsRef?.current?.show();
+              }
+            }}
+            textStyle="leading-tight"
+            style="mb-4"
+            variant="dark"
+          >
+            Page friends 📟
+          </Button>
+        )}
       </View>
 
       <PageSheet ref={pageSheetRef} />

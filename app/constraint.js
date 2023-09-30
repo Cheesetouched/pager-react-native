@@ -6,8 +6,11 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
+import usePageFriends from "@hooks/mutations/usePageFriends";
 
 export default function Constraint() {
+  const { pageFriends } = usePageFriends();
+
   return (
     <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
       <SafeAreaProvider>
@@ -26,7 +29,14 @@ export default function Constraint() {
           </View>
 
           <View style={tw`mb-4`}>
-            <Button onPress={router.back}>Yep, I'm free now</Button>
+            <Button
+              onPress={() => {
+                router.back();
+                //pageFriends();
+              }}
+            >
+              Yep, I'm free now
+            </Button>
           </View>
         </SafeAreaView>
       </SafeAreaProvider>

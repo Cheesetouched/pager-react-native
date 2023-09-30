@@ -1,12 +1,12 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { Modal, Pressable, Text, View } from "react-native";
 
-import { router } from "expo-router";
-
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
+import usePageFriends from "@hooks/mutations/usePageFriends";
 
 const PageSheet = forwardRef((_, ref) => {
+  const { pageFriends } = usePageFriends();
   const [visible, setVisible] = useState(false);
 
   useImperativeHandle(ref, () => ({
@@ -41,8 +41,8 @@ const PageSheet = forwardRef((_, ref) => {
           <View style={tw`items-center mt-10`}>
             <Button
               onPress={() => {
+                pageFriends();
                 setVisible(false);
-                router.push("/friends");
               }}
               style="w-60"
             >

@@ -1,8 +1,20 @@
 import * as ImageManipulator from "expo-image-manipulator";
 
-export const cleanupPhone = (phone) => {
+export function isFree(freeTill) {
+  if (!freeTill) {
+    return false;
+  }
+
+  if (Date.now() <= freeTill) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export function cleanupPhone(phone) {
   return phone.trim().replace(/\s/g, "");
-};
+}
 
 export async function getBlobFromUri(uri) {
   return await new Promise((resolve, reject) => {
