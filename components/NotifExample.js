@@ -7,7 +7,7 @@ export default function NotifExample({ style, subtitle, title }) {
   return (
     <View
       style={tw.style(
-        `flex flex-row bg-white opacity-80 rounded-[14px] p-[10px]`,
+        `flex flex-row bg-white opacity-80 rounded-[14px] p-3`,
         style,
       )}
     >

@@ -114,9 +114,9 @@ export default function Notification() {
             </Button>
 
             <NotifExample
-              title="Someone paged!"
-              subtitle="Page back to see who it is 📟"
-              style={{ marginTop: 100, transform: [{ rotate: "-1.5deg" }] }}
+              title="Evan paged you!"
+              subtitle="Let them know if you're free to chat"
+              style={{ marginTop: 80, transform: [{ rotate: "-1.5deg" }] }}
             />
           </View>
         ) : (
@@ -142,8 +142,8 @@ export default function Notification() {
             </Text>
 
             <NotifExample
-              title="One of your friends is free!"
-              subtitle="Mark yourself as free to see who it is!"
+              title="Evan paged you!"
+              subtitle="Let them know if you're free to chat"
               style={{ marginTop: 80, transform: [{ rotate: "-1.5deg" }] }}
             />
           </View>

@@ -65,7 +65,7 @@ export default function Dp() {
         <View style={tw`flex flex-1 items-center`}>
           <Text
             style={tw.style(
-              `flex text-text-1 text-4xl font-medium leading-tight mt-2`,
+              `flex text-text-1 text-4xl font-medium leading-relaxed mt-2`,
               {
                 fontFamily: "Lalezar_400Regular",
               },
@@ -75,21 +75,24 @@ export default function Dp() {
           </Text>
 
           <Text
-            style={tw.style(`flex text-gray-4 text-base font-medium`, {
-              fontFamily: "Cabin_400Regular",
-            })}
+            style={tw.style(
+              `flex text-gray-4 text-base font-medium leading-none`,
+              {
+                fontFamily: "Cabin_400Regular",
+              },
+            )}
           >
             This is how your friends will see you here
           </Text>
 
-          <CurvyArrow style={tw`mt-3 my-8`} />
+          <CurvyArrow style={tw`mt-3 mb-5`} />
 
           <ImageSelect
             allowsEditing
             disabled={uploading}
             error={error}
             onSelect={onImageSelected}
-            style="h-[150px] w-[150px]"
+            style="h-[250px] w-[250px] rounded-full border-4"
           />
         </View>
 
