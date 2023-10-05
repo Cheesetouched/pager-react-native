@@ -7,9 +7,9 @@ import {
   View,
 } from "react-native";
 
-import { SplashScreen, router } from "expo-router";
 import * as Notifications from "expo-notifications";
 import { differenceInMilliseconds } from "date-fns";
+import { SplashScreen, router, useNavigation } from "expo-router";
 
 import tw from "@utils/tailwind";
 import User from "@components/User";
@@ -17,6 +17,7 @@ import useUser from "@hooks/useUser";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useInterval from "@hooks/useInterval";
+import useFirebase from "@hooks/useFirebase";
 import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
@@ -28,6 +29,7 @@ import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 export default function Home() {
   const noFriendsRef = useRef();
   const pageSheetRef = useRef();
+  const navigation = useNavigation();
   const { markBusy } = useMarkBusy();
   const [busy, setBusy] = useState();
   const [free, setFree] = useState();
@@ -37,6 +39,15 @@ export default function Home() {
   const [ready, setReady] = useState(false);
   const { userData, userLoading } = useUser({ withFriends: true });
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
+
+  const { logout } = useFirebase({
+    onLogout: () => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "(onboarding)/handle" }],
+      });
+    },
+  });
 
   useEffect(() => {
     SplashScreen.hideAsync();
@@ -115,7 +126,7 @@ export default function Home() {
   return (
     <SafeView>
       <View style={tw`flex flex-1 px-6 pt-4`}>
-        <Header onSearch={() => router.push("/friends")} />
+        <Header onLogout={logout} onSearch={() => router.push("/friends")} />
 
         {userData?.friendList?.length > 0 ? (
           <View style={tw`flex flex-1 mb-2`}>
@@ -271,16 +282,18 @@ const FreeFriends = memo(({ free }) => {
   );
 });
 
-function Header({ onSearch }) {
+function Header({ onLogout, onSearch }) {
   return (
     <View style={tw`flex flex-row justify-center mb-2`}>
-      <Text
-        style={tw.style(`text-3xl text-text-1`, {
-          fontFamily: "Lalezar_400Regular",
-        })}
-      >
-        pager
-      </Text>
+      <TouchableOpacity onPress={onLogout}>
+        <Text
+          style={tw.style(`text-3xl text-text-1`, {
+            fontFamily: "Lalezar_400Regular",
+          })}
+        >
+          pager
+        </Text>
+      </TouchableOpacity>
 
       <TouchableOpacity onPress={onSearch} style={tw`absolute right-0`}>
         <SearchIcon />

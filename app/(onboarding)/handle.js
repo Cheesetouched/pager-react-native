@@ -102,7 +102,11 @@ export default function Handle() {
             whitespace={false}
           />
 
-          <Button disabled={checking} onPress={submit} variant="dark">
+          <Button
+            disabled={checking || handle !== debounced}
+            onPress={submit}
+            variant="dark"
+          >
             Reserve Handle
           </Button>
         </View>

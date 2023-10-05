@@ -1,4 +1,4 @@
-import { AppState, Platform } from "react-native";
+import { Platform } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import * as Device from "expo-device";
@@ -42,26 +42,7 @@ export default function useNotifications(props = {}) {
         requestNotifications();
       }
     });
-  }, [onGranted, requestNotifications]);
-
-  useEffect(() => {
-    const stateListener = AppState.addEventListener(
-      "change",
-      async (appState) => {
-        if (appState === "active") {
-          Notifications.getPermissionsAsync().then((permission) => {
-            if (permission.granted) {
-              requestNotifications();
-            }
-          });
-        }
-      },
-    );
-
-    return () => {
-      stateListener.remove();
-    };
-  }, [onGranted, requestNotifications]);
+  }, [requestNotifications]);
 
   return useMemo(
     () => ({
