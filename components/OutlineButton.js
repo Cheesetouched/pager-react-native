@@ -10,18 +10,27 @@ export default function OutlineButton({
   onPress,
   style,
   textStyle,
+  variant = "main",
 }) {
   return (
     <TouchableOpacity
       onPress={() => {
         if (!disabled && !loading) {
-          onPress();
+          if (onPress) {
+            onPress();
+          }
         }
       }}
       style={tw.style(
-        `flex h-[50px] justify-center rounded-xl`,
+        `flex h-[50px] justify-center rounded-full`,
         `${style ? style : ""}`,
-        `${loading ? "border border-accent/75" : "border border-accent"}`,
+        `${
+          loading
+            ? `border ${
+                variant === "main" ? "border-accent/75" : "border-gray-2/75"
+              }`
+            : `border ${variant === "main" ? "border-accent" : "border-gray-2"}`
+        }`,
       )}
     >
       {loading ? (

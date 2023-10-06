@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import { Linking, Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
@@ -5,14 +6,26 @@ import { router, useLocalSearchParams } from "expo-router";
 
 import tw from "@utils/tailwind";
 import User from "@components/User";
+import Button from "@components/Button";
 import PhoneIcon from "@assets/svgs/PhoneIcon";
+import usePage from "@hooks/mutations/usePage";
 import IMessageIcon from "@assets/svgs/IMessageIcon";
 import WhatsAppIcon from "@assets/svgs/WhatsAppIcon";
 import FacetimeIcon from "@assets/svgs/FacetimeIcon";
+import OutlineButton from "@components/OutlineButton";
 
 export default function Contact() {
   const { data } = useLocalSearchParams();
+  const [paged, setPaged] = useState(false);
   const parsed = JSON.parse(data);
+
+  const onSuccess = useCallback(() => {
+    setPaged(true);
+  }, []);
+
+  const { page, paging } = usePage({
+    onSuccess,
+  });
 
   return (
     <BlurView
@@ -27,6 +40,7 @@ export default function Contact() {
         titleContainerStyle="h-[30px]"
         titleStyle="text-base leading-relaxed px-1"
         nameStyle="text-white text-xl"
+        stroke={parsed?.paged}
       />
 
       <View style={tw`flex flex-row mt-14 gap-x-8`}>
@@ -65,7 +79,26 @@ export default function Contact() {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={router.back} style={tw`mt-44`}>
+      {!parsed?.free ? (
+        <View style={tw`w-60 mt-20`}>
+          {paged || parsed?.paged ? (
+            <OutlineButton textStyle="text-base text-gray-2" variant="dark">
+              PAGE SENT!
+            </OutlineButton>
+          ) : (
+            <Button
+              loading={paging}
+              onPress={() => page(parsed?.id)}
+              textStyle="text-sm leading-tight"
+              variant="dark"
+            >
+              {`PAGE ${parsed?.name?.split(" ")[0].toUpperCase()}`} 📟
+            </Button>
+          )}
+        </View>
+      ) : null}
+
+      <TouchableOpacity onPress={router.back} style={tw`mt-30`}>
         <Text
           style={tw.style(`text-text-2 text-sm`, {
             fontFamily: "Cabin_700Bold",

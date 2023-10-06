@@ -162,6 +162,7 @@ export default function Home() {
                         data: JSON.stringify({
                           ...item,
                           free: false,
+                          paged: item?.sent,
                         }),
                       },
                     })

@@ -18,7 +18,9 @@ export default function Button({
     <TouchableOpacity
       onPress={() => {
         if (!disabled && !loading) {
-          onPress();
+          if (onPress) {
+            onPress();
+          }
         }
       }}
       style={tw.style(
