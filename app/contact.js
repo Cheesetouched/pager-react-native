@@ -67,11 +67,11 @@ export default function Contact() {
 
       <TouchableOpacity onPress={router.back} style={tw`mt-44`}>
         <Text
-          style={tw.style(`text-text-2 text-lg`, {
+          style={tw.style(`text-text-2 text-sm`, {
             fontFamily: "Cabin_700Bold",
           })}
         >
-          Close
+          CLOSE
         </Text>
       </TouchableOpacity>
     </BlurView>
