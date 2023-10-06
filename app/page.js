@@ -1,16 +1,24 @@
-import { Text, View } from "react-native";
+import { useCallback } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
 
 import { BlurView } from "expo-blur";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import tw from "@utils/tailwind";
 import User from "@components/User";
 import Button from "@components/Button";
+import usePageResponse from "@hooks/mutations/usePageResponse";
 
 export default function Page() {
   const { from, pageId } = useLocalSearchParams();
   const parsed = JSON.parse(from);
+
+  const onSuccess = useCallback(() => router?.back(), []);
+
+  const { respond, responding } = usePageResponse({
+    onSuccess,
+  });
 
   return (
     <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
@@ -35,9 +43,42 @@ export default function Page() {
           >{`${parsed?.name?.split(" ")[0]} paged you`}</Text>
 
           <View style={tw`gap-y-5 mt-10`}>
-            <Button>I AM FREE</Button>
+            {responding ? (
+              <ActivityIndicator />
+            ) : (
+              <>
+                <Button
+                  onPress={() =>
+                    respond({
+                      pageId,
+                      response: {
+                        response: {
+                          free: true,
+                        },
+                      },
+                    })
+                  }
+                >
+                  I AM FREE
+                </Button>
 
-            <Button variant="dark">IGNORE</Button>
+                <Button
+                  onPress={() =>
+                    respond({
+                      pageId,
+                      response: {
+                        response: {
+                          free: false,
+                        },
+                      },
+                    })
+                  }
+                  variant="dark"
+                >
+                  IGNORE
+                </Button>
+              </>
+            )}
           </View>
         </SafeAreaView>
       </SafeAreaProvider>

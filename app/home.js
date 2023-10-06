@@ -54,36 +54,38 @@ export default function Home() {
       let pageDetails = null;
 
       friends.map((friend) => {
-        const sent = pages?.sent?.find((page) => {
+        let isFree = false;
+        let hasSentPage = false;
+
+        pages?.sent?.map((page) => {
           if (page?.to === friend?.id && isPageValid(page?.validTill)) {
-            return true;
-          } else {
-            return false;
-          }
-        });
+            hasSentPage = true;
 
-        const received = pages?.received?.find((page) => {
-          if (page?.from === friend?.id && isPageValid(page?.validTill)) {
-            if (pageDetails === null) {
-              if (!page?.response) {
-                pageDetails = {
-                  from: friend,
-                  pageId: page?.id,
-                };
-              }
+            if (page?.response?.free) {
+              isFree = true;
             }
-            return true;
-          } else {
-            return false;
           }
         });
 
-        if (received) {
+        pages?.received?.find((page) => {
+          if (page?.from === friend?.id && isPageValid(page?.validTill)) {
+            isFree = true;
+
+            if (pageDetails === null && !page?.response) {
+              pageDetails = {
+                from: friend,
+                pageId: page?.id,
+              };
+            }
+          }
+        });
+
+        if (isFree) {
           free.push(friend);
         } else {
           all.push({
             ...friend,
-            sent,
+            sent: hasSentPage,
           });
         }
       });

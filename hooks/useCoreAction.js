@@ -38,11 +38,23 @@ export default function useCoreAction() {
     [Pages],
   );
 
+  const respondToPage = useCallback(
+    async (pageId, response) => {
+      if (response?.free) {
+        // Send Notification
+      }
+
+      return await Pages.update(pageId, response);
+    },
+    [Pages],
+  );
+
   return useMemo(
     () => ({
       getPages,
       page,
+      respondToPage,
     }),
-    [getPages, page],
+    [getPages, page, respondToPage],
   );
 }

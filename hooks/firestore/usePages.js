@@ -4,10 +4,12 @@ import {
   Timestamp,
   addDoc,
   collection,
+  doc,
   getDocs,
   or,
   orderBy,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 
@@ -52,11 +54,20 @@ export default function usePages() {
     [pages],
   );
 
+  const update = useCallback(
+    async (uid, data) => {
+      const pageDoc = doc(firestore, "pages", uid);
+      return await setDoc(pageDoc, data, { merge: true });
+    },
+    [firestore],
+  );
+
   return useMemo(
     () => ({
       add,
       getAll,
+      update,
     }),
-    [add, getAll],
+    [add, getAll, update],
   );
 }
