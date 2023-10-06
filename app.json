@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "pager.",
+    "name": "pager.app",
     "slug": "pager",
     "scheme": "pager",
     "version": "1.0.0",
@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#181818"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "buildNumber": "1",
       "supportsTablet": false,
