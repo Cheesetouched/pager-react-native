@@ -12,13 +12,18 @@
       "resizeMode": "contain",
       "backgroundColor": "#181818"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "buildNumber": "1",
       "supportsTablet": false,
       "bundleIdentifier": "app.getpager",
       "config": {
         "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSContactsUsageDescription": "To bring on friends you want to use Pager with."
       }
     },
     "android": {
@@ -27,7 +32,11 @@
         "backgroundColor": "#181818"
       },
       "package": "app.getpager",
-      "versionCode": 1
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -43,7 +52,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "20a84571-fa1f-4307-b195-d65e7e51fbe5"
+        "projectId": "cfcac9f8-813f-4e5c-96ff-1d6caef5c302"
       }
     },
     "owner": "pingrishabh"
