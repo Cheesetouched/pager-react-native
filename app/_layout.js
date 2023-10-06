@@ -49,7 +49,7 @@ export default function Layout() {
           />
 
           <Stack.Screen
-            name="constraint"
+            name="page"
             options={{ presentation: "transparentModal" }}
           />
         </Stack>

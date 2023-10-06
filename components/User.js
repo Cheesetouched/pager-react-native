@@ -9,6 +9,7 @@ export default function User({
   free = false,
   nameStyle,
   onPress,
+  showName = true,
   stroke = false,
   title,
   titleContainerStyle,
@@ -45,13 +46,15 @@ export default function User({
         </View>
       </TouchableOpacity>
 
-      <Text
-        style={tw.style(`text-gray-4 text-sm text-center mt-5`, nameStyle, {
-          fontFamily: "Cabin_600SemiBold",
-        })}
-      >
-        {data?.name?.split(" ")[0]}
-      </Text>
+      {showName ? (
+        <Text
+          style={tw.style(`text-gray-4 text-sm text-center mt-5`, nameStyle, {
+            fontFamily: "Cabin_600SemiBold",
+          })}
+        >
+          {data?.name?.split(" ")[0]}
+        </Text>
+      ) : null}
     </View>
   );
 }

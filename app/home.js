@@ -51,6 +51,7 @@ export default function Home() {
     if (friends && pages) {
       const all = [];
       const free = [];
+      let pageDetails = null;
 
       friends.map((friend) => {
         const sent = pages?.sent?.find((page) => {
@@ -63,6 +64,14 @@ export default function Home() {
 
         const received = pages?.received?.find((page) => {
           if (page?.from === friend?.id && isPageValid(page?.validTill)) {
+            if (pageDetails === null) {
+              if (!page?.response) {
+                pageDetails = {
+                  from: friend,
+                  pageId: page?.id,
+                };
+              }
+            }
             return true;
           } else {
             return false;
@@ -81,6 +90,16 @@ export default function Home() {
 
       setAll(all);
       setFree(free);
+
+      if (pageDetails) {
+        router.push({
+          pathname: "/page",
+          params: {
+            from: JSON.stringify(pageDetails?.from),
+            pageId: pageDetails?.pageId,
+          },
+        });
+      }
     }
   }, [friends, pages]);
 
