@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "pager",
+    "name": "pager.",
     "slug": "pager",
     "scheme": "pager",
     "version": "1.0.0",
@@ -24,12 +24,20 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#181818"
       },
-      "package": "capp.getpager",
+      "package": "app.getpager",
       "versionCode": 1
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "To bring on friends you want to use Pager with."
+        }
+      ]
+    ],
     "extra": {
       "router": {
         "origin": false
