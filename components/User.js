@@ -43,7 +43,7 @@ export default function User({
               fontFamily: "Cabin_700Bold",
             })}
           >
-            {title ? title : stroke ? "📟" : free ? "1hr 👋🏻" : "😴"}
+            {title ? title : free ? "1hr 👋🏻" : stroke ? "📟" : "😴"}
           </Text>
         </View>
       </TouchableOpacity>
