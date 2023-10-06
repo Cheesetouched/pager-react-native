@@ -19,12 +19,14 @@ import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
 import NoFriendsSheet from "@components/NoFriendsSheet";
+import useGetFriends from "@hooks/queries/useGetFriends";
 
 export default function Home() {
   const noFriendsRef = useRef();
   const pageSheetRef = useRef();
+  const { userData } = useUser();
   const navigation = useNavigation();
-  const { userData, userLoading } = useUser();
+  const { friends } = useGetFriends(userData?.friends);
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
   const { logout } = useFirebase({
@@ -49,11 +51,11 @@ export default function Home() {
     }
   }, [lastNotificationResponse]);
 
-  if (!userData) {
+  if (!userData || !friends) {
     return (
       <SafeView>
         <View style={tw`flex flex-1 items-center justify-center`}>
-          {userLoading ? <ActivityIndicator size="large" /> : null}
+          <ActivityIndicator size="large" />
         </View>
       </SafeView>
     );
@@ -64,37 +66,35 @@ export default function Home() {
       <View style={tw`flex flex-1 px-6 pt-2`}>
         <Header onLogout={logout} onSearch={() => router.push("/friends")} />
 
-        {userData?.friendList?.length > 0 ? (
+        {friends?.length > 0 ? (
           <View style={tw`flex flex-1 mb-2`}>
-            {false ? (
-              <FlatList
-                ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-                ListHeaderComponent={<FreeFriends free={[]} />}
-                columnWrapperStyle={tw`justify-between`}
-                contentContainerStyle={tw`pt-6 pb-10`}
-                data={[]}
-                estimatedItemSize={114}
-                numColumns={3}
-                renderItem={({ item }) => (
-                  <User
-                    data={item}
-                    disabled
-                    onPress={() =>
-                      router.push({
-                        pathname: "/contact",
-                        params: {
-                          data: JSON.stringify({
-                            ...item,
-                            free: false,
-                          }),
-                        },
-                      })
-                    }
-                  />
-                )}
-                showsVerticalScrollIndicator={false}
-              />
-            ) : null}
+            <FlatList
+              ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
+              ListHeaderComponent={<FreeFriends free={[]} />}
+              columnWrapperStyle={tw`justify-between`}
+              contentContainerStyle={tw`pt-6 pb-10`}
+              data={friends}
+              estimatedItemSize={114}
+              numColumns={3}
+              renderItem={({ item }) => (
+                <User
+                  data={item}
+                  disabled
+                  onPress={() =>
+                    router.push({
+                      pathname: "/contact",
+                      params: {
+                        data: JSON.stringify({
+                          ...item,
+                          free: false,
+                        }),
+                      },
+                    })
+                  }
+                />
+              )}
+              showsVerticalScrollIndicator={false}
+            />
           </View>
         ) : (
           <View style={tw`flex flex-1 mb-2`}>

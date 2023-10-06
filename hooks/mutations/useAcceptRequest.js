@@ -30,7 +30,7 @@ export default function useAcceptRequest(props = {}) {
         }
       },
       onSuccess: () => {
-        queryClient.invalidateQueries(["user", user?.uid]);
+        queryClient.invalidateQueries(["friends"]);
 
         if (onSuccess) {
           onSuccess();
