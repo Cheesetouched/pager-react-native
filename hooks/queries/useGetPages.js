@@ -19,6 +19,7 @@ export default function useGetPages() {
     () => ({
       getting: isInitialLoading || isFetching,
       pages: data,
+      refetchingPages: isFetching,
     }),
     [data, isFetching, isInitialLoading],
   );

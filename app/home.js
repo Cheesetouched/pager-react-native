@@ -2,12 +2,14 @@ import { memo, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  RefreshControl,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
 import * as Notifications from "expo-notifications";
+import { useQueryClient } from "@tanstack/react-query";
 import { SplashScreen, router, useNavigation } from "expo-router";
 
 import tw from "@utils/tailwind";
@@ -27,11 +29,12 @@ export default function Home() {
   const noFriendsRef = useRef();
   const pageSheetRef = useRef();
   const { userData } = useUser();
-  const { pages } = useGetPages();
   const [all, setAll] = useState();
   const [free, setFree] = useState();
   const navigation = useNavigation();
-  const { friends } = useGetFriends(userData?.friends);
+  const queryClient = useQueryClient();
+  const { pages, refetchingPages } = useGetPages();
+  const { friends, refetchingFriends } = useGetFriends(userData?.friends);
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
   const { logout } = useFirebase({
@@ -139,6 +142,15 @@ export default function Home() {
               data={all}
               estimatedItemSize={114}
               numColumns={3}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refetchingFriends || refetchingPages}
+                  onRefresh={() => {
+                    queryClient.invalidateQueries(["friends"]);
+                    queryClient.invalidateQueries(["pages", userData?.id]);
+                  }}
+                />
+              }
               renderItem={({ item }) => (
                 <User
                   data={item}

@@ -25,6 +25,7 @@ export default function useGetFriends(friends) {
     () => ({
       checking: isInitialLoading || isFetching,
       friends: data,
+      refetchingFriends: isFetching,
     }),
     [data, isFetching, isInitialLoading],
   );
