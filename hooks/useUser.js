@@ -4,16 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import useFirebase from "@hooks/useFirebase";
 import useFirestore from "@hooks/useFirestore";
 
-export default function useUser(props = {}) {
+export default function useUser() {
   const { user } = useFirebase();
   const { getUser } = useFirestore();
-  const { withFriends = false } = props;
 
   const { data, isInitialLoading, isFetching } = useQuery(
     ["user", user?.uid],
-    () => getUser(user?.uid, withFriends),
+    () => getUser(user?.uid),
     {
       enabled: user !== null && user !== undefined,
+      staleTime: 10 * (1000 * 60),
     },
   );
 

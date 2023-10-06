@@ -12,10 +12,8 @@ import {
 } from "firebase/firestore";
 
 import useFirebase from "@hooks/useFirebase";
-import useUsers from "./firestore/useUsers";
 
 export default function useFirestore() {
-  const Users = useUsers();
   const { firestore } = useFirebase();
 
   const checkHandle = useCallback(
@@ -74,7 +72,7 @@ export default function useFirestore() {
   );
 
   const getUser = useCallback(
-    async (id, withFriends = false) => {
+    async (id) => {
       try {
         const userRef = doc(firestore, "users", id);
         const userDoc = await getDoc(userRef);
@@ -83,12 +81,7 @@ export default function useFirestore() {
           const user = {
             id: userDoc.id,
             ...userDoc.data(),
-            freeTill: userDoc?.data()?.freeTill?.toMillis(),
           };
-
-          if (withFriends) {
-            user["friendList"] = await Users.getFriends(user?.friends);
-          }
 
           return user;
         }
@@ -98,7 +91,7 @@ export default function useFirestore() {
         throw error;
       }
     },
-    [Users, firestore],
+    [firestore],
   );
 
   const getUserByNumber = useCallback(

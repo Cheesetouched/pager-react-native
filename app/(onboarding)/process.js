@@ -37,7 +37,6 @@ export default function Process() {
       };
 
       userData["friends"] = [];
-      userData["freeTill"] = null;
       userData["sentRequests"] = [];
       userData["pendingRequests"] = [];
 

@@ -16,18 +16,6 @@ export default function useUsers() {
     [firestore],
   );
 
-  const getFriends = useCallback(
-    async (friends) => {
-      return await Promise.all(
-        friends.map(async (uid) => {
-          const user = await get(uid);
-          return { ...user, freeTill: user?.freeTill?.toMillis() };
-        }),
-      );
-    },
-    [get],
-  );
-
   const update = useCallback(
     async (uid, data) => {
       const userDoc = doc(firestore, "users", uid);
@@ -36,5 +24,5 @@ export default function useUsers() {
     [firestore],
   );
 
-  return { get, getFriends, update };
+  return { get, update };
 }

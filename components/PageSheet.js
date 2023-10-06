@@ -3,10 +3,8 @@ import { Modal, Pressable, Text, View } from "react-native";
 
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
-import useMarkFree from "@hooks/mutations/useMarkFree";
 
 const PageSheet = forwardRef((_, ref) => {
-  const { markFree } = useMarkFree();
   const [visible, setVisible] = useState(false);
 
   useImperativeHandle(ref, () => ({
@@ -41,7 +39,6 @@ const PageSheet = forwardRef((_, ref) => {
           <View style={tw`items-center mt-10`}>
             <Button
               onPress={() => {
-                markFree();
                 setVisible(false);
               }}
               style="w-60"
