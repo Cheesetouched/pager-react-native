@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -15,6 +15,7 @@ import User from "@components/User";
 import useUser from "@hooks/useUser";
 import SafeView from "@components/SafeView";
 import useFirebase from "@hooks/useFirebase";
+import { isPageValid } from "@utils/helpers";
 import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
@@ -27,6 +28,8 @@ export default function Home() {
   const pageSheetRef = useRef();
   const { userData } = useUser();
   const { pages } = useGetPages();
+  const [all, setAll] = useState();
+  const [free, setFree] = useState();
   const navigation = useNavigation();
   const { friends } = useGetFriends(userData?.friends);
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
@@ -43,6 +46,43 @@ export default function Home() {
   useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
+
+  useEffect(() => {
+    if (friends && pages) {
+      const all = [];
+      const free = [];
+
+      friends.map((friend) => {
+        const sent = pages?.sent?.find((page) => {
+          if (page?.to === friend?.id && isPageValid(page?.validTill)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+
+        const received = pages?.received?.find((page) => {
+          if (page?.from === friend?.id && isPageValid(page?.validTill)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+
+        if (received) {
+          free.push(friend);
+        } else {
+          all.push({
+            ...friend,
+            sent,
+          });
+        }
+      });
+
+      setAll(all);
+      setFree(free);
+    }
+  }, [friends, pages]);
 
   useEffect(() => {
     if (
@@ -72,10 +112,10 @@ export default function Home() {
           <View style={tw`flex flex-1 mb-2`}>
             <FlatList
               ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-              ListHeaderComponent={<FreeFriends free={[]} />}
+              ListHeaderComponent={<FreeFriends all={all} free={free} />}
               columnWrapperStyle={tw`justify-between`}
               contentContainerStyle={tw`pt-6 pb-10`}
-              data={friends}
+              data={all}
               estimatedItemSize={114}
               numColumns={3}
               renderItem={({ item }) => (
@@ -93,6 +133,7 @@ export default function Home() {
                       },
                     })
                   }
+                  stroke={item?.sent}
                 />
               )}
               showsVerticalScrollIndicator={false}
@@ -122,7 +163,7 @@ export default function Home() {
   );
 }
 
-const FreeFriends = memo(({ free }) => {
+const FreeFriends = memo(({ all, free }) => {
   return (
     <View>
       {free?.length > 0 ? (
@@ -157,19 +198,22 @@ const FreeFriends = memo(({ free }) => {
                     },
                   })
                 }
+                stroke
               />
             )}
           />
         </>
       ) : null}
 
-      <Text
-        style={tw.style(`text-lg text-white leading-snug mb-6`, {
-          fontFamily: "Cabin_700Bold",
-        })}
-      >
-        All friends 💤
-      </Text>
+      {all?.length > 0 ? (
+        <Text
+          style={tw.style(`text-lg text-white leading-snug mb-6`, {
+            fontFamily: "Cabin_700Bold",
+          })}
+        >
+          All friends 💤
+        </Text>
+      ) : null}
     </View>
   );
 });

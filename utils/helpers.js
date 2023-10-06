@@ -20,12 +20,12 @@ export function msToTime(s) {
   return pad(mins) + ":" + pad(secs);
 }
 
-export function isFree(freeTill) {
-  if (!freeTill) {
+export function isPageValid(validTill) {
+  if (!validTill) {
     return false;
   }
 
-  if (Date.now() <= freeTill) {
+  if (Date.now() <= validTill) {
     return true;
   } else {
     return false;

@@ -9,6 +9,7 @@ export default function User({
   free = false,
   nameStyle,
   onPress,
+  stroke = false,
   title,
   titleContainerStyle,
   titleStyle,
@@ -17,7 +18,10 @@ export default function User({
     <View style={tw`flex flex-col`}>
       <TouchableOpacity onPress={onPress}>
         <View
-          style={tw`bg-gray-5 rounded-full h-[${dimension}px] w-[${dimension}px] shadow-lg`}
+          style={tw.style(
+            `bg-gray-5 rounded-full h-[${dimension}px] w-[${dimension}px] shadow-lg`,
+            `${stroke ? "border-2 border-accent-deep/90" : ""}`,
+          )}
         >
           <Image
             src={data?.dp}
