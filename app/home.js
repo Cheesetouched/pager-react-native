@@ -18,6 +18,7 @@ import useFirebase from "@hooks/useFirebase";
 import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
+import useGetPages from "@hooks/queries/useGetPages";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
 
@@ -25,6 +26,7 @@ export default function Home() {
   const noFriendsRef = useRef();
   const pageSheetRef = useRef();
   const { userData } = useUser();
+  const { pages } = useGetPages();
   const navigation = useNavigation();
   const { friends } = useGetFriends(userData?.friends);
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
@@ -51,7 +53,7 @@ export default function Home() {
     }
   }, [lastNotificationResponse]);
 
-  if (!userData || !friends) {
+  if (!userData || !friends || !pages) {
     return (
       <SafeView>
         <View style={tw`flex flex-1 items-center justify-center`}>

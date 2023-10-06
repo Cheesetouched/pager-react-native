@@ -2,12 +2,47 @@ import { useCallback, useMemo } from "react";
 
 import { Timestamp } from "firebase/firestore";
 
-import useUsers from "@hooks/firestore/useUsers";
-import usePushNotification from "@hooks/usePushNotification";
+import usePages from "@hooks/firestore/usePages";
 
 export default function useCoreAction() {
-  const Users = useUsers();
-  const PushNotification = usePushNotification();
+  const Pages = usePages();
 
-  return useMemo(() => ({}), []);
+  const getPages = useCallback(
+    async (uid) => {
+      const sent = [];
+      const received = [];
+      const pages = await Pages.getAll(uid);
+
+      pages.map((page) => {
+        if (page?.from === uid) {
+          sent.push(page);
+        } else if (page?.to === uid) {
+          received.push(page);
+        }
+      });
+
+      return { sent, received };
+    },
+    [Pages],
+  );
+
+  const page = useCallback(
+    async (from, to) => {
+      return await Pages.add({
+        from,
+        to,
+        sentAt: Timestamp.now(),
+        validTill: Timestamp.fromDate(new Date(Date.now() + 1000 * 60 * 60)),
+      });
+    },
+    [Pages],
+  );
+
+  return useMemo(
+    () => ({
+      getPages,
+      page,
+    }),
+    [getPages, page],
+  );
 }

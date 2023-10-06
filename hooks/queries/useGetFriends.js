@@ -9,9 +9,9 @@ export default function useGetFriends(friends) {
 
   const { data, isInitialLoading, isFetching } = useQuery(
     ["friends"],
-    async () => {
+    () => {
       if (friends?.length > 0) {
-        return await getFriends(friends);
+        return getFriends(friends);
       } else {
         return [];
       }
