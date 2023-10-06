@@ -43,6 +43,14 @@
         {
           "contactsPermission": "To bring on friends you want to use Pager with."
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
       ]
     ],
     "extra": {
