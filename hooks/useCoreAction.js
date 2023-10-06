@@ -3,9 +3,11 @@ import { useCallback, useMemo } from "react";
 import { Timestamp } from "firebase/firestore";
 
 import usePages from "@hooks/firestore/usePages";
+import usePushNotification from "@hooks/usePushNotification";
 
 export default function useCoreAction() {
   const Pages = usePages();
+  const PushNotification = usePushNotification();
 
   const getPages = useCallback(
     async (uid) => {
@@ -28,6 +30,8 @@ export default function useCoreAction() {
 
   const page = useCallback(
     async (from, to) => {
+      PushNotification.pageUser(from, to);
+
       return await Pages.add({
         from,
         to,
@@ -35,18 +39,18 @@ export default function useCoreAction() {
         validTill: Timestamp.fromDate(new Date(Date.now() + 1000 * 60 * 60)),
       });
     },
-    [Pages],
+    [Pages, PushNotification],
   );
 
   const respondToPage = useCallback(
-    async (pageId, response) => {
+    async ({ accepterUid, pageId, response, senderUid }) => {
       if (response?.free) {
-        // Send Notification
+        PushNotification.pageAccepted(accepterUid, senderUid);
       }
 
       return await Pages.update(pageId, response);
     },
-    [Pages],
+    [Pages, PushNotification],
   );
 
   return useMemo(

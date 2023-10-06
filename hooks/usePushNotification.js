@@ -50,6 +50,39 @@ export default function usePushNotification() {
     [Users, send],
   );
 
+  const pageAccepted = useCallback(
+    async (accepterUid, senderUid) => {
+      const [accepter, sender] = await Promise.all([
+        Users.get(accepterUid),
+        Users.get(senderUid),
+      ]);
+
+      if (valid(sender?.pushToken)) {
+        send(sender?.pushToken, {
+          title: `${accepter?.name?.split(" ")[0]} is free to chat! 👋🏻`,
+        });
+      }
+    },
+    [Users, send],
+  );
+
+  const pageUser = useCallback(
+    async (pagerUid, pageeUid) => {
+      const [pager, pagee] = await Promise.all([
+        Users.get(pagerUid),
+        Users.get(pageeUid),
+      ]);
+
+      if (valid(pagee?.pushToken)) {
+        send(pagee?.pushToken, {
+          title: `${pager?.name?.split(" ")[0]} paged you`,
+          body: "Let them know if you’re free to chat!",
+        });
+      }
+    },
+    [Users, send],
+  );
+
   const requestAccepted = useCallback(
     async (accepterUid, senderUid) => {
       const [accepter, sender] = await Promise.all([
@@ -100,10 +133,20 @@ export default function usePushNotification() {
     () => ({
       notifyFriends,
       notifyUser,
+      pageAccepted,
+      pageUser,
       requestAccepted,
       requestSent,
       send,
     }),
-    [notifyFriends, notifyUser, requestAccepted, requestSent, send],
+    [
+      notifyFriends,
+      notifyUser,
+      pageAccepted,
+      pageUser,
+      requestAccepted,
+      requestSent,
+      send,
+    ],
   );
 }

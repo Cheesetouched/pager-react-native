@@ -8,10 +8,9 @@ export default function usePageResponse(props = {}) {
   const { onSuccess } = props;
   const { respondToPage } = useCoreAction();
 
-  const { isLoading, mutate } = useMutation(
-    ({ pageId, response }) => respondToPage(pageId, response),
-    { onSuccess },
-  );
+  const { isLoading, mutate } = useMutation((data) => respondToPage(data), {
+    onSuccess,
+  });
 
   return useMemo(
     () => ({

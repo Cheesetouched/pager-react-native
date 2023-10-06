@@ -56,12 +56,14 @@ export default function Page() {
                     setResponse(true);
 
                     respond({
+                      accepterUid: userData?.id,
                       pageId,
                       response: {
                         response: {
                           free: true,
                         },
                       },
+                      senderUid: parsed?.id,
                     });
                   }}
                   textStyle="text-sm"
@@ -74,12 +76,14 @@ export default function Page() {
                     setResponse(false);
 
                     respond({
+                      accepterUid: userData?.id,
                       pageId,
                       response: {
                         response: {
                           free: false,
                         },
                       },
+                      senderUid: parsed?.id,
                     });
                   }}
                   textStyle="text-sm text-gray-2"
