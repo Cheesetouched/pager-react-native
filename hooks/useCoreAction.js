@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 
+import { addHours } from "date-fns";
 import { Timestamp } from "firebase/firestore";
 
 import usePages from "@hooks/firestore/usePages";
@@ -36,7 +37,7 @@ export default function useCoreAction() {
         from,
         to,
         sentAt: Timestamp.now(),
-        validTill: Timestamp.fromDate(new Date(Date.now() + 1000 * 60 * 60)),
+        validTill: Timestamp.fromDate(addHours(new Date(), 1)),
       });
     },
     [Pages, PushNotification],
@@ -46,6 +47,18 @@ export default function useCoreAction() {
     async ({ accepterUid, pageId, response, senderUid }) => {
       if (response?.response?.free) {
         PushNotification.pageAccepted(accepterUid, senderUid);
+      }
+
+      if (response?.response?.freeFrom) {
+        response["response"]["freeFrom"] = Timestamp.fromDate(
+          response?.response?.freeFrom,
+        );
+      }
+
+      if (response?.response?.freeTill) {
+        response["response"]["freeTill"] = Timestamp.fromDate(
+          response?.response?.freeTill,
+        );
       }
 
       return await Pages.update(pageId, response);

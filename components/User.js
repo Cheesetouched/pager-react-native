@@ -8,6 +8,7 @@ export default function User({
   dimension = "92",
   disabled = false,
   free = false,
+  nameOverride = null,
   nameStyle,
   onPress,
   showName = true,
@@ -15,7 +16,6 @@ export default function User({
   title,
   titleContainerStyle,
   titleStyle,
-  nameOverride = null,
 }) {
   return (
     <View style={tw`flex flex-col`}>
@@ -23,7 +23,13 @@ export default function User({
         <View
           style={tw.style(
             `bg-gray-5 rounded-full h-[${dimension}px] w-[${dimension}px] shadow-lg`,
-            `${stroke ? "p-[2px] border-2 border-accent-deep/90" : ""}`,
+            `${
+              stroke
+                ? `p-[2px] border-2 ${
+                    disabled ? "border-gray-4" : "border-accent-deep"
+                  }`
+                : ""
+            }`,
           )}
         >
           <Image

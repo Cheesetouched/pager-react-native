@@ -15,12 +15,17 @@ import OutlineButton from "@components/OutlineButton";
 import usePageResponse from "@hooks/mutations/usePageResponse";
 
 const current = new Date();
+const maximumDate = addHours(current, 12);
+
+const defaultDate = roundToNearestMinutes(addHours(current, 1), {
+  nearestTo: 15,
+  roundingMethod: "floor",
+});
+
 const minimumDate = roundToNearestMinutes(current, {
   nearestTo: 15,
   roundingMethod: "ceil",
 });
-const defaultDate = addHours(current, 1);
-const maximumDate = addHours(current, 12);
 
 export default function Page() {
   const { userData } = useUser();
@@ -77,6 +82,7 @@ export default function Page() {
                       response: {
                         response: {
                           free: true,
+                          freeTill: addHours(current, 1),
                         },
                       },
                       senderUid: parsed?.id,
@@ -90,7 +96,7 @@ export default function Page() {
                 <View style={tw`flex-row gap-x-5`}>
                   <Button
                     onPress={() => {
-                      setResponse("later");
+                      setResponse("promptLater");
                     }}
                     style="flex-1"
                     textStyle="text-sm text-gray-2"
@@ -212,7 +218,7 @@ export default function Page() {
             </View>
           ) : null}
 
-          {response === "later" ? (
+          {response === "promptLater" ? (
             <View style={tw`items-center`}>
               <User
                 data={parsed}
@@ -256,13 +262,16 @@ export default function Page() {
 
               <Button
                 onPress={() => {
+                  setResponse("later");
+
                   respond({
                     accepterUid: userData?.id,
                     pageId,
                     response: {
                       response: {
                         free: false,
-                        freeAt,
+                        freeFrom: freeAt,
+                        freeTill: addHours(freeAt, 1),
                       },
                     },
                     senderUid: parsed?.id,
@@ -274,6 +283,73 @@ export default function Page() {
               >
                 LET THEM KNOW
               </Button>
+            </View>
+          ) : null}
+
+          {response === "later" ? (
+            <View style={tw`items-center`}>
+              <Text
+                style={tw.style(
+                  `text-white text-xl mt-10 self-center text-center`,
+                  {
+                    fontFamily: "Cabin_400Regular",
+                  },
+                )}
+              >
+                {`Okay! We’ll let ${
+                  parsed?.name?.split(" ")[0]
+                } know when you’re likely to be free.`}
+              </Text>
+
+              <View style={tw`flex-row mt-10`}>
+                <User
+                  data={parsed}
+                  dimension="100"
+                  free
+                  titleContainerStyle="h-[28px]"
+                  titleStyle="text-sm leading-relaxed"
+                  nameStyle="text-white"
+                  stroke
+                />
+
+                <View style={tw`w-20 self-center mb-10`} />
+
+                <View style={tw`items-center`}>
+                  <User
+                    data={userData}
+                    dimension="100"
+                    disabled
+                    free
+                    title="🕒"
+                    titleContainerStyle="h-[28px]"
+                    titleStyle="text-xs leading-relaxed"
+                    nameOverride="You"
+                    stroke
+                  />
+
+                  <Text
+                    style={tw.style(`text-gray-4 text-xs mt-1`, {
+                      fontFamily: "Cabin_400Regular",
+                    })}
+                  >
+                    Free later at{" "}
+                    {freeAt?.toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
+                </View>
+              </View>
+
+              <TouchableOpacity onPress={router.back} style={tw`mt-44`}>
+                <Text
+                  style={tw.style(`text-text-2 text-sm`, {
+                    fontFamily: "Cabin_700Bold",
+                  })}
+                >
+                  CLOSE
+                </Text>
+              </TouchableOpacity>
             </View>
           ) : null}
         </SafeAreaView>

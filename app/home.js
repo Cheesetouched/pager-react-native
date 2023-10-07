@@ -63,10 +63,10 @@ export default function Home() {
         pages?.sent?.map((page) => {
           if (page?.to === friend?.id && isPageValid(page?.validTill)) {
             hasSentPage = true;
+          }
 
-            if (page?.response?.free) {
-              isFree = true;
-            }
+          if (page?.response?.free && isPageValid(page?.response?.freeTill)) {
+            isFree = true;
           }
         });
 
