@@ -46,20 +46,8 @@ export default function Phone() {
   const [country, setCountry] = useState({ dial_code: "+91", flag: "🇮🇳" });
 
   // For mode = "otp"
-  const first = useRef();
-  const second = useRef();
-  const third = useRef();
-  const fourth = useRef();
-  const fifth = useRef();
-  const sixth = useRef();
-  const [error, setError] = useState({
-    first: false,
-    second: false,
-    third: false,
-    fourth: false,
-    fifth: false,
-    sixth: false,
-  });
+  const otpRef = useRef();
+  const [error, setError] = useState(false);
 
   function submitNumber() {
     if (phoneRef.current.value === "") {
@@ -70,64 +58,11 @@ export default function Phone() {
   }
 
   function submitOtp() {
-    const firstDigit = first.current.value;
-    const secondDigit = second.current.value;
-    const thirdDigit = third.current.value;
-    const fourthDigit = fourth.current.value;
-    const fifthDigit = fifth.current.value;
-    const sixthDigit = sixth.current.value;
+    const otp = otpRef.current.value;
 
-    const otp =
-      firstDigit +
-      secondDigit +
-      thirdDigit +
-      fourthDigit +
-      fifthDigit +
-      sixthDigit;
-
-    if (sixthDigit.length === 0) {
-      sixth.current.focus();
-      setError((old) => ({ ...old, sixth: true }));
-    } else {
-      setError((old) => ({ ...old, sixth: false }));
-    }
-
-    if (fifthDigit.length === 0) {
-      fifth.current.focus();
-      setError((old) => ({ ...old, fifth: true }));
-    } else {
-      setError((old) => ({ ...old, fifth: false }));
-    }
-
-    if (fourthDigit.length === 0) {
-      fourth.current.focus();
-      setError((old) => ({ ...old, fourth: true }));
-    } else {
-      setError((old) => ({ ...old, fourth: false }));
-    }
-
-    if (thirdDigit.length === 0) {
-      third.current.focus();
-      setError((old) => ({ ...old, third: true }));
-    } else {
-      setError((old) => ({ ...old, third: false }));
-    }
-
-    if (secondDigit.length === 0) {
-      second.current.focus();
-      setError((old) => ({ ...old, second: true }));
-    } else {
-      setError((old) => ({ ...old, second: false }));
-    }
-
-    if (firstDigit.length === 0) {
-      first.current.focus();
-      setError((old) => ({ ...old, first: true }));
-    } else {
-      setError((old) => ({ ...old, first: false }));
-    }
-
-    if (otp.length === 6) {
+    if (otp.length < 6) {
+      setError(true);
+    } else if (otp.length === 6) {
       verifyOtp({
         otp,
         phoneResult,
@@ -296,103 +231,17 @@ export default function Phone() {
                 </Text>
               </View>
 
-              <View style={tw`flex flex-row mt-5 justify-between`}>
+              <View style={tw`flex flex-row mt-10 justify-center`}>
                 <Input
                   autoFocus
-                  containerStyle="w-[45px]"
-                  error={error.first || otpError}
-                  maxLength={1}
-                  onChangeText={(text) => {
-                    if (text.length === 1) {
-                      second.current.focus();
-                    }
-                  }}
-                  onMaxLength={(text) => {
-                    second.current.focus();
-                    second.current.setValue(text);
-                  }}
-                  ref={first}
-                  type="numeric"
-                />
-
-                <Input
-                  containerStyle="w-[45px]"
-                  error={error.second || otpError}
-                  maxLength={1}
-                  onBackspace={() => first.current.focus()}
-                  onChangeText={(text) => {
-                    if (text.length === 1) {
-                      third.current.focus();
-                    }
-                  }}
-                  onMaxLength={(text) => {
-                    third.current.focus();
-                    third.current.setValue(text);
-                  }}
-                  ref={second}
-                  type="numeric"
-                />
-
-                <Input
-                  containerStyle="w-[45px]"
-                  error={error.third || otpError}
-                  maxLength={1}
-                  onBackspace={() => second.current.focus()}
-                  onChangeText={(text) => {
-                    if (text.length === 1) {
-                      fourth.current.focus();
-                    }
-                  }}
-                  onMaxLength={(text) => {
-                    fourth.current.focus();
-                    fourth.current.setValue(text);
-                  }}
-                  ref={third}
-                  type="numeric"
-                />
-
-                <Input
-                  containerStyle="w-[45px]"
-                  error={error.fourth || otpError}
-                  maxLength={1}
-                  onBackspace={() => third.current.focus()}
-                  onChangeText={(text) => {
-                    if (text.length === 1) {
-                      fifth.current.focus();
-                    }
-                  }}
-                  onMaxLength={(text) => {
-                    fifth.current.focus();
-                    fifth.current.setValue(text);
-                  }}
-                  ref={fourth}
-                  type="numeric"
-                />
-
-                <Input
-                  containerStyle="w-[45px]"
-                  error={error.fifth || otpError}
-                  maxLength={1}
-                  onBackspace={() => fourth.current.focus()}
-                  onChangeText={(text) => {
-                    if (text.length === 1) {
-                      sixth.current.focus();
-                    }
-                  }}
-                  onMaxLength={(text) => {
-                    sixth.current.focus();
-                    sixth.current.setValue(text);
-                  }}
-                  ref={fifth}
-                  type="numeric"
-                />
-
-                <Input
-                  containerStyle="w-[45px]"
-                  error={error.sixth || otpError}
-                  maxLength={1}
-                  onBackspace={() => fifth.current.focus()}
-                  ref={sixth}
+                  containerStyle="w-[200px] h-[50px]"
+                  error={error || otpError}
+                  fontFamily="Cabin_700Bold"
+                  maxLength={6}
+                  onChangeText={() => setError(false)}
+                  placeholder="000000"
+                  ref={otpRef}
+                  style="text-xl text-center tracking-[2]"
                   type="numeric"
                 />
               </View>

@@ -10,10 +10,10 @@ const Input = forwardRef(
       autoFocus = false,
       containerStyle,
       error = false,
-      type = "default",
-      maxLength = null,
+      fontFamily = "Cabin_600SemiBold",
       loading = false,
       lowercase = false,
+      maxLength = null,
       onBackspace,
       onBlur,
       onChangeText,
@@ -23,6 +23,7 @@ const Input = forwardRef(
       rightIcon = null,
       style,
       trim = false,
+      type = "default",
       whitespace = true,
     },
     ref,
@@ -112,7 +113,7 @@ const Input = forwardRef(
           style={tw.style(
             `text-center text-base flex-1 px-3 leading-tight`,
             `${style ? style : ""}`,
-            { fontFamily: "Cabin_600SemiBold" },
+            { fontFamily },
           )}
           value={value}
         />
