@@ -66,6 +66,24 @@ export default function usePushNotification() {
     [Users, send],
   );
 
+  const pageLater = useCallback(
+    async ({ accepterUid, senderUid, laterAt }) => {
+      const [accepter, sender] = await Promise.all([
+        Users.get(accepterUid),
+        Users.get(senderUid),
+      ]);
+
+      if (valid(sender?.pushToken)) {
+        send(sender?.pushToken, {
+          title: `${
+            accepter?.name?.split(" ")[0]
+          } is free to chat at ${laterAt}`,
+        });
+      }
+    },
+    [Users, send],
+  );
+
   const pageUser = useCallback(
     async (pagerUid, pageeUid) => {
       const [pager, pagee] = await Promise.all([
@@ -134,6 +152,7 @@ export default function usePushNotification() {
       notifyFriends,
       notifyUser,
       pageAccepted,
+      pageLater,
       pageUser,
       requestAccepted,
       requestSent,
@@ -143,6 +162,7 @@ export default function usePushNotification() {
       notifyFriends,
       notifyUser,
       pageAccepted,
+      pageLater,
       pageUser,
       requestAccepted,
       requestSent,

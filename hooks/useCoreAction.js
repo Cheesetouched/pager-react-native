@@ -95,6 +95,16 @@ export default function useCoreAction() {
       }
 
       if (response?.response?.freeFrom) {
+        const laterAt = response?.response?.freeFrom.toLocaleTimeString(
+          "en-US",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+          },
+        );
+
+        PushNotification.pageLater({ accepterUid, senderUid, laterAt });
+
         response["response"]["freeFrom"] = Timestamp.fromDate(
           response?.response?.freeFrom,
         );
