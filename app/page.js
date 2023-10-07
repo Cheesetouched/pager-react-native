@@ -2,26 +2,42 @@ import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
+import { addHours, roundToNearestMinutes } from "date-fns";
 import { router, useLocalSearchParams } from "expo-router";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import tw from "@utils/tailwind";
 import User from "@components/User";
 import useUser from "@hooks/useUser";
 import Button from "@components/Button";
+import OutlineButton from "@components/OutlineButton";
 import usePageResponse from "@hooks/mutations/usePageResponse";
+
+const current = new Date();
+const minimumDate = roundToNearestMinutes(current, {
+  nearestTo: 15,
+  roundingMethod: "ceil",
+});
+const defaultDate = addHours(current, 1);
+const maximumDate = addHours(current, 12);
 
 export default function Page() {
   const { userData } = useUser();
   const { respond } = usePageResponse();
   const [response, setResponse] = useState(null);
   const { from, pageId } = useLocalSearchParams();
+  const [freeAt, setFreeAt] = useState(defaultDate);
   const parsed = JSON.parse(from);
+
+  function handleChange(_, date) {
+    setFreeAt(date);
+  }
 
   return (
     <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
       <SafeAreaProvider>
-        <SafeAreaView style={tw`flex flex-1 px-8  justify-center`}>
+        <SafeAreaView style={tw`flex flex-1 px-8 justify-center`}>
           {response === null ? (
             <View>
               <View style={tw`items-center`}>
@@ -53,7 +69,7 @@ export default function Page() {
               <View style={tw`gap-y-5 mt-10 px-7`}>
                 <Button
                   onPress={() => {
-                    setResponse(true);
+                    setResponse("free");
 
                     respond({
                       accepterUid: userData?.id,
@@ -71,29 +87,45 @@ export default function Page() {
                   I AM FREE
                 </Button>
 
-                <Button
-                  onPress={() => {
-                    setResponse(false);
+                <View style={tw`flex-row gap-x-5`}>
+                  <Button
+                    onPress={() => {
+                      setResponse("later");
+                    }}
+                    style="flex-1"
+                    textStyle="text-sm text-gray-2"
+                    variant="dark"
+                  >
+                    FREE LATER
+                  </Button>
 
-                    respond({
-                      accepterUid: userData?.id,
-                      pageId,
-                      response: {
+                  <OutlineButton
+                    onPress={() => {
+                      setResponse("ignore");
+
+                      respond({
+                        accepterUid: userData?.id,
+                        pageId,
                         response: {
-                          free: false,
+                          response: {
+                            free: false,
+                          },
                         },
-                      },
-                      senderUid: parsed?.id,
-                    });
-                  }}
-                  textStyle="text-sm text-gray-2"
-                  variant="dark"
-                >
-                  IGNORE
-                </Button>
+                        senderUid: parsed?.id,
+                      });
+                    }}
+                    style="flex-1"
+                    textStyle="text-sm text-gray-2"
+                    variant="dark"
+                  >
+                    IGNORE
+                  </OutlineButton>
+                </View>
               </View>
             </View>
-          ) : response ? (
+          ) : null}
+
+          {response === "free" ? (
             <View style={tw`items-center`}>
               <Text
                 style={tw.style(
@@ -145,7 +177,9 @@ export default function Page() {
                 </Text>
               </TouchableOpacity>
             </View>
-          ) : (
+          ) : null}
+
+          {response === "ignore" ? (
             <View style={tw`items-center`}>
               <User
                 data={parsed}
@@ -176,7 +210,72 @@ export default function Page() {
                 </Text>
               </TouchableOpacity>
             </View>
-          )}
+          ) : null}
+
+          {response === "later" ? (
+            <View style={tw`items-center`}>
+              <User
+                data={parsed}
+                dimension="100"
+                free
+                titleContainerStyle="h-[28px]"
+                titleStyle="text-sm leading-relaxed"
+                nameStyle="text-white"
+                showName={false}
+              />
+
+              <Text
+                style={tw.style(`text-white text-xl mt-7 self-center`, {
+                  fontFamily: "Cabin_400Regular",
+                })}
+              >
+                Pick a time
+              </Text>
+
+              <Text
+                style={tw.style(
+                  `text-gray-2 text-sm text-center mt-2 self-center`,
+                  {
+                    fontFamily: "Cabin_400Regular",
+                  },
+                )}
+              >
+                We’ll send them a notification with the time you pick.
+              </Text>
+
+              <DateTimePicker
+                display="spinner"
+                mode="time"
+                minuteInterval={15}
+                maximumDate={maximumDate}
+                minimumDate={minimumDate}
+                onChange={handleChange}
+                style={tw`my-5`}
+                value={freeAt}
+              />
+
+              <Button
+                onPress={() => {
+                  respond({
+                    accepterUid: userData?.id,
+                    pageId,
+                    response: {
+                      response: {
+                        free: false,
+                        freeAt,
+                      },
+                    },
+                    senderUid: parsed?.id,
+                  });
+                }}
+                style="w-full"
+                textStyle="text-sm"
+                variant="dark"
+              >
+                LET THEM KNOW
+              </Button>
+            </View>
+          ) : null}
         </SafeAreaView>
       </SafeAreaProvider>
     </BlurView>

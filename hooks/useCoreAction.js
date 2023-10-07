@@ -44,7 +44,7 @@ export default function useCoreAction() {
 
   const respondToPage = useCallback(
     async ({ accepterUid, pageId, response, senderUid }) => {
-      if (response?.free) {
+      if (response?.response?.free) {
         PushNotification.pageAccepted(accepterUid, senderUid);
       }
 
