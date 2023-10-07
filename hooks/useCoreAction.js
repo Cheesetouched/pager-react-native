@@ -3,12 +3,49 @@ import { useCallback, useMemo } from "react";
 import { addHours } from "date-fns";
 import { Timestamp } from "firebase/firestore";
 
+import useUsers from "@hooks/firestore/useUsers";
 import usePages from "@hooks/firestore/usePages";
 import usePushNotification from "@hooks/usePushNotification";
 
 export default function useCoreAction() {
+  const Users = useUsers();
   const Pages = usePages();
   const PushNotification = usePushNotification();
+
+  const getDetailedPages = useCallback(
+    async (uid) => {
+      const sent = [];
+      const received = [];
+      const pages = await Pages.getAll(uid);
+
+      await Promise.all(
+        pages.map(async (page) => {
+          if (page?.response?.freeFrom) {
+            page["response"]["freeFrom"] = page?.response?.freeFrom?.toMillis();
+          }
+
+          if (page?.response?.freeTill) {
+            page["response"]["freeTill"] = page?.response?.freeTill?.toMillis();
+          }
+
+          if (page?.from === uid) {
+            sent.push({
+              ...page,
+              to: await Users.get(page?.to),
+            });
+          } else if (page?.to === uid) {
+            received.push({
+              ...page,
+              from: await Users.get(page?.from),
+            });
+          }
+        }),
+      );
+
+      return { sent, received };
+    },
+    [Pages, Users],
+  );
 
   const getPages = useCallback(
     async (uid) => {
@@ -76,10 +113,11 @@ export default function useCoreAction() {
 
   return useMemo(
     () => ({
+      getDetailedPages,
       getPages,
       page,
       respondToPage,
     }),
-    [getPages, page, respondToPage],
+    [getDetailedPages, getPages, page, respondToPage],
   );
 }

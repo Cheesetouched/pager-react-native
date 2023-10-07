@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
@@ -6,10 +6,10 @@ import { FlashList } from "@shopify/flash-list";
 
 import tw from "@utils/tailwind";
 import PageCard from "@components/PageCard";
-import useGetPages from "@hooks/queries/useGetPages";
+import useGetDetailedPages from "@hooks/queries/useGetDetailedPages";
 
 export default function Pages() {
-  const { getting, pages } = useGetPages();
+  const { getting, pages } = useGetDetailedPages();
   const [selected, setSelected] = useState("received");
 
   return (
