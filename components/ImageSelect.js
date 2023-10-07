@@ -58,13 +58,13 @@ export default function ImageSelect({
         }
       }}
       style={tw.style(
-        `flex bg-gray-3 rounded-[35px] overflow-hidden justify-center`,
+        `flex bg-gray-3 rounded-[35px] overflow-hidden justify-center p-1`,
         `${error ? "border-4 border-red-400" : "border-2 border-accent"}`,
         `${style ? style : ""}`,
       )}
     >
       {image ? (
-        <Image src={image} />
+        <Image src={image} style="rounded-full" />
       ) : (
         <Entypo
           name="camera"
