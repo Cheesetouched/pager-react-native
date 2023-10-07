@@ -14,14 +14,14 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "1",
+      "buildNumber": "2",
       "supportsTablet": false,
       "bundleIdentifier": "app.getpager",
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "NSContactsUsageDescription": "To bring on friends you want to use Pager with."
+        "NSContactsUsageDescription": "To bring on friends you want to use Pager with"
       }
     },
     "android": {
@@ -41,7 +41,7 @@
       [
         "expo-contacts",
         {
-          "contactsPermission": "To bring on friends you want to use Pager with."
+          "contactsPermission": "To bring on friends you want to use Pager with"
         }
       ],
       [
