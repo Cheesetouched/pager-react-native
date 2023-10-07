@@ -32,11 +32,11 @@ export default function ImageSelect({
       allowsEditing,
       aspect,
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.2,
+      quality: 0,
     });
 
     if (!result.canceled) {
-      const resized = await resize(result?.assets[0]);
+      const resized = await resize(result?.assets[0], 500, 500);
 
       if (resized.uri) {
         setImage(resized);
