@@ -43,6 +43,20 @@ export default function Contact() {
         stroke={paged || parsed?.paged}
       />
 
+      {parsed?.freeFrom ? (
+        <Text
+          style={tw.style(`text-gray-4 text-base mt-1`, {
+            fontFamily: "Cabin_400Regular",
+          })}
+        >
+          Free later at{" "}
+          {new Date(parsed?.freeFrom)?.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </Text>
+      ) : null}
+
       <View style={tw`flex flex-row mt-14 gap-x-8`}>
         <TouchableOpacity
           disabled={!parsed?.free}
