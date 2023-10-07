@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
@@ -13,7 +13,7 @@ export default function Pages() {
   const [selected, setSelected] = useState("received");
 
   return (
-    <BlurView intensity={100} style={tw`flex flex-1 items-center`} tint="dark">
+    <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
       <DualSelector selected={selected} onSelected={setSelected} />
 
       {getting || !pages ? (
@@ -21,14 +21,16 @@ export default function Pages() {
           <ActivityIndicator />
         </View>
       ) : pages[selected]?.length > 0 ? (
-        <FlashList
-          ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-          contentContainerStyle={tw`pt-4 pb-16`}
-          data={pages[selected]}
-          estimatedItemSize={50}
-          renderItem={({ item }) => <PageCard data={item} />}
-          showsVerticalScrollIndicator={false}
-        />
+        <View style={tw`flex-1 mt-2`}>
+          <FlashList
+            ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
+            contentContainerStyle={tw`pt-6 px-6`}
+            data={pages[selected]}
+            estimatedItemSize={50}
+            renderItem={({ item }) => <PageCard data={item} type={selected} />}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
       ) : (
         <View style={tw`flex-1 justify-center mb-10`}>
           <Text
@@ -47,7 +49,7 @@ export default function Pages() {
 function DualSelector({ selected, onSelected }) {
   return (
     <View
-      style={tw`bg-black/30 h-[40px] w-[300px] mt-5 rounded-full flex-row overflow-hidden`}
+      style={tw`bg-black/30 h-[35px] w-[220px] mt-5 rounded-full flex-row overflow-hidden self-center`}
     >
       <TouchableOpacity
         onPress={() => onSelected("received")}

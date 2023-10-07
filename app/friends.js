@@ -89,7 +89,7 @@ export default function Friends() {
                 />
               }
               ListEmptyComponent={<NoContacts />}
-              contentContainerStyle={tw`pt-4 pb-16`}
+              contentContainerStyle={tw`pt-4 pb-5`}
               data={contacts}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"

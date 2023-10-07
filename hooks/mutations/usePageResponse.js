@@ -1,15 +1,25 @@
 import { useMemo } from "react";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import useFirebase from "@hooks/useFirebase";
 import useCoreAction from "@hooks/useCoreAction";
 
 export default function usePageResponse(props = {}) {
   const { onSuccess } = props;
+  const { user } = useFirebase();
+  const queryClient = useQueryClient();
   const { respondToPage } = useCoreAction();
 
   const { isLoading, mutate } = useMutation((data) => respondToPage(data), {
-    onSuccess,
+    onSuccess: () => {
+      //TO-DO: Update this optimisitically
+      queryClient.invalidateQueries(["detailedPages", user?.uid]);
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
   });
 
   return useMemo(

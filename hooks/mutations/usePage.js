@@ -14,6 +14,7 @@ export default function usePage(props = {}) {
   const { isLoading, mutate } = useMutation((to) => page(user?.uid, to), {
     onSuccess: () => {
       queryClient.invalidateQueries(["pages", user?.uid]);
+      queryClient.invalidateQueries(["detailedPages", user?.uid]);
 
       if (onSuccess) {
         onSuccess();
