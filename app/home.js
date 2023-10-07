@@ -9,6 +9,7 @@ import {
 } from "react-native";
 
 import * as Notifications from "expo-notifications";
+import { isAfter, isWithinInterval } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import { SplashScreen, router, useNavigation } from "expo-router";
 
@@ -54,6 +55,7 @@ export default function Home() {
     if (friends && pages) {
       const all = [];
       const free = [];
+      let extras = {};
       let pageDetails = null;
 
       friends.map((friend) => {
@@ -65,8 +67,26 @@ export default function Home() {
             hasSentPage = true;
           }
 
-          if (page?.response?.free && isPageValid(page?.response?.freeTill)) {
-            isFree = true;
+          if (page?.response?.free) {
+            if (isPageValid(page?.response?.freeTill)) {
+              isFree = true;
+            }
+          } else {
+            if (page?.response?.freeFrom) {
+              const current = new Date();
+              const start = new Date(page?.response?.freeFrom);
+              const end = new Date(page?.response?.freeTill);
+
+              if (isWithinInterval(current, { start, end })) {
+                isFree = true;
+              } else {
+                if (isAfter(new Date(page?.response?.freeFrom), new Date())) {
+                  extras = {
+                    freeFrom: page?.response?.freeFrom,
+                  };
+                }
+              }
+            }
           }
         });
 
@@ -84,9 +104,10 @@ export default function Home() {
         });
 
         if (isFree) {
-          free.push(friend);
+          free.push({ ...extras, ...friend });
         } else {
           all.push({
+            ...extras,
             ...friend,
             sent: hasSentPage,
           });
@@ -154,7 +175,7 @@ export default function Home() {
               renderItem={({ item }) => (
                 <User
                   data={item}
-                  disabled
+                  freeFrom={item?.freeFrom}
                   onPress={() =>
                     router.push({
                       pathname: "/contact",

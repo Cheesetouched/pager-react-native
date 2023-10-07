@@ -8,6 +8,7 @@ export default function User({
   dimension = "92",
   disabled = false,
   free = false,
+  freeFrom,
   nameOverride = null,
   nameStyle,
   onPress,
@@ -61,6 +62,20 @@ export default function User({
           })}
         >
           {nameOverride ? nameOverride : data?.name?.split(" ")[0]}
+        </Text>
+      ) : null}
+
+      {freeFrom ? (
+        <Text
+          style={tw.style(`text-gray-4 text-xs mt-1`, {
+            fontFamily: "Cabin_400Regular",
+          })}
+        >
+          Free later at{" "}
+          {new Date(freeFrom)?.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </Text>
       ) : null}
     </View>
