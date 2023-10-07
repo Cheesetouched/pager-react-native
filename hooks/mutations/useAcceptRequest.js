@@ -25,6 +25,10 @@ export default function useAcceptRequest(props = {}) {
           ),
         }));
 
+        update(["requests", user?.uid], (old) =>
+          old.filter((request) => request?.id !== senderUid),
+        );
+
         if (onMutate) {
           onMutate();
         }

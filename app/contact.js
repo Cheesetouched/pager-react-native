@@ -95,7 +95,7 @@ export default function Contact() {
 
       {!parsed?.free ? (
         <View style={tw`w-60 mt-20`}>
-          {paged || parsed?.paged ? (
+          {paged || parsed?.paged || parsed?.freeFrom ? (
             <OutlineButton textStyle="text-base text-gray-2" variant="dark">
               PAGE SENT!
             </OutlineButton>

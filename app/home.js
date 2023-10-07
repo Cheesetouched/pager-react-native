@@ -23,6 +23,7 @@ import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
 import MessageIcon from "@assets/svgs/MessageIcon";
+import FriendsIcon from "@assets/svgs/FriendsIcon";
 import useGetPages from "@hooks/queries/useGetPages";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
@@ -135,7 +136,7 @@ export default function Home() {
       lastNotificationResponse?.notification?.request?.content?.data?.action ===
       "request"
     ) {
-      router.push("/friends");
+      router.push("/requests");
     }
   }, [lastNotificationResponse]);
 
@@ -154,6 +155,7 @@ export default function Home() {
       <View style={tw`flex flex-1 px-6 pt-2`}>
         <Header
           onLogout={logout}
+          onFriends={() => router.push("/requests")}
           onPages={() => router.push("/pages")}
           onSearch={() => router.push("/friends")}
         />
@@ -278,9 +280,13 @@ const FreeFriends = memo(({ all, free }) => {
   );
 });
 
-function Header({ onLogout, onPages, onSearch }) {
+function Header({ onLogout, onFriends, onPages, onSearch }) {
   return (
     <View style={tw`flex flex-row justify-center mb-2`}>
+      <TouchableOpacity onPress={onFriends} style={tw`absolute left-0 mt-1`}>
+        <FriendsIcon />
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={onLogout}>
         <Text
           style={tw.style(`text-3xl text-text-1`, {

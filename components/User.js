@@ -19,7 +19,7 @@ export default function User({
   titleStyle,
 }) {
   return (
-    <View style={tw`relative flex-col w-[${dimension}px]`}>
+    <View style={tw`relative flex-col`}>
       <TouchableOpacity onPress={onPress} style={tw`relative`}>
         <View
           style={tw.style(
