@@ -22,6 +22,7 @@ import { isPageValid } from "@utils/helpers";
 import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
+import MessageIcon from "@assets/svgs/MessageIcon";
 import useGetPages from "@hooks/queries/useGetPages";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
@@ -151,7 +152,11 @@ export default function Home() {
   return (
     <SafeView>
       <View style={tw`flex flex-1 px-6 pt-2`}>
-        <Header onLogout={logout} onSearch={() => router.push("/friends")} />
+        <Header
+          onLogout={logout}
+          onPages={() => router.push("/pages")}
+          onSearch={() => router.push("/friends")}
+        />
 
         {friends?.length > 0 ? (
           <View style={tw`flex flex-1 mb-2`}>
@@ -273,7 +278,7 @@ const FreeFriends = memo(({ all, free }) => {
   );
 });
 
-function Header({ onLogout, onSearch }) {
+function Header({ onLogout, onPages, onSearch }) {
   return (
     <View style={tw`flex flex-row justify-center mb-2`}>
       <TouchableOpacity onPress={onLogout}>
@@ -286,9 +291,15 @@ function Header({ onLogout, onSearch }) {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={onSearch} style={tw`absolute right-0`}>
-        <SearchIcon />
-      </TouchableOpacity>
+      <View style={tw`absolute flex-row items-center right-0 gap-x-6`}>
+        <TouchableOpacity onPress={onPages} style={tw`mb-[2px]`}>
+          <MessageIcon />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={onSearch}>
+          <SearchIcon />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

@@ -49,6 +49,14 @@ export default function Layout() {
           />
 
           <Stack.Screen
+            name="pages"
+            options={{
+              presentation: "modal",
+              contentStyle: { backgroundColor: "#00000000" },
+            }}
+          />
+
+          <Stack.Screen
             name="page"
             options={{ presentation: "transparentModal" }}
           />

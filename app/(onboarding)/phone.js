@@ -239,7 +239,6 @@ export default function Phone() {
                   fontFamily="Cabin_700Bold"
                   maxLength={6}
                   onChangeText={() => setError(false)}
-                  placeholder="000000"
                   ref={otpRef}
                   style="text-xl text-center tracking-[2]"
                   type="numeric"
