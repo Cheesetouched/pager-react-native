@@ -60,9 +60,7 @@ export default function Phone() {
     }
   }
 
-  function submitOtp() {
-    const otp = otpRef.current.value;
-
+  function submitOtp(otp) {
     if (otp.length < 6) {
       setError(true);
     } else if (otp.length === 6) {
@@ -245,7 +243,13 @@ export default function Phone() {
                 error={error || otpError}
                 fontFamily="Cabin_700Bold"
                 maxLength={6}
-                onChangeText={() => setError(false)}
+                onChangeText={(otp) => {
+                  setError(false);
+
+                  if (otp?.length === 6) {
+                    submitOtp(otp);
+                  }
+                }}
                 ref={otpRef}
                 style="text-xl text-center tracking-[2]"
                 type="numeric"
@@ -302,7 +306,10 @@ export default function Phone() {
               ) : null}
             </View>
 
-            <Button loading={verifying} onPress={submitOtp}>
+            <Button
+              loading={verifying}
+              onPress={() => submitOtp(otpRef?.current?.value)}
+            >
               Next
             </Button>
           </View>

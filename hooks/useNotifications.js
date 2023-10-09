@@ -1,15 +1,18 @@
 import { Platform } from "react-native";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 
+import useAppContext from "@hooks/useAppContext";
+
 export default function useNotifications(props = {}) {
   // Make sure these prop functions are wrapped in a useCallback
   // function, inside the hook consumer, to prevent unnecessary
   // re-rendering
-
+  const previousState = useRef();
+  const { appState } = useAppContext();
   const { onDenied, onGranted } = props;
   const [loading, setLoading] = useState(false);
   const [permission, setPermission] = useState();
@@ -43,6 +46,14 @@ export default function useNotifications(props = {}) {
       }
     });
   }, [requestNotifications]);
+
+  useEffect(() => {
+    if (previousState.current === "background" && appState === "active") {
+      requestNotifications();
+    }
+
+    previousState.current = appState;
+  }, [appState, requestNotifications]);
 
   return useMemo(
     () => ({

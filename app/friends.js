@@ -134,7 +134,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites, onInvite }) => {
 
   return (
     <View style={tw`flex`}>
-      {invites?.checking ? (
+      {invites?.checking || friendsOnApp?.checking ? (
         <View style={tw`flex mb-7 gap-y-3`}>
           <ActivityIndicator />
 

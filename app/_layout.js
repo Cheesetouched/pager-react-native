@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppState, LogBox } from "react-native";
 
 import { Stack } from "expo-router";
@@ -25,9 +25,11 @@ Notifications.setNotificationHandler({
 
 export default function Layout() {
   const alertRef = useRef();
+  const [appState, setAppState] = useState(null);
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (status) => {
+      setAppState(status);
       focusManager.setFocused(status === "active");
     });
 
@@ -35,7 +37,7 @@ export default function Layout() {
   }, []);
 
   return (
-    <AppContext.Provider value={{ alert: alertRef }}>
+    <AppContext.Provider value={{ appState, alert: alertRef }}>
       <QueryClientProvider client={queryClient}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" options={{ headerShown: false }} />

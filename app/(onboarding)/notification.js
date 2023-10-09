@@ -101,6 +101,7 @@ export default function Notification() {
             </Text>
 
             <Button
+              loading={loading}
               onPress={() => {
                 if (permission?.canAskAgain) {
                   requestNotifications();
