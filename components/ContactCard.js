@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Text, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -28,6 +28,7 @@ export default function ContactCard({ data, onInvite, type = "contact" }) {
   const { userData } = useUser();
   const { alert } = useAppContext();
   const { addFriend } = useAddFriend();
+  const [invited, setInvited] = useState(false);
 
   const status = useMemo(() => {
     if (userData?.friends?.includes(data?.id || data?.objectID)) {
@@ -40,7 +41,10 @@ export default function ContactCard({ data, onInvite, type = "contact" }) {
   }, [data, userData]);
 
   const onSuccess = useCallback(
-    (_, { number }) => onInvite(number),
+    (_, { number }) => {
+      setInvited(true);
+      onInvite(number);
+    },
     [onInvite],
   );
 
@@ -117,22 +121,24 @@ export default function ContactCard({ data, onInvite, type = "contact" }) {
         <OutlineButton
           loading={inviting}
           onPress={() => {
-            if (userData?.phone?.full === data?.phone?.full) {
-              alert.current.show({
-                title: "???",
-                message: "you cannot invite yourself 😭",
-              });
-            } else {
-              inviteUser({
-                number: data?.phone?.full,
-                invited_by: userData?.id,
-              });
+            if (!invited) {
+              if (userData?.phone?.full === data?.phone?.full) {
+                alert.current.show({
+                  title: "???",
+                  message: "you cannot invite yourself 😭",
+                });
+              } else {
+                inviteUser({
+                  number: data?.phone?.full,
+                  invited_by: userData?.id,
+                });
+              }
             }
           }}
           style="h-[35px] w-[75px] rounded-full"
           textStyle="text-xs"
         >
-          Invite
+          {invited ? "Invited" : "Invite"}
         </OutlineButton>
       )}
     </View>
