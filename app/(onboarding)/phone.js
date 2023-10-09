@@ -11,11 +11,13 @@ import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import { router, useLocalSearchParams, useRootNavigation } from "expo-router";
 
 import tw from "@utils/tailwind";
+import { pad } from "@utils/helpers";
 import Input from "@components/Input";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import firebaseConfig from "@utils/firebase";
 import BackIcon from "@assets/svgs/BackIcon";
+import useInterval from "@hooks/useInterval";
 import useAppContext from "@hooks/useAppContext";
 import useLocalStorage from "@hooks/useLocalStorage";
 import CountryPicker from "@components/CountryPicker";
@@ -42,6 +44,7 @@ export default function Phone() {
   const { saveJson } = useLocalStorage();
   const navigation = useRootNavigation();
   const [mode, setMode] = useState("number");
+  const [resendTimer, setResendTimer] = useState(30);
   const [phoneError, setPhoneError] = useState(false);
   const [country, setCountry] = useState({ dial_code: "+91", flag: "🇮🇳" });
 
@@ -129,6 +132,11 @@ export default function Phone() {
       }
     },
   });
+
+  useInterval(
+    () => setResendTimer((current) => current - 1),
+    mode === "otp" && resendTimer >= 1 ? 1000 : null,
+  );
 
   return (
     <SafeView>
@@ -231,23 +239,61 @@ export default function Phone() {
                 </Text>
               </View>
 
-              <View style={tw`flex flex-row mt-10 justify-center`}>
-                <Input
-                  autoFocus
-                  containerStyle="w-[200px] h-[50px]"
-                  error={error || otpError}
-                  fontFamily="Cabin_700Bold"
-                  maxLength={6}
-                  onChangeText={() => setError(false)}
-                  ref={otpRef}
-                  style="text-xl text-center tracking-[2]"
-                  type="numeric"
-                />
-              </View>
+              <Input
+                autoFocus
+                containerStyle="w-[200px] h-[50px] mt-10 self-center"
+                error={error || otpError}
+                fontFamily="Cabin_700Bold"
+                maxLength={6}
+                onChangeText={() => setError(false)}
+                ref={otpRef}
+                style="text-xl text-center tracking-[2]"
+                type="numeric"
+              />
+
+              <TouchableOpacity
+                onPress={() => {
+                  if (resendTimer < 1) {
+                    setResendTimer(30);
+
+                    signInWithPhone({
+                      number: country?.dial_code + number,
+                      recaptchaVerifier: recaptchaRef.current,
+                    });
+                  }
+                }}
+                style={tw`flex-row justify-center gap-x-1 mt-5`}
+              >
+                <Text
+                  style={tw.style(`text-gray-4`, {
+                    fontFamily: "Cabin_700Bold",
+                  })}
+                >
+                  Didn't get it?
+                </Text>
+
+                {resendTimer < 1 ? (
+                  <Text
+                    style={tw.style(`text-gray-4 underline`, {
+                      fontFamily: "Cabin_700Bold",
+                    })}
+                  >
+                    Resend
+                  </Text>
+                ) : (
+                  <Text
+                    style={tw.style(`text-gray-4`, {
+                      fontFamily: "Cabin_700Bold",
+                    })}
+                  >
+                    Resend in 00:{pad(resendTimer)}
+                  </Text>
+                )}
+              </TouchableOpacity>
 
               {otpError ? (
                 <Text
-                  style={tw.style(`text-center text-gray-2 text-sm mt-6`, {
+                  style={tw.style(`text-center text-gray-4 text-sm mt-5`, {
                     fontFamily: "Cabin_400Regular",
                   })}
                 >
