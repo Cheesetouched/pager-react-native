@@ -8,8 +8,8 @@ import {
   View,
 } from "react-native";
 
+import { isAfter } from "date-fns";
 import * as Notifications from "expo-notifications";
-import { isAfter, isWithinInterval } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import { SplashScreen, router, useNavigation } from "expo-router";
 
@@ -80,17 +80,8 @@ export default function Home() {
             }
           } else {
             if (page?.response?.freeFrom) {
-              const current = new Date();
-              const start = new Date(page?.response?.freeFrom);
-              const end = new Date(page?.response?.freeTill);
-
-              if (isWithinInterval(current, { start, end })) {
-                isFree = true;
-                extras = { freeTill: page?.response?.freeTill };
-              } else {
-                if (isAfter(new Date(page?.response?.freeFrom), new Date())) {
-                  extras = { freeFrom: page?.response?.freeFrom };
-                }
+              if (isAfter(new Date(page?.response?.freeFrom), new Date())) {
+                extras = { freeFrom: page?.response?.freeFrom };
               }
             }
           }
@@ -134,7 +125,7 @@ export default function Home() {
         });
       }
     }
-  }, [friends, pages]);
+  }, [friends, pages, refetchingPages]);
 
   useEffect(() => {
     if (
