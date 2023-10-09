@@ -28,7 +28,7 @@ export default function PageCard({ data, type }) {
             fontFamily: "Cabin_400Regular",
           })}
         >
-          {data?.from?.name}
+          {type === "received" ? data?.from?.name : data?.to?.name}
         </Text>
 
         <Text
@@ -63,7 +63,9 @@ export default function PageCard({ data, type }) {
             textStyle="text-xs"
             variant="dark"
           >
-            {data?.response?.free ? "Replied" : "Ignored"}
+            {data?.response?.free || data?.response?.freeFrom
+              ? "Replied"
+              : "Ignored"}
           </OutlineButton>
         )
       ) : null}

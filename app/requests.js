@@ -8,7 +8,7 @@ import RequestCard from "@components/RequestCard";
 import useGetRequests from "@hooks/queries/useGetRequests";
 
 export default function Requests() {
-  const { getting, requests } = useGetRequests();
+  const { requests } = useGetRequests();
 
   return (
     <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
@@ -20,7 +20,7 @@ export default function Requests() {
         Friend Requests
       </Text>
 
-      {getting || !requests ? (
+      {!requests ? (
         <View style={tw`flex-1 justify-center mb-10`}>
           <ActivityIndicator />
         </View>
@@ -42,7 +42,7 @@ export default function Requests() {
               fontFamily: "Cabin_600SemiBold",
             })}
           >
-            no requests found 😕
+            no friend requests (yet) 😕
           </Text>
         </View>
       )}

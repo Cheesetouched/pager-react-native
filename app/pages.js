@@ -9,14 +9,14 @@ import PageCard from "@components/PageCard";
 import useGetDetailedPages from "@hooks/queries/useGetDetailedPages";
 
 export default function Pages() {
-  const { getting, pages } = useGetDetailedPages();
+  const { pages } = useGetDetailedPages();
   const [selected, setSelected] = useState("received");
 
   return (
     <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
       <DualSelector selected={selected} onSelected={setSelected} />
 
-      {getting || !pages ? (
+      {!pages ? (
         <View style={tw`flex-1 justify-center mb-10`}>
           <ActivityIndicator />
         </View>
@@ -38,7 +38,7 @@ export default function Pages() {
               fontFamily: "Cabin_600SemiBold",
             })}
           >
-            no pages found 😕
+            no pages (yet) 😕
           </Text>
         </View>
       )}

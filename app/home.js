@@ -27,8 +27,12 @@ import FriendsIcon from "@assets/svgs/FriendsIcon";
 import useGetPages from "@hooks/queries/useGetPages";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
+import useGetRequests from "@hooks/queries/useGetRequests";
+import useGetDetailedPages from "@hooks/queries/useGetDetailedPages";
 
 export default function Home() {
+  useGetRequests();
+  useGetDetailedPages();
   const noFriendsRef = useRef();
   const pageSheetRef = useRef();
   const { userData } = useUser();
