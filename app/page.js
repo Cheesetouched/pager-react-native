@@ -11,6 +11,7 @@ import tw from "@utils/tailwind";
 import User from "@components/User";
 import useUser from "@hooks/useUser";
 import Button from "@components/Button";
+import BackIcon from "@assets/svgs/BackIcon";
 import OutlineButton from "@components/OutlineButton";
 import usePageResponse from "@hooks/mutations/usePageResponse";
 
@@ -42,10 +43,10 @@ export default function Page() {
   return (
     <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
       <SafeAreaProvider>
-        <SafeAreaView style={tw`flex flex-1 px-8 justify-center`}>
+        <SafeAreaView style={tw`flex flex-1 px-8`}>
           {response === null ? (
-            <View>
-              <View style={tw`items-center`}>
+            <View style={tw`flex-1 justify-center`}>
+              <View style={tw`items-center relative`}>
                 <User
                   data={parsed}
                   dimension="100"
@@ -54,6 +55,7 @@ export default function Page() {
                   titleStyle="text-sm leading-relaxed"
                   nameStyle="text-white"
                   showName={false}
+                  title="👋🏻"
                 />
               </View>
 
@@ -99,7 +101,7 @@ export default function Page() {
                       setResponse("promptLater");
                     }}
                     style="flex-1"
-                    textStyle="text-sm text-gray-2"
+                    textStyle="text-sm text-gray-2 leading-tight"
                     variant="dark"
                   >
                     FREE LATER
@@ -132,7 +134,7 @@ export default function Page() {
           ) : null}
 
           {response === "free" ? (
-            <View style={tw`items-center`}>
+            <View style={tw`flex-1 items-center justify-center`}>
               <Text
                 style={tw.style(
                   `text-white text-xl mt-10 self-center text-center`,
@@ -151,10 +153,11 @@ export default function Page() {
                   data={parsed}
                   dimension="100"
                   free
-                  titleContainerStyle="h-[28px]"
-                  titleStyle="text-sm leading-relaxed"
                   nameStyle="text-white"
                   stroke
+                  titleContainerStyle="h-[28px]"
+                  titleStyle="text-sm leading-relaxed"
+                  title="👋🏻"
                 />
 
                 <View
@@ -165,11 +168,12 @@ export default function Page() {
                   data={userData}
                   dimension="100"
                   free
-                  titleContainerStyle="h-[28px]"
-                  titleStyle="text-sm leading-relaxed"
                   nameOverride="You"
                   nameStyle="text-white"
                   stroke
+                  titleContainerStyle="h-[28px]"
+                  titleStyle="text-sm leading-relaxed"
+                  title="👋🏻"
                 />
               </View>
 
@@ -186,27 +190,28 @@ export default function Page() {
           ) : null}
 
           {response === "ignore" ? (
-            <View style={tw`items-center`}>
+            <View style={tw`flex-1 items-center justify-center`}>
               <User
                 data={parsed}
                 dimension="100"
                 disabled
                 free
-                titleContainerStyle="h-[28px]"
-                titleStyle="text-sm leading-relaxed"
                 nameStyle="text-white"
                 showName={false}
+                titleContainerStyle="h-[28px]"
+                titleStyle="text-sm leading-relaxed"
+                title="👋🏻"
               />
 
               <Text
-                style={tw.style(`text-gray-2 text-xl mt-7 self-center`, {
+                style={tw.style(`text-gray-2 text-xl mt-10 self-center`, {
                   fontFamily: "Cabin_400Regular",
                 })}
               >
                 Ignored the page. Bye bye!
               </Text>
 
-              <TouchableOpacity onPress={router.back} style={tw`mt-60`}>
+              <TouchableOpacity onPress={router.back} style={tw`mt-50`}>
                 <Text
                   style={tw.style(`text-text-2 text-sm`, {
                     fontFamily: "Cabin_700Bold",
@@ -219,75 +224,93 @@ export default function Page() {
           ) : null}
 
           {response === "promptLater" ? (
-            <View style={tw`items-center`}>
-              <User
-                data={parsed}
-                dimension="100"
-                free
-                titleContainerStyle="h-[28px]"
-                titleStyle="text-sm leading-relaxed"
-                nameStyle="text-white"
-                showName={false}
-              />
-
-              <Text
-                style={tw.style(`text-white text-xl mt-7 self-center`, {
-                  fontFamily: "Cabin_400Regular",
-                })}
+            <View style={tw`flex-1`}>
+              <TouchableOpacity
+                onPress={() => setResponse(null)}
+                style={tw` flex flex-row items-center gap-x-2 top-4 z-10`}
               >
-                Pick a time
-              </Text>
+                <BackIcon />
 
-              <Text
-                style={tw.style(
-                  `text-gray-2 text-sm text-center mt-2 self-center`,
-                  {
+                <Text
+                  style={tw.style(`text-base text-white font-semibold`, {
+                    fontFamily: "Cabin_600SemiBold",
+                  })}
+                >
+                  back
+                </Text>
+              </TouchableOpacity>
+
+              <View style={tw`flex-1 justify-center`}>
+                <User
+                  data={parsed}
+                  dimension="100"
+                  free
+                  nameStyle="text-white"
+                  showName={false}
+                  titleContainerStyle="h-[28px]"
+                  titleStyle="text-sm leading-relaxed"
+                  title="👋🏻"
+                />
+
+                <Text
+                  style={tw.style(`text-white text-xl mt-7 self-center`, {
                     fontFamily: "Cabin_400Regular",
-                  },
-                )}
-              >
-                We’ll send them a notification with the time you pick.
-              </Text>
+                  })}
+                >
+                  Pick a time
+                </Text>
 
-              <DateTimePicker
-                display="spinner"
-                mode="time"
-                minuteInterval={15}
-                maximumDate={maximumDate}
-                minimumDate={minimumDate}
-                onChange={handleChange}
-                style={tw`my-5`}
-                value={freeAt}
-              />
-
-              <Button
-                onPress={() => {
-                  setResponse("later");
-
-                  respond({
-                    accepterUid: userData?.id,
-                    pageId,
-                    response: {
-                      response: {
-                        free: false,
-                        freeFrom: freeAt,
-                        freeTill: addHours(freeAt, 1),
-                      },
+                <Text
+                  style={tw.style(
+                    `text-gray-2 text-sm text-center mt-2 self-center`,
+                    {
+                      fontFamily: "Cabin_400Regular",
                     },
-                    senderUid: parsed?.id,
-                  });
-                }}
-                style="w-full"
-                textStyle="text-sm"
-                variant="dark"
-              >
-                LET THEM KNOW
-              </Button>
+                  )}
+                >
+                  We’ll send them a notification with the time you pick.
+                </Text>
+
+                <DateTimePicker
+                  display="spinner"
+                  mode="time"
+                  minuteInterval={15}
+                  maximumDate={maximumDate}
+                  minimumDate={minimumDate}
+                  onChange={handleChange}
+                  style={tw`my-5`}
+                  value={freeAt}
+                />
+
+                <Button
+                  onPress={() => {
+                    setResponse("later");
+
+                    respond({
+                      accepterUid: userData?.id,
+                      pageId,
+                      response: {
+                        response: {
+                          free: false,
+                          freeFrom: freeAt,
+                          freeTill: addHours(freeAt, 1),
+                        },
+                      },
+                      senderUid: parsed?.id,
+                    });
+                  }}
+                  style="w-full"
+                  textStyle="text-sm"
+                  variant="dark"
+                >
+                  LET THEM KNOW
+                </Button>
+              </View>
             </View>
           ) : null}
 
           {response === "later" ? (
-            <View style={tw`items-center`}>
+            <View style={tw`flex-1 items-center justify-center`}>
               <Text
                 style={tw.style(
                   `text-white text-xl mt-10 self-center text-center`,
@@ -306,10 +329,11 @@ export default function Page() {
                   data={parsed}
                   dimension="100"
                   free
-                  titleContainerStyle="h-[28px]"
-                  titleStyle="text-sm leading-relaxed"
                   nameStyle="text-white"
                   stroke
+                  titleContainerStyle="h-[28px]"
+                  titleStyle="text-sm leading-relaxed"
+                  title="👋🏻"
                 />
 
                 <View style={tw`w-20 self-center mb-10`} />
@@ -320,11 +344,11 @@ export default function Page() {
                     dimension="100"
                     disabled
                     free
+                    nameOverride="You"
+                    stroke
                     title="🕒"
                     titleContainerStyle="h-[28px]"
                     titleStyle="text-xs leading-relaxed"
-                    nameOverride="You"
-                    stroke
                   />
 
                   <Text
@@ -332,7 +356,7 @@ export default function Page() {
                       fontFamily: "Cabin_400Regular",
                     })}
                   >
-                    Free later at{" "}
+                    Free at{" "}
                     {freeAt?.toLocaleTimeString("en-US", {
                       hour: "2-digit",
                       minute: "2-digit",

@@ -99,7 +99,7 @@ export default function Home() {
         pages?.received?.find((page) => {
           if (page?.from === friend?.id && isPageValid(page?.validTill)) {
             isFree = true;
-            extras = { freeTill: page?.response?.freeTill };
+            extras = { freeTill: page?.validTill };
           }
 
           if (pageDetails === null && !page?.response) {
