@@ -76,6 +76,7 @@ export default function Home() {
           if (page?.response?.free) {
             if (isPageValid(page?.response?.freeTill)) {
               isFree = true;
+              extras = { freeTill: page?.response?.freeTill };
             }
           } else {
             if (page?.response?.freeFrom) {
@@ -85,11 +86,10 @@ export default function Home() {
 
               if (isWithinInterval(current, { start, end })) {
                 isFree = true;
+                extras = { freeTill: page?.response?.freeTill };
               } else {
                 if (isAfter(new Date(page?.response?.freeFrom), new Date())) {
-                  extras = {
-                    freeFrom: page?.response?.freeFrom,
-                  };
+                  extras = { freeFrom: page?.response?.freeFrom };
                 }
               }
             }
@@ -99,13 +99,14 @@ export default function Home() {
         pages?.received?.find((page) => {
           if (page?.from === friend?.id && isPageValid(page?.validTill)) {
             isFree = true;
+            extras = { freeTill: page?.response?.freeTill };
+          }
 
-            if (pageDetails === null && !page?.response) {
-              pageDetails = {
-                from: friend,
-                pageId: page?.id,
-              };
-            }
+          if (pageDetails === null && !page?.response) {
+            pageDetails = {
+              from: friend,
+              pageId: page?.id,
+            };
           }
         });
 
@@ -186,7 +187,6 @@ export default function Home() {
               renderItem={({ item }) => (
                 <User
                   data={item}
-                  freeFrom={item?.freeFrom}
                   onPress={() =>
                     router.push({
                       pathname: "/contact",

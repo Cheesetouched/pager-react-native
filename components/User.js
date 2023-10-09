@@ -1,14 +1,28 @@
 import { Text, TouchableOpacity, View } from "react-native";
 
+import { differenceInHours, differenceInMinutes } from "date-fns";
+
 import tw from "@utils/tailwind";
 import Image from "@components/Image";
+
+function freeFor(freeTill) {
+  const current = new Date();
+  const diffInHours = differenceInHours(freeTill, current);
+  const diffInMinutes = differenceInMinutes(freeTill, current);
+
+  if (diffInHours > 0) {
+    return `${diffInHours}hr 👋🏻`;
+  } else {
+    return `${diffInMinutes}m 👋🏻`;
+  }
+}
 
 export default function User({
   data,
   dimension = "92",
   disabled = false,
   free = false,
-  freeFrom,
+  freeTextStyle,
   nameOverride = null,
   nameStyle,
   onPress,
@@ -19,13 +33,16 @@ export default function User({
   titleStyle,
 }) {
   return (
-    <View style={tw`relative flex-col`}>
-      <TouchableOpacity onPress={onPress} style={tw`relative`}>
+    <View style={tw`relative flex-col items-center`}>
+      <TouchableOpacity
+        onPress={onPress}
+        style={tw`relative w-[${dimension}px]`}
+      >
         <View
           style={tw.style(
             `bg-gray-5 rounded-full h-[${dimension}px] w-[${dimension}px] shadow-lg`,
             `${
-              stroke
+              stroke && !data?.freeFrom
                 ? `p-[2px] border-2 ${
                     disabled ? "border-gray-4" : "border-accent-deep"
                   }`
@@ -50,7 +67,15 @@ export default function User({
               fontFamily: "Cabin_700Bold",
             })}
           >
-            {title ? title : free ? "1hr 👋🏻" : stroke ? "📟" : "😴"}
+            {title
+              ? title
+              : free
+              ? freeFor(data?.freeTill)
+              : data?.freeFrom
+              ? "🕒"
+              : stroke
+              ? "📟"
+              : "😴"}
           </Text>
         </View>
       </TouchableOpacity>
@@ -65,14 +90,14 @@ export default function User({
         </Text>
       ) : null}
 
-      {freeFrom ? (
+      {data?.freeFrom ? (
         <Text
-          style={tw.style(`text-gray-4 text-xs mt-1`, {
+          style={tw.style(`text-gray-4 text-xs mt-1`, freeTextStyle, {
             fontFamily: "Cabin_400Regular",
           })}
         >
-          Free later at{" "}
-          {new Date(freeFrom)?.toLocaleTimeString("en-US", {
+          Free at{" "}
+          {new Date(data?.freeFrom)?.toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
           })}

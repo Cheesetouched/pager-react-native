@@ -37,25 +37,12 @@ export default function Contact() {
         data={parsed}
         dimension="150"
         free={parsed?.free}
+        freeTextStyle="text-gray-4 text-base mt-2"
         titleContainerStyle="h-[30px]"
         titleStyle="text-base leading-relaxed px-1"
         nameStyle="text-white text-xl"
-        stroke={paged || parsed?.paged}
+        stroke={parsed?.free || paged || parsed?.paged}
       />
-
-      {parsed?.freeFrom ? (
-        <Text
-          style={tw.style(`text-gray-4 text-base mt-1`, {
-            fontFamily: "Cabin_400Regular",
-          })}
-        >
-          Free later at{" "}
-          {new Date(parsed?.freeFrom)?.toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </Text>
-      ) : null}
 
       <View style={tw`flex flex-row mt-14 gap-x-8`}>
         <TouchableOpacity

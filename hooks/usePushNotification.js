@@ -75,7 +75,7 @@ export default function usePushNotification() {
 
       if (valid(sender?.pushToken)) {
         send(sender?.pushToken, {
-          title: `${
+          body: `${
             accepter?.name?.split(" ")[0]
           } is free to chat at ${laterAt}`,
         });
