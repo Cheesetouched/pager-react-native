@@ -17,6 +17,7 @@ import tw from "@utils/tailwind";
 import User from "@components/User";
 import useUser from "@hooks/useUser";
 import SafeView from "@components/SafeView";
+import useMixpanel from "@hooks/useMixpanel";
 import useFirebase from "@hooks/useFirebase";
 import { isPageValid } from "@utils/helpers";
 import PageSheet from "@components/PageSheet";
@@ -35,6 +36,7 @@ export default function Home() {
   useGetDetailedPages();
   const noFriendsRef = useRef();
   const pageSheetRef = useRef();
+  const mixpanel = useMixpanel();
   const { userData } = useUser();
   const [all, setAll] = useState();
   const [free, setFree] = useState();
@@ -160,7 +162,9 @@ export default function Home() {
           <View style={tw`flex flex-1 mb-2`}>
             <FlatList
               ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-              ListHeaderComponent={<FreeFriends all={all} free={free} />}
+              ListHeaderComponent={
+                <FreeFriends all={all} free={free} mixpanel={mixpanel} />
+              }
               columnWrapperStyle={tw`justify-between`}
               contentContainerStyle={tw`pt-6 pb-10`}
               data={all}
@@ -178,7 +182,9 @@ export default function Home() {
               renderItem={({ item }) => (
                 <User
                   data={item}
-                  onPress={() =>
+                  onPress={() => {
+                    mixpanel.track("tapped_user");
+
                     router.push({
                       pathname: "/contact",
                       params: {
@@ -188,8 +194,8 @@ export default function Home() {
                           paged: item?.paged,
                         }),
                       },
-                    })
-                  }
+                    });
+                  }}
                   paged={item?.paged}
                 />
               )}
@@ -220,7 +226,7 @@ export default function Home() {
   );
 }
 
-const FreeFriends = memo(({ all, free }) => {
+const FreeFriends = memo(({ all, free, mixpanel }) => {
   return (
     <View>
       {free?.length > 0 ? (
@@ -244,7 +250,9 @@ const FreeFriends = memo(({ all, free }) => {
               <User
                 data={item}
                 free
-                onPress={() =>
+                onPress={() => {
+                  mixpanel.track("tapped_user");
+
                   router.push({
                     pathname: "/contact",
                     params: {
@@ -253,8 +261,8 @@ const FreeFriends = memo(({ all, free }) => {
                         free: true,
                       }),
                     },
-                  })
-                }
+                  });
+                }}
               />
             )}
           />

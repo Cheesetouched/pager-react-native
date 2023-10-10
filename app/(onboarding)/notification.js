@@ -10,17 +10,21 @@ import {
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
+import useMixpanel from "@hooks/useMixpanel";
 import NotifExample from "@components/NotifExample";
 import PermissionBox from "@components/PermissionBox";
 import useNotifications from "@hooks/useNotifications";
 
 export default function Notification() {
+  const mixpanel = useMixpanel();
   const params = useLocalSearchParams();
   const navigation = useRootNavigation();
   const [deniedView, setDeniedView] = useState(false);
 
   const onGranted = useCallback(
     (pushToken) => {
+      mixpanel.track("allowed_notifications");
+
       navigation.reset({
         index: 0,
         routes: [
@@ -34,7 +38,7 @@ export default function Notification() {
         ],
       });
     },
-    [navigation, params],
+    [mixpanel, navigation, params],
   );
 
   const { loading, permission, requestNotifications } = useNotifications({

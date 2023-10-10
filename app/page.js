@@ -12,6 +12,7 @@ import User from "@components/User";
 import useUser from "@hooks/useUser";
 import Button from "@components/Button";
 import BackIcon from "@assets/svgs/BackIcon";
+import useMixpanel from "@hooks/useMixpanel";
 import OutlineButton from "@components/OutlineButton";
 import usePageResponse from "@hooks/mutations/usePageResponse";
 
@@ -30,6 +31,7 @@ const minimumDate = roundToNearestMinutes(current, {
 
 export default function Page() {
   const { userData } = useUser();
+  const mixpanel = useMixpanel();
   const { respond } = usePageResponse();
   const [response, setResponse] = useState(null);
   const { from, pageId } = useLocalSearchParams();
@@ -77,6 +79,7 @@ export default function Page() {
                 <Button
                   onPress={() => {
                     setResponse("free");
+                    mixpanel.track("tapped_free");
 
                     respond({
                       accepterUid: userData?.id,
@@ -98,6 +101,7 @@ export default function Page() {
                 <View style={tw`flex-row gap-x-5`}>
                   <Button
                     onPress={() => {
+                      mixpanel.track("tapped_free_later");
                       setResponse("promptLater");
                     }}
                     style="flex-1"
@@ -110,6 +114,7 @@ export default function Page() {
                   <OutlineButton
                     onPress={() => {
                       setResponse("ignore");
+                      mixpanel.track("tapped_ignore");
 
                       respond({
                         accepterUid: userData?.id,
@@ -283,6 +288,7 @@ export default function Page() {
                 <Button
                   onPress={() => {
                     setResponse("later");
+                    mixpanel.track("chose_a_time");
 
                     respond({
                       accepterUid: userData?.id,

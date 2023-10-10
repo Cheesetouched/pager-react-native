@@ -93,6 +93,7 @@ export default function usePushNotification() {
 
       if (valid(pagee?.pushToken)) {
         send(pagee?.pushToken, {
+          data: { action: "page" },
           title: `${pager?.name?.split(" ")[0]} paged you`,
           body: "Let them know if you’re free to chat!",
         });

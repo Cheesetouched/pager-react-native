@@ -5,18 +5,30 @@ import { router, useLocalSearchParams } from "expo-router";
 
 import tw from "@utils/tailwind";
 import SafeView from "@components/SafeView";
+import useMixpanel from "@hooks/useMixpanel";
 import useFirebase from "@hooks/useFirebase";
 import useLocalStorage from "@hooks/useLocalStorage";
 import useCreateUser from "@hooks/mutations/useCreateUser";
 
 export default function Process() {
   const { user } = useFirebase();
+  const mixpanel = useMixpanel();
   const { remove } = useLocalStorage();
   const params = useLocalSearchParams();
 
   const { createUser } = useCreateUser({
-    onSuccess: () => {
+    onSuccess: (_, user) => {
       remove("checkpoint");
+
+      mixpanel.identify(user?.uid);
+
+      mixpanel.registerSuperPropertiesOnce({
+        $avatar: user?.data?.dp,
+        handle: user?.data?.handle,
+        $name: user?.data?.name,
+        $phone: user?.data?.phone?.full,
+      });
+
       router.replace({
         pathname: "/friends",
         params: { referrer: "onboarding" },

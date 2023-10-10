@@ -18,6 +18,7 @@ import SafeView from "@components/SafeView";
 import firebaseConfig from "@utils/firebase";
 import BackIcon from "@assets/svgs/BackIcon";
 import useInterval from "@hooks/useInterval";
+import useMixpanel from "@hooks/useMixpanel";
 import useAppContext from "@hooks/useAppContext";
 import useLocalStorage from "@hooks/useLocalStorage";
 import CountryPicker from "@components/CountryPicker";
@@ -37,6 +38,7 @@ export default function Phone() {
   // For mode = "number"
   const phoneRef = useRef();
   const recaptchaRef = useRef();
+  const mixpanel = useMixpanel();
   const countryListRef = useRef();
   const { alert } = useAppContext();
   const params = useLocalSearchParams();
@@ -121,6 +123,7 @@ export default function Phone() {
 
         saveJson("checkpoint", routeData).then(() => {
           router.replace(routeData);
+          mixpanel.track("verified_number");
         });
       } else {
         navigation.reset({

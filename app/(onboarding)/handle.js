@@ -16,6 +16,7 @@ import Logo from "@assets/logo.png";
 import Input from "@components/Input";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
+import useMixpanel from "@hooks/useMixpanel";
 import CheckIcon from "@assets/svgs/CheckIcon";
 import CloseIcon from "@assets/svgs/CloseIcon";
 import useAppContext from "@hooks/useAppContext";
@@ -24,6 +25,7 @@ import useCheckHandle from "@hooks/queries/useCheckHandle";
 const minimumHandleLength = 1;
 
 export default function Handle() {
+  const mixpanel = useMixpanel();
   const { alert } = useAppContext();
   const [handle, setHandle] = useState("");
   const [error, setError] = useState(false);
@@ -45,6 +47,8 @@ export default function Handle() {
     if (handle === "" || !ready || exists) {
       return setError(true);
     }
+
+    mixpanel.track("reserved_handle");
 
     router.push({
       pathname: "/phone",

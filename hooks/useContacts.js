@@ -14,9 +14,9 @@ export default function useContacts(props = {}) {
   // re-rendering
 
   const update = useOptimisticUpdate();
-  const { userPhone, onDenied } = props;
   const [contacts, setContacts] = useState(null);
   const [inMemory, setInMemory] = useState(null);
+  const { userPhone, onDenied, onGranted } = props;
   const [permission, setPermission] = useState(null);
   const [numbersOnly, setNumbersOnly] = useState(null);
   // Breaking import order here because otherwise numbersOnly
@@ -111,13 +111,14 @@ export default function useContacts(props = {}) {
     }
 
     if (finalPermission.status === "granted") {
+      onGranted();
       getContacts();
     } else {
       if (onDenied) {
         onDenied();
       }
     }
-  }, [getContacts, onDenied, permission]);
+  }, [getContacts, onDenied, onGranted, permission]);
 
   const searchContacts = useCallback(
     (text) => {

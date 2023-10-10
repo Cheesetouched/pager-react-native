@@ -7,6 +7,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import tw from "@utils/tailwind";
 import User from "@components/User";
 import Button from "@components/Button";
+import useMixpanel from "@hooks/useMixpanel";
 import PhoneIcon from "@assets/svgs/PhoneIcon";
 import usePage from "@hooks/mutations/usePage";
 import IMessageIcon from "@assets/svgs/IMessageIcon";
@@ -15,6 +16,7 @@ import FacetimeIcon from "@assets/svgs/FacetimeIcon";
 import OutlineButton from "@components/OutlineButton";
 
 export default function Contact() {
+  const mixpanel = useMixpanel();
   const { data } = useLocalSearchParams();
   const [paged, setPaged] = useState(false);
   const parsed = JSON.parse(data);
@@ -89,7 +91,10 @@ export default function Contact() {
           ) : (
             <Button
               loading={paging}
-              onPress={() => page(parsed?.id)}
+              onPress={() => {
+                page(parsed?.id);
+                mixpanel.track("paged");
+              }}
               textStyle="text-sm leading-tight"
               variant="dark"
             >

@@ -6,6 +6,7 @@ import { AntDesign } from "@expo/vector-icons";
 import tw from "@utils/tailwind";
 import useUser from "@hooks/useUser";
 import Image from "@components/Image";
+import useMixpanel from "@hooks/useMixpanel";
 import useAppContext from "@hooks/useAppContext";
 import OutlineButton from "@components/OutlineButton";
 import useAddFriend from "@hooks/mutations/useAddFriend";
@@ -26,6 +27,7 @@ const getInitials = (name) => {
 
 export default function ContactCard({ data, onInvite, type = "contact" }) {
   const { userData } = useUser();
+  const mixpanel = useMixpanel();
   const { alert } = useAppContext();
   const { addFriend } = useAddFriend();
   const [invited, setInvited] = useState(false);
@@ -105,12 +107,14 @@ export default function ContactCard({ data, onInvite, type = "contact" }) {
           </Text>
         ) : (
           <OutlineButton
-            onPress={() =>
+            onPress={() => {
+              mixpanel.track("added_friend");
+
               addFriend({
                 adderUid: userData?.id,
                 addeeUid: data?.id || data?.objectID,
-              })
-            }
+              });
+            }}
             style="h-[35px] w-[90px] rounded-full"
             textStyle="text-xs"
           >

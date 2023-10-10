@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import { ActivityIndicator, Linking, Text, View } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -11,6 +11,7 @@ import Input from "@components/Input";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useContacts from "@hooks/useContacts";
+import useMixpanel from "@hooks/useMixpanel";
 import ExampleUser1 from "@assets/example_1.png";
 import ExampleUser2 from "@assets/example_2.png";
 import ContactCard from "@components/ContactCard";
@@ -21,21 +22,27 @@ import PermissionBox from "@components/PermissionBox";
 
 export default function Friends() {
   const { userData } = useUser();
+  const mixpanel = useMixpanel();
   const inviteSheetRef = useRef();
   const params = useLocalSearchParams();
   const navigation = useRootNavigation();
 
-  const onInvite = useCallback((number) => {
-    inviteSheetRef?.current?.invite(number);
-  }, []);
+  const onInvite = useCallback(
+    (number) => {
+      if (params?.referrer === "onboarding") {
+        mixpanel.track("invited_from_onboarding");
+      } else {
+        mixpanel.track("invited");
+      }
 
-  const userPhone = useMemo(() => {
-    if (params?.mode === "onboarding") {
-      return params?.full;
-    } else {
-      return userData?.phone?.full;
-    }
-  }, [params, userData]);
+      inviteSheetRef?.current?.invite(number);
+    },
+    [mixpanel, params?.referrer],
+  );
+
+  const onGranted = useCallback(() => {
+    mixpanel.track("allowed_contacts");
+  }, [mixpanel]);
 
   const {
     contacts,
@@ -45,7 +52,7 @@ export default function Friends() {
     ready,
     requestContacts,
     searchContacts,
-  } = useContacts({ userPhone });
+  } = useContacts({ userPhone: userData?.phone?.full, onGranted });
 
   if (!ready) {
     return (
@@ -102,6 +109,8 @@ export default function Friends() {
             {params?.referrer === "onboarding" ? (
               <Button
                 onPress={() => {
+                  mixpanel.track("finished_onboarding");
+
                   navigation.reset({
                     index: 0,
                     routes: [{ name: "home" }],

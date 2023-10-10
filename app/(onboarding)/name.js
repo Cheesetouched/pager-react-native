@@ -7,10 +7,12 @@ import tw from "@utils/tailwind";
 import Input from "@components/Input";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
+import useMixpanel from "@hooks/useMixpanel";
 import useLocalStorage from "@hooks/useLocalStorage";
 
 export default function Name() {
   const nameRef = useRef();
+  const mixpanel = useMixpanel();
   const params = useLocalSearchParams();
   const { saveJson } = useLocalStorage();
   const [error, setError] = useState(false);
@@ -31,6 +33,7 @@ export default function Name() {
 
       saveJson("checkpoint", routeData).then(() => {
         router.push(routeData);
+        mixpanel.track("set_name");
       });
     }
   }
