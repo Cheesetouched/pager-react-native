@@ -136,7 +136,8 @@ export default function ContactCard({ data, onInvite, type = "contact" }) {
             }
           }}
           style="h-[35px] w-[75px] rounded-full"
-          textStyle="text-xs"
+          textStyle={`text-xs ${invited ? "text-gray-4" : "text-white"}`}
+          variant={invited ? "dark" : "main"}
         >
           {invited ? "Invited" : "Invite"}
         </OutlineButton>

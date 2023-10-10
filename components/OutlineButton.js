@@ -29,7 +29,7 @@ export default function OutlineButton({
             ? `border ${
                 variant === "main" ? "border-accent/75" : "border-gray-2/75"
               }`
-            : `border ${variant === "main" ? "border-accent" : "border-gray-2"}`
+            : `border ${variant === "main" ? "border-accent" : "border-gray-4"}`
         }`,
       )}
     >

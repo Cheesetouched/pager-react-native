@@ -154,7 +154,6 @@ export default function Page() {
                   dimension="100"
                   free
                   nameStyle="text-white"
-                  stroke
                   titleContainerStyle="h-[28px]"
                   titleStyle="text-sm leading-relaxed"
                   title="👋🏻"
@@ -170,7 +169,6 @@ export default function Page() {
                   free
                   nameOverride="You"
                   nameStyle="text-white"
-                  stroke
                   titleContainerStyle="h-[28px]"
                   titleStyle="text-sm leading-relaxed"
                   title="👋🏻"
@@ -330,7 +328,6 @@ export default function Page() {
                   dimension="100"
                   free
                   nameStyle="text-white"
-                  stroke
                   titleContainerStyle="h-[28px]"
                   titleStyle="text-sm leading-relaxed"
                   title="👋🏻"
@@ -345,7 +342,6 @@ export default function Page() {
                     disabled
                     free
                     nameOverride="You"
-                    stroke
                     title="🕒"
                     titleContainerStyle="h-[28px]"
                     titleStyle="text-xs leading-relaxed"

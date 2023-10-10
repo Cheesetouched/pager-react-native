@@ -66,11 +66,11 @@ export default function Home() {
 
       friends.map((friend) => {
         let isFree = false;
-        let hasSentPage = false;
+        let hasPaged = false;
 
         pages?.sent?.map((page) => {
           if (page?.to === friend?.id && isPageValid(page?.validTill)) {
-            hasSentPage = true;
+            hasPaged = true;
           }
 
           if (page?.response?.free) {
@@ -107,7 +107,7 @@ export default function Home() {
           all.push({
             ...extras,
             ...friend,
-            sent: hasSentPage,
+            paged: hasPaged,
           });
         }
       });
@@ -185,12 +185,12 @@ export default function Home() {
                         data: JSON.stringify({
                           ...item,
                           free: false,
-                          paged: item?.sent,
+                          paged: item?.paged,
                         }),
                       },
                     })
                   }
-                  stroke={item?.sent}
+                  paged={item?.paged}
                 />
               )}
               showsVerticalScrollIndicator={false}
@@ -255,7 +255,6 @@ const FreeFriends = memo(({ all, free }) => {
                     },
                   })
                 }
-                stroke
               />
             )}
           />

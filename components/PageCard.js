@@ -14,9 +14,8 @@ export default function PageCard({ data, type }) {
       <User
         data={type === "received" ? data?.from : data?.to}
         dimension="55"
-        free
+        free={type === "received" && !data?.response}
         showName={false}
-        stroke={type === "received" && !data?.response}
         title="👋🏻"
         titleContainerStyle="h-[15px] bottom-[-5px] px-1"
         titleStyle="text-[8px] leading-relaxed"

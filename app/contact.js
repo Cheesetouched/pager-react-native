@@ -41,7 +41,7 @@ export default function Contact() {
         titleContainerStyle="h-[30px]"
         titleStyle="text-base leading-relaxed px-1"
         nameStyle="text-white text-xl"
-        stroke={parsed?.free || paged || parsed?.paged}
+        paged={paged || parsed?.paged}
       />
 
       <View style={tw`flex flex-row mt-14 gap-x-8`}>

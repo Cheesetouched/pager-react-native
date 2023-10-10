@@ -17,6 +17,24 @@ function freeFor(freeTill) {
   }
 }
 
+function getBorderStyle(disabled, free, freeFrom, paged) {
+  if (disabled) {
+    return "p-[2px] border-2 border-gray-4";
+  } else {
+    if (free) {
+      return "p-[2px] border-2 border-accent-deep";
+    } else {
+      if (freeFrom) {
+        return "p-[2px] border-2 border-gray-4";
+      } else if (paged) {
+        return "p-[2px] border-2 border-gray-4";
+      } else {
+        return "";
+      }
+    }
+  }
+}
+
 export default function User({
   data,
   dimension = "92",
@@ -27,7 +45,7 @@ export default function User({
   nameStyle,
   onPress,
   showName = true,
-  stroke = false,
+  paged = false,
   title,
   titleContainerStyle,
   titleStyle,
@@ -41,13 +59,7 @@ export default function User({
         <View
           style={tw.style(
             `bg-gray-5 rounded-full h-[${dimension}px] w-[${dimension}px] shadow-lg`,
-            `${
-              stroke && !data?.freeFrom
-                ? `p-[2px] border-2 ${
-                    disabled ? "border-gray-4" : "border-accent-deep"
-                  }`
-                : ""
-            }`,
+            getBorderStyle(disabled, free, data?.freeFrom, paged),
           )}
         >
           <Image
@@ -73,8 +85,6 @@ export default function User({
               ? freeFor(data?.freeTill)
               : data?.freeFrom
               ? "🕒"
-              : stroke
-              ? "📟"
               : "😴"}
           </Text>
         </View>
