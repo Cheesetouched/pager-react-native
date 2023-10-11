@@ -118,6 +118,11 @@ export default function Home() {
           }
         });
 
+        if (isPageValid(friend?.freeTill)) {
+          isFree = true;
+          extras = { freeTill: friend?.freeTill };
+        }
+
         if (isFree) {
           free.push({ ...extras, ...friend });
         } else {

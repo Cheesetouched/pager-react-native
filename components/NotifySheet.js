@@ -42,12 +42,13 @@ const NotifySheet = forwardRef((_, ref) => {
 
           <View style={tw`items-center my-8 gap-y-5`}>
             <Button
-              onPress={() =>
+              onPress={() => {
+                setVisible(false);
                 notifyFriends(userData?.id, {
                   data: { action: "open_contact", uid: userData?.id },
                   body: `${userData?.name?.split(" ")[0]} is free to chat! 👋🏻`,
-                })
-              }
+                });
+              }}
               style="w-60"
               textStyle="leading-tight"
               variant="dark"
