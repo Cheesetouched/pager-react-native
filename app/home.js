@@ -24,6 +24,7 @@ import { isPageValid } from "@utils/helpers";
 import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
+import NotifySheet from "@components/NotifySheet";
 import MessageIcon from "@assets/svgs/MessageIcon";
 import FriendsIcon from "@assets/svgs/FriendsIcon";
 import useGetPages from "@hooks/queries/useGetPages";
@@ -51,6 +52,7 @@ export default function Home() {
   const pageSheetRef = useRef();
   const mixpanel = useMixpanel();
   const { userData } = useUser();
+  const notifySheetRef = useRef();
   const [all, setAll] = useState();
   const [free, setFree] = useState();
   const navigation = useNavigation();
@@ -254,8 +256,14 @@ export default function Home() {
         )
       ) : null}
 
-      <PageSheet ref={pageSheetRef} />
+      <NotifySheet ref={notifySheetRef} />
+
       <NoFriendsSheet ref={noFriendsRef} />
+
+      <PageSheet
+        onFree={() => notifySheetRef?.current?.show()}
+        ref={pageSheetRef}
+      />
     </SafeView>
   );
 }

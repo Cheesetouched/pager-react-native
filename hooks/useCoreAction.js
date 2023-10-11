@@ -77,7 +77,7 @@ export default function useCoreAction() {
   const markAway = useCallback(
     async (uid) => {
       try {
-        Users.update(uid, { freeTill: null });
+        await Users.update(uid, { freeTill: null });
 
         return { success: true };
       } catch (error) {
@@ -90,7 +90,7 @@ export default function useCoreAction() {
   const markFree = useCallback(
     async (uid) => {
       try {
-        Users.update(uid, {
+        await Users.update(uid, {
           freeTill: Timestamp.fromDate(new Date(Date.now() + 1000 * 60 * 60)),
         });
 

@@ -1,14 +1,10 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
-import { Modal, Pressable, Text, View } from "react-native";
+import { Modal, Pressable, Text, TouchableOpacity, View } from "react-native";
 
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
-import useMarkAway from "@hooks/mutations/useMarkAway";
-import useMarkFree from "@hooks/mutations/useMarkFree";
 
-const PageSheet = forwardRef(({ onFree }, ref) => {
-  const { markAway } = useMarkAway();
-  const { markFree } = useMarkFree();
+const NotifySheet = forwardRef((_, ref) => {
   const [visible, setVisible] = useState(false);
 
   useImperativeHandle(ref, () => ({
@@ -37,34 +33,26 @@ const PageSheet = forwardRef(({ onFree }, ref) => {
               fontFamily: "Cabin_700Bold",
             })}
           >
-            Set Status
+            You're free to chat now!
           </Text>
 
           <View style={tw`items-center my-8 gap-y-5`}>
-            <Button
-              onPress={() => {
-                if (onFree) onFree();
-
-                markFree();
-                setVisible(false);
-              }}
-              style="w-60"
-              textStyle="leading-tight"
-            >
-              Free to chat 👋🏻
+            <Button style="w-60" textStyle="leading-tight" variant="dark">
+              Notify friends
             </Button>
 
-            <Button
-              onPress={() => {
-                markAway();
-                setVisible(false);
-              }}
-              style="w-60"
-              textStyle="leading-tight"
-              variant="dark"
+            <TouchableOpacity
+              onPress={() => setVisible(false)}
+              style={tw`mt-3`}
             >
-              Away 😴
-            </Button>
+              <Text
+                style={tw.style(`text-text-2 text-sm`, {
+                  fontFamily: "Cabin_700Bold",
+                })}
+              >
+                CLOSE
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </>
@@ -72,4 +60,4 @@ const PageSheet = forwardRef(({ onFree }, ref) => {
   );
 });
 
-export default PageSheet;
+export default NotifySheet;
