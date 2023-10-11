@@ -1,21 +1,8 @@
 import { Text, TouchableOpacity, View } from "react-native";
 
-import { differenceInHours, differenceInMinutes } from "date-fns";
-
 import tw from "@utils/tailwind";
 import Image from "@components/Image";
-
-function freeFor(freeTill) {
-  const current = new Date();
-  const diffInHours = differenceInHours(freeTill, current);
-  const diffInMinutes = differenceInMinutes(freeTill, current);
-
-  if (diffInHours > 0) {
-    return `${diffInHours}hr 👋🏻`;
-  } else {
-    return `${diffInMinutes}m 👋🏻`;
-  }
-}
+import { freeFor } from "@utils/helpers";
 
 function getBorderStyle(disabled, free, freeFrom, paged) {
   if (disabled) {

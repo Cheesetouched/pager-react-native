@@ -59,7 +59,8 @@ export default function usePushNotification() {
 
       if (valid(sender?.pushToken)) {
         send(sender?.pushToken, {
-          title: `${accepter?.name?.split(" ")[0]} is free to chat! 👋🏻`,
+          data: { action: "open_contact", uid: accepterUid },
+          body: `${accepter?.name?.split(" ")[0]} is free to chat! 👋🏻`,
         });
       }
     },
@@ -93,7 +94,7 @@ export default function usePushNotification() {
 
       if (valid(pagee?.pushToken)) {
         send(pagee?.pushToken, {
-          data: { action: "page" },
+          data: { event: "tapped_page_notification" },
           title: `${pager?.name?.split(" ")[0]} paged you`,
           body: "Let them know if you’re free to chat!",
         });
@@ -111,7 +112,6 @@ export default function usePushNotification() {
 
       if (valid(sender?.pushToken)) {
         send(sender?.pushToken, {
-          data: { action: "request" },
           title: accepter?.name,
           body: "accepted your friend request!",
         });
@@ -129,7 +129,7 @@ export default function usePushNotification() {
 
       if (valid(addee?.pushToken)) {
         send(addee?.pushToken, {
-          data: { action: "request" },
+          data: { action: "open_requests" },
           title: adder?.name,
           body: "sent you a friend request!",
         });

@@ -1,8 +1,47 @@
 import * as ImageManipulator from "expo-image-manipulator";
+import { differenceInHours, differenceInMinutes } from "date-fns";
 
-export function pad(n, z) {
-  z = z || 2;
-  return ("00" + n).slice(-z);
+export function cleanupPhone(phone) {
+  return phone.trim().replace(/\s/g, "");
+}
+
+export function freeFor(freeTill, format = "small") {
+  const current = new Date();
+  const diffInHours = differenceInHours(freeTill, current);
+  const diffInMinutes = differenceInMinutes(freeTill, current);
+
+  if (diffInHours > 0) {
+    return `${diffInHours}${format === "small" ? "hr" : "hour"} 👋🏻`;
+  } else {
+    return `${diffInMinutes}${format === "small" ? "m" : " mins"} 👋🏻`;
+  }
+}
+
+export async function getBlobFromUri(uri) {
+  return await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      resolve(xhr.response);
+    };
+    xhr.onerror = function () {
+      reject(new TypeError("Network request failed"));
+    };
+    xhr.responseType = "blob";
+    xhr.open("GET", uri, true);
+    xhr.send(null);
+  });
+}
+
+export function isPageValid(validTill) {
+  if (!validTill) {
+    return false;
+  }
+
+  if (Date.now() <= validTill) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export function msToTime(s) {
@@ -20,35 +59,9 @@ export function msToTime(s) {
   return pad(mins) + ":" + pad(secs);
 }
 
-export function isPageValid(validTill) {
-  if (!validTill) {
-    return false;
-  }
-
-  if (Date.now() <= validTill) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-export function cleanupPhone(phone) {
-  return phone.trim().replace(/\s/g, "");
-}
-
-export async function getBlobFromUri(uri) {
-  return await new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.onload = function () {
-      resolve(xhr.response);
-    };
-    xhr.onerror = function () {
-      reject(new TypeError("Network request failed"));
-    };
-    xhr.responseType = "blob";
-    xhr.open("GET", uri, true);
-    xhr.send(null);
-  });
+export function pad(n, z) {
+  z = z || 2;
+  return ("00" + n).slice(-z);
 }
 
 export async function resize(

@@ -40,8 +40,8 @@ export default function Layout() {
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener(
         ({ notification }) => {
-          if (notification?.request?.content?.data?.action === "page") {
-            mixpanel.track("tapped_page_notification");
+          if (notification?.request?.content?.data?.event) {
+            mixpanel.track(notification?.request?.content?.data?.event);
           }
 
           mixpanel.track("tapped_notification");

@@ -2,10 +2,14 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import { Modal, Pressable, Text, TouchableOpacity, View } from "react-native";
 
 import tw from "@utils/tailwind";
+import useUser from "@hooks/useUser";
 import Button from "@components/Button";
+import usePushNotification from "@hooks/usePushNotification";
 
 const NotifySheet = forwardRef((_, ref) => {
+  const { userData } = useUser();
   const [visible, setVisible] = useState(false);
+  const { notifyFriends } = usePushNotification();
 
   useImperativeHandle(ref, () => ({
     close: () => setVisible(false),
@@ -37,7 +41,17 @@ const NotifySheet = forwardRef((_, ref) => {
           </Text>
 
           <View style={tw`items-center my-8 gap-y-5`}>
-            <Button style="w-60" textStyle="leading-tight" variant="dark">
+            <Button
+              onPress={() =>
+                notifyFriends(userData?.id, {
+                  data: { action: "open_contact", uid: userData?.id },
+                  body: `${userData?.name?.split(" ")[0]} is free to chat! 👋🏻`,
+                })
+              }
+              style="w-60"
+              textStyle="leading-tight"
+              variant="dark"
+            >
               Notify friends
             </Button>
 

@@ -20,7 +20,6 @@ import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useMixpanel from "@hooks/useMixpanel";
 import useFirebase from "@hooks/useFirebase";
-import { isPageValid } from "@utils/helpers";
 import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
@@ -28,6 +27,7 @@ import NotifySheet from "@components/NotifySheet";
 import MessageIcon from "@assets/svgs/MessageIcon";
 import FriendsIcon from "@assets/svgs/FriendsIcon";
 import useGetPages from "@hooks/queries/useGetPages";
+import { freeFor, isPageValid } from "@utils/helpers";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
 import useGetRequests from "@hooks/queries/useGetRequests";
@@ -147,7 +147,7 @@ export default function Home() {
   useEffect(() => {
     if (
       lastNotificationResponse?.notification?.request?.content?.data?.action ===
-      "request"
+      "open_requests"
     ) {
       router.push("/requests");
     }
@@ -234,6 +234,26 @@ export default function Home() {
           </View>
         )}
       </View>
+
+      {friends?.length > 0 && isMarkedFree(userData?.freeTill) ? (
+        <View style={tw`gap-y-1 mb-7`}>
+          <Text
+            style={tw.style(`text-white text-sm text-center`, {
+              fontFamily: "Cabin_400Regular",
+            })}
+          >
+            You're now marked free for
+          </Text>
+
+          <Text
+            style={tw.style(`text-text-1 text-base text-center`, {
+              fontFamily: "Cabin_700Bold",
+            })}
+          >
+            {freeFor(userData?.freeTill, "long")}
+          </Text>
+        </View>
+      ) : null}
 
       {friends?.length > 0 ? (
         isMarkedFree(userData?.freeTill) ? (
