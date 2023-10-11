@@ -27,32 +27,32 @@ const PageSheet = forwardRef((_, ref) => {
           style={tw`bg-black/50 flex flex-1`}
         />
 
-        <View style={tw`bg-bg p-10`}>
+        <View style={tw`bg-bg p-6`}>
           <Text
             style={tw.style(`text-center text-xl text-white px-5`, {
               fontFamily: "Cabin_700Bold",
             })}
           >
-            let your friends know you’re free to chat rn
+            Set Status
           </Text>
 
-          <View style={tw`items-center mt-10`}>
+          <View style={tw`items-center my-8 gap-y-5`}>
             <Button
-              onPress={() => {
-                setVisible(false);
-              }}
+              onPress={() => setVisible(false)}
               style="w-60"
+              textStyle="leading-tight"
             >
-              Send it!
+              Free to chat 👋🏻
             </Button>
 
-            <Text
-              style={tw.style(`text-center text-text-2 text-xs mt-5`, {
-                fontFamily: "Cabin_400Regular",
-              })}
+            <Button
+              onPress={() => setVisible(false)}
+              style="w-60"
+              textStyle="leading-tight"
+              variant="dark"
             >
-              friends see your name only if they are free to chat
-            </Text>
+              Away 😴
+            </Button>
           </View>
         </View>
       </>

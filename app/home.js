@@ -16,6 +16,7 @@ import { SplashScreen, router, useNavigation } from "expo-router";
 import tw from "@utils/tailwind";
 import User from "@components/User";
 import useUser from "@hooks/useUser";
+import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useMixpanel from "@hooks/useMixpanel";
 import useFirebase from "@hooks/useFirebase";
@@ -150,7 +151,7 @@ export default function Home() {
 
   return (
     <SafeView>
-      <View style={tw`flex flex-1 px-6 pt-2`}>
+      <View style={tw`relative flex flex-1 px-6 pt-2`}>
         <Header
           onLogout={logout}
           onFriends={() => router.push("/requests")}
@@ -220,7 +221,17 @@ export default function Home() {
         )}
       </View>
 
+      <Button
+        onPress={() => pageSheetRef?.current?.show()}
+        style="absolute h-[50px] w-[50px] bottom-16 right-6"
+        textStyle="text-xl leading-0"
+        variant="dark"
+      >
+        😴
+      </Button>
+
       <PageSheet ref={pageSheetRef} />
+
       <NoFriendsSheet ref={noFriendsRef} />
     </SafeView>
   );

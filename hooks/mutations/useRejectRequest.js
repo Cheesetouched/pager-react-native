@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import useFirebase from "@hooks/useFirebase";
 import useFriendGraph from "@hooks/useFriendGraph";
@@ -8,6 +8,7 @@ import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 
 export default function useRejectRequest(props = {}) {
   const { user } = useFirebase();
+  const queryClient = useQueryClient();
   const update = useOptimisticUpdate();
   const { onMutate, onSuccess } = props;
   const { rejectRequest } = useFriendGraph();
@@ -31,7 +32,17 @@ export default function useRejectRequest(props = {}) {
           onMutate();
         }
       },
-      onSuccess,
+      onSuccess: () => {
+        queryClient.invalidateQueries(["friends"]);
+        queryClient.invalidateQueries(["checkInvites"]);
+        queryClient.invalidateQueries(["contactsSearch"]);
+        queryClient.invalidateQueries(["user", user?.uid]);
+        queryClient.invalidateQueries(["requests", user?.uid]);
+
+        if (onSuccess) {
+          onSuccess();
+        }
+      },
     },
   );
 

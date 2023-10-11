@@ -74,6 +74,21 @@ export default function useCoreAction() {
     [Pages],
   );
 
+  const markFree = useCallback(
+    async (uid) => {
+      try {
+        Users.update(uid, {
+          freeTill: Timestamp.fromDate(new Date(Date.now() + 1000 * 60 * 60)),
+        });
+
+        return { success: true };
+      } catch (error) {
+        throw error;
+      }
+    },
+    [Users],
+  );
+
   const page = useCallback(
     async (from, to) => {
       PushNotification.pageUser(from, to);
@@ -125,9 +140,10 @@ export default function useCoreAction() {
     () => ({
       getDetailedPages,
       getPages,
+      markFree,
       page,
       respondToPage,
     }),
-    [getDetailedPages, getPages, page, respondToPage],
+    [getDetailedPages, getPages, markFree, page, respondToPage],
   );
 }
