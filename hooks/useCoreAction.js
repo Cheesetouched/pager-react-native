@@ -74,6 +74,19 @@ export default function useCoreAction() {
     [Pages],
   );
 
+  const markAway = useCallback(
+    async (uid) => {
+      try {
+        Users.update(uid, { freeTill: null });
+
+        return { success: true };
+      } catch (error) {
+        throw error;
+      }
+    },
+    [Users],
+  );
+
   const markFree = useCallback(
     async (uid) => {
       try {
@@ -140,10 +153,11 @@ export default function useCoreAction() {
     () => ({
       getDetailedPages,
       getPages,
+      markAway,
       markFree,
       page,
       respondToPage,
     }),
-    [getDetailedPages, getPages, markFree, page, respondToPage],
+    [getDetailedPages, getPages, markAway, markFree, page, respondToPage],
   );
 }

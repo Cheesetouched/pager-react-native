@@ -81,6 +81,7 @@ export default function useFirestore() {
           const user = {
             id: userDoc.id,
             ...userDoc.data(),
+            freeTill: userDoc?.data()?.freeTill?.toMillis(),
           };
 
           return user;

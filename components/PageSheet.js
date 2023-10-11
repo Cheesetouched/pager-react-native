@@ -3,8 +3,12 @@ import { Modal, Pressable, Text, View } from "react-native";
 
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
+import useMarkAway from "@hooks/mutations/useMarkAway";
+import useMarkFree from "@hooks/mutations/useMarkFree";
 
 const PageSheet = forwardRef((_, ref) => {
+  const { markAway } = useMarkAway();
+  const { markFree } = useMarkFree();
   const [visible, setVisible] = useState(false);
 
   useImperativeHandle(ref, () => ({
@@ -38,7 +42,10 @@ const PageSheet = forwardRef((_, ref) => {
 
           <View style={tw`items-center my-8 gap-y-5`}>
             <Button
-              onPress={() => setVisible(false)}
+              onPress={() => {
+                markFree();
+                setVisible(false);
+              }}
               style="w-60"
               textStyle="leading-tight"
             >
@@ -46,7 +53,10 @@ const PageSheet = forwardRef((_, ref) => {
             </Button>
 
             <Button
-              onPress={() => setVisible(false)}
+              onPress={() => {
+                markAway();
+                setVisible(false);
+              }}
               style="w-60"
               textStyle="leading-tight"
               variant="dark"

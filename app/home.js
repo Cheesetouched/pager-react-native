@@ -32,6 +32,18 @@ import useGetFriends from "@hooks/queries/useGetFriends";
 import useGetRequests from "@hooks/queries/useGetRequests";
 import useGetDetailedPages from "@hooks/queries/useGetDetailedPages";
 
+function isMarkedFree(freeTill) {
+  if (!freeTill) {
+    return false;
+  }
+
+  if (isPageValid(freeTill)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 export default function Home() {
   useGetRequests();
   useGetDetailedPages();
@@ -221,17 +233,28 @@ export default function Home() {
         )}
       </View>
 
-      <Button
-        onPress={() => pageSheetRef?.current?.show()}
-        style="absolute h-[50px] w-[50px] bottom-16 right-6"
-        textStyle="text-xl leading-0"
-        variant="dark"
-      >
-        😴
-      </Button>
+      {friends?.length > 0 ? (
+        isMarkedFree(userData?.freeTill) ? (
+          <Button
+            onPress={() => pageSheetRef?.current?.show()}
+            style="absolute h-[50px] w-[50px] bottom-16 right-6"
+            textStyle="text-xl leading-0"
+          >
+            👋🏻
+          </Button>
+        ) : (
+          <Button
+            onPress={() => pageSheetRef?.current?.show()}
+            style="absolute h-[50px] w-[50px] bottom-16 right-6"
+            textStyle="text-xl leading-0"
+            variant="dark"
+          >
+            😴
+          </Button>
+        )
+      ) : null}
 
       <PageSheet ref={pageSheetRef} />
-
       <NoFriendsSheet ref={noFriendsRef} />
     </SafeView>
   );
