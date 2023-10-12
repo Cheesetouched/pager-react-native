@@ -29,7 +29,7 @@ export default function usePages() {
   const getAll = useCallback(
     async (uid) => {
       const yesterday = Timestamp.fromDate(
-        new Date(Date.now() - 1000 * 60 * 60 * 24),
+        new Date(Date.now() - 1000 * 60 * 60 * 72),
       );
 
       const q = query(
@@ -39,17 +39,29 @@ export default function usePages() {
       );
 
       const results = await getDocs(q);
-      return results.docs.map((doc) => {
+      const res = results.docs.map((doc) => {
         const page = {
           id: doc.id,
           ...doc.data(),
         };
+
+        if (page?.response?.freeFrom) {
+          page["response"]["freeFrom"] = page?.response?.freeFrom?.toMillis();
+        }
+
+        if (page?.response?.freeTill) {
+          page.response["freeTill"] = page?.response?.freeTill?.toMillis();
+        }
 
         page["sentAt"] = page?.sentAt?.toMillis();
         page["validTill"] = page?.validTill?.toMillis();
 
         return page;
       });
+
+      console.log(res);
+
+      return res;
     },
     [pages],
   );

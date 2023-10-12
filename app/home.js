@@ -91,6 +91,10 @@ export default function Home() {
 
           if (page?.response?.free) {
             if (isValid(page?.response?.freeTill)) {
+              console.log(
+                friend?.name,
+                "is free because he responded to your page",
+              );
               isFree = true;
               extras = { freeTill: page?.response?.freeTill };
             }
@@ -105,6 +109,7 @@ export default function Home() {
 
         pages?.received?.find((page) => {
           if (page?.from === friend?.id && isValid(page?.validTill)) {
+            console.log(friend?.name, "is free because he paged you");
             isFree = true;
             extras = { freeTill: page?.validTill };
           }

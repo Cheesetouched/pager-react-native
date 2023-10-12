@@ -20,14 +20,6 @@ export default function useCoreAction() {
 
       await Promise.all(
         pages.map(async (page) => {
-          if (page?.response?.freeFrom) {
-            page["response"]["freeFrom"] = page?.response?.freeFrom?.toMillis();
-          }
-
-          if (page?.response?.freeTill) {
-            page["response"]["freeTill"] = page?.response?.freeTill?.toMillis();
-          }
-
           if (page?.from === uid) {
             sent.push({
               ...page,
@@ -54,14 +46,6 @@ export default function useCoreAction() {
       const pages = await Pages.getAll(uid);
 
       pages.map((page) => {
-        if (page?.response?.freeFrom) {
-          page["response"]["freeFrom"] = page?.response?.freeFrom?.toMillis();
-        }
-
-        if (page?.response?.freeTill) {
-          page["response"]["freeTill"] = page?.response?.freeTill?.toMillis();
-        }
-
         if (page?.from === uid) {
           sent.push(page);
         } else if (page?.to === uid) {
