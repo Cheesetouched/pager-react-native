@@ -1,5 +1,5 @@
 import * as ImageManipulator from "expo-image-manipulator";
-import { differenceInHours, differenceInMinutes } from "date-fns";
+import { differenceInHours, differenceInMinutes, isBefore } from "date-fns";
 
 export function cleanupPhone(phone) {
   return phone.trim().replace(/\s/g, "");
@@ -32,12 +32,12 @@ export async function getBlobFromUri(uri) {
   });
 }
 
-export function isPageValid(validTill) {
+export function isValid(validTill) {
   if (!validTill) {
     return false;
   }
 
-  if (Date.now() <= validTill) {
+  if (isBefore(new Date(), validTill)) {
     return true;
   } else {
     return false;

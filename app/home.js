@@ -24,10 +24,10 @@ import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
 import NotifySheet from "@components/NotifySheet";
+import { freeFor, isValid } from "@utils/helpers";
 import MessageIcon from "@assets/svgs/MessageIcon";
 import FriendsIcon from "@assets/svgs/FriendsIcon";
 import useGetPages from "@hooks/queries/useGetPages";
-import { freeFor, isPageValid } from "@utils/helpers";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
 import useGetRequests from "@hooks/queries/useGetRequests";
@@ -38,7 +38,7 @@ function isMarkedFree(freeTill) {
     return false;
   }
 
-  if (isPageValid(freeTill)) {
+  if (isValid(freeTill)) {
     return true;
   } else {
     return false;
@@ -79,19 +79,18 @@ export default function Home() {
       const all = [];
       const free = [];
       let extras = {};
-      let pageDetails = null;
 
       friends.map((friend) => {
         let isFree = false;
-        let hasPaged = false;
+        let havePaged = false;
 
         pages?.sent?.map((page) => {
-          if (page?.to === friend?.id && isPageValid(page?.validTill)) {
-            hasPaged = true;
+          if (page?.to === friend?.id && isValid(page?.validTill)) {
+            havePaged = true;
           }
 
           if (page?.response?.free) {
-            if (isPageValid(page?.response?.freeTill)) {
+            if (isValid(page?.response?.freeTill)) {
               isFree = true;
               extras = { freeTill: page?.response?.freeTill };
             }
@@ -105,23 +104,11 @@ export default function Home() {
         });
 
         pages?.received?.find((page) => {
-          if (page?.from === friend?.id && isPageValid(page?.validTill)) {
+          if (page?.from === friend?.id && isValid(page?.validTill)) {
             isFree = true;
             extras = { freeTill: page?.validTill };
           }
-
-          if (pageDetails === null && !page?.response) {
-            pageDetails = {
-              from: friend,
-              pageId: page?.id,
-            };
-          }
         });
-
-        if (isPageValid(friend?.freeTill)) {
-          isFree = true;
-          extras = { freeTill: friend?.freeTill };
-        }
 
         if (isFree) {
           free.push({ ...extras, ...friend });
@@ -129,23 +116,13 @@ export default function Home() {
           all.push({
             ...extras,
             ...friend,
-            paged: hasPaged,
+            paged: havePaged,
           });
         }
       });
 
       setAll(all);
       setFree(free);
-
-      if (pageDetails) {
-        router.push({
-          pathname: "/page",
-          params: {
-            from: JSON.stringify(pageDetails?.from),
-            pageId: pageDetails?.pageId,
-          },
-        });
-      }
     }
   }, [friends, pages, refetchingPages]);
 
@@ -240,7 +217,7 @@ export default function Home() {
         )}
       </View>
 
-      {friends?.length > 0 && isMarkedFree(userData?.freeTill) ? (
+      {friends?.length > 0 && isMarkedFree(userData?.markedFreeTill) ? (
         <View style={tw`gap-y-1 mb-7`}>
           <Text
             style={tw.style(`text-white text-sm text-center`, {
@@ -255,13 +232,13 @@ export default function Home() {
               fontFamily: "Cabin_700Bold",
             })}
           >
-            {freeFor(userData?.freeTill, "long")}
+            {freeFor(userData?.markedFreeTill, "long")}
           </Text>
         </View>
       ) : null}
 
       {friends?.length > 0 ? (
-        isMarkedFree(userData?.freeTill) ? (
+        isMarkedFree(userData?.markedFreeTill) ? (
           <Button
             onPress={() => pageSheetRef?.current?.show()}
             style="absolute h-[50px] w-[50px] bottom-16 right-6"

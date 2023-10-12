@@ -91,7 +91,9 @@ export default function useCoreAction() {
     async (uid) => {
       try {
         await Users.update(uid, {
-          freeTill: Timestamp.fromDate(new Date(Date.now() + 1000 * 60 * 60)),
+          markedFreeTill: Timestamp.fromDate(
+            new Date(Date.now() + 1000 * 60 * 60),
+          ),
         });
 
         return { success: true };
