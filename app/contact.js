@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Linking, Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
