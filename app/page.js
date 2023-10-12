@@ -43,7 +43,7 @@ export default function Page() {
   }
 
   return (
-    <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
+    <BlurView intensity={75} style={tw`flex flex-1`} tint="dark">
       <SafeAreaProvider>
         <SafeAreaView style={tw`flex flex-1 px-8`}>
           {response === null ? (

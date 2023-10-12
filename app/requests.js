@@ -11,7 +11,7 @@ export default function Requests() {
   const { requests } = useGetRequests();
 
   return (
-    <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
+    <BlurView intensity={75} style={tw`flex flex-1`} tint="dark">
       <Text
         style={tw.style(`text-lg text-white text-center mt-5`, {
           fontFamily: "Cabin_700Bold",

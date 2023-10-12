@@ -13,7 +13,7 @@ export default function Pages() {
   const [selected, setSelected] = useState("received");
 
   return (
-    <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
+    <BlurView intensity={75} style={tw`flex flex-1`} tint="dark">
       <DualSelector selected={selected} onSelected={setSelected} />
 
       {!pages ? (

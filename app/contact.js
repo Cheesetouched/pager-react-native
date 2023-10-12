@@ -16,22 +16,15 @@ import FacetimeIcon from "@assets/svgs/FacetimeIcon";
 import OutlineButton from "@components/OutlineButton";
 
 export default function Contact() {
+  const { page } = usePage();
   const mixpanel = useMixpanel();
   const { data } = useLocalSearchParams();
   const [paged, setPaged] = useState(false);
   const parsed = JSON.parse(data);
 
-  const onSuccess = useCallback(() => {
-    setPaged(true);
-  }, []);
-
-  const { page, paging } = usePage({
-    onSuccess,
-  });
-
   return (
     <BlurView
-      intensity={100}
+      intensity={75}
       style={tw`flex flex-1 items-center justify-center`}
       tint="dark"
     >
@@ -90,8 +83,8 @@ export default function Contact() {
             </OutlineButton>
           ) : (
             <Button
-              loading={paging}
               onPress={() => {
+                setPaged(true);
                 page(parsed?.id);
                 mixpanel.track("paged");
               }}
