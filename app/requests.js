@@ -8,7 +8,7 @@ import RequestCard from "@components/RequestCard";
 import useGetRequests from "@hooks/queries/useGetRequests";
 
 export default function Requests() {
-  const { requests } = useGetRequests();
+  const { refetching, requests } = useGetRequests();
 
   return (
     <BlurView intensity={75} style={tw`flex flex-1`} tint="dark">
@@ -19,6 +19,20 @@ export default function Requests() {
       >
         Friend Requests
       </Text>
+
+      {refetching ? (
+        <View style={tw`flex flex-row justify-center mt-2 gap-x-2`}>
+          <Text
+            style={tw.style(`text-sm text-gray-4 text-center `, {
+              fontFamily: "Cabin_700Bold",
+            })}
+          >
+            Finding new requests
+          </Text>
+
+          <ActivityIndicator />
+        </View>
+      ) : null}
 
       {!requests ? (
         <View style={tw`flex-1 justify-center mb-10`}>

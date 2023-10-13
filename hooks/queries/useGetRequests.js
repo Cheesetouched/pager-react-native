@@ -19,6 +19,7 @@ export default function useGetRequests() {
     () => ({
       getting: isInitialLoading || isFetching,
       requests: data,
+      refetching: isFetching,
     }),
     [data, isFetching, isInitialLoading],
   );

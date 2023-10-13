@@ -9,9 +9,9 @@ import {
 } from "react-native";
 
 import { isAfter } from "date-fns";
+import { SplashScreen, router } from "expo-router";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "@tanstack/react-query";
-import { SplashScreen, router, useNavigation } from "expo-router";
 
 import tw from "@utils/tailwind";
 import User from "@components/User";
@@ -19,7 +19,6 @@ import useUser from "@hooks/useUser";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useMixpanel from "@hooks/useMixpanel";
-import useFirebase from "@hooks/useFirebase";
 import PageSheet from "@components/PageSheet";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
@@ -55,20 +54,10 @@ export default function Home() {
   const notifySheetRef = useRef();
   const [all, setAll] = useState();
   const [free, setFree] = useState();
-  const navigation = useNavigation();
   const queryClient = useQueryClient();
   const { pages, refetchingPages } = useGetPages();
   const { friends, refetchingFriends } = useGetFriends(userData?.friends);
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
-
-  const { logout } = useFirebase({
-    onLogout: () => {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "(onboarding)/handle" }],
-      });
-    },
-  });
 
   useEffect(() => {
     SplashScreen.hideAsync();
@@ -166,7 +155,6 @@ export default function Home() {
     <SafeView>
       <View style={tw`relative flex flex-1 px-6 pt-2`}>
         <Header
-          onLogout={logout}
           onFriends={() => router.push("/requests")}
           onPages={() => router.push("/pages")}
           onSearch={() => router.push("/friends")}
@@ -343,14 +331,14 @@ const FreeFriends = memo(({ all, free, mixpanel }) => {
   );
 });
 
-function Header({ onLogout, onFriends, onPages, onSearch }) {
+function Header({ onFriends, onPages, onSearch }) {
   return (
     <View style={tw`flex flex-row justify-center mb-2`}>
       <TouchableOpacity onPress={onFriends} style={tw`absolute left-0 mt-1`}>
         <FriendsIcon />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={onLogout}>
+      <TouchableOpacity>
         <Text
           style={tw.style(`text-3xl text-text-1`, {
             fontFamily: "Lalezar_400Regular",

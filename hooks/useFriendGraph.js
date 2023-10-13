@@ -23,7 +23,8 @@ export default function useFriendGraph() {
           }),
         ]);
 
-        PushNotification.requestAccepted(accepterUid, senderUid);
+        //TO-DO: Enable this before shipping
+        //PushNotification.requestAccepted(accepterUid, senderUid);
         return result;
       } catch (error) {
         throw error;
