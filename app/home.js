@@ -20,6 +20,7 @@ import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useMixpanel from "@hooks/useMixpanel";
 import PageSheet from "@components/PageSheet";
+import BadgeIcon from "@components/BadgeIcon";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
 import NotifySheet from "@components/NotifySheet";
@@ -45,8 +46,6 @@ function isMarkedFree(freeTill) {
 }
 
 export default function Home() {
-  useGetRequests();
-  useGetDetailedPages();
   const noFriendsRef = useRef();
   const pageSheetRef = useRef();
   const mixpanel = useMixpanel();
@@ -55,13 +54,42 @@ export default function Home() {
   const [all, setAll] = useState();
   const [free, setFree] = useState();
   const queryClient = useQueryClient();
+  const { requests } = useGetRequests();
   const { pages, refetchingPages } = useGetPages();
+  const { pages: detailedPages } = useGetDetailedPages();
+  const [badges, setBadges] = useState({ requests: 0, pages: 0 });
   const { friends, refetchingFriends } = useGetFriends(userData?.friends);
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
   useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
+
+  useEffect(() => {
+    if (requests) {
+      setBadges((current) => ({
+        ...current,
+        requests: requests?.length,
+      }));
+    }
+  }, [requests]);
+
+  useEffect(() => {
+    if (detailedPages) {
+      let awaitingResponse = 0;
+
+      detailedPages?.received?.map((page) => {
+        if (!page?.response) {
+          awaitingResponse += 1;
+        }
+      });
+
+      setBadges((current) => ({
+        ...current,
+        pages: awaitingResponse,
+      }));
+    }
+  }, [detailedPages]);
 
   useEffect(() => {
     if (friends && pages) {
@@ -160,6 +188,7 @@ export default function Home() {
     <SafeView>
       <View style={tw`relative flex flex-1 px-6 pt-2`}>
         <Header
+          badges={badges}
           onFriends={() => router.push("/requests")}
           onPages={() => router.push("/pages")}
           onSearch={() => router.push("/friends")}
@@ -336,11 +365,13 @@ const FreeFriends = memo(({ all, free, mixpanel }) => {
   );
 });
 
-function Header({ onFriends, onPages, onSearch }) {
+function Header({ badges, onFriends, onPages, onSearch }) {
   return (
     <View style={tw`flex flex-row justify-center mb-2`}>
       <TouchableOpacity onPress={onFriends} style={tw`absolute left-0 mt-1`}>
-        <FriendsIcon />
+        <BadgeIcon count={badges?.requests}>
+          <FriendsIcon />
+        </BadgeIcon>
       </TouchableOpacity>
 
       <TouchableOpacity>
@@ -355,7 +386,9 @@ function Header({ onFriends, onPages, onSearch }) {
 
       <View style={tw`absolute flex-row items-center right-0 gap-x-6`}>
         <TouchableOpacity onPress={onPages} style={tw`mb-[2px]`}>
-          <MessageIcon />
+          <BadgeIcon count={badges?.pages}>
+            <MessageIcon />
+          </BadgeIcon>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={onSearch}>

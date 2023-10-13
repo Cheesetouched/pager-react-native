@@ -28,8 +28,9 @@ export default function usePages() {
 
   const getAll = useCallback(
     async (uid) => {
+      //TO-DO: Change from 72 to 24 hours
       const yesterday = Timestamp.fromDate(
-        new Date(Date.now() - 1000 * 60 * 60 * 24),
+        new Date(Date.now() - 1000 * 60 * 60 * 72),
       );
 
       const q = query(
