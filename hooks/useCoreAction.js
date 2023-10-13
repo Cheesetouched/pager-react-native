@@ -92,8 +92,7 @@ export default function useCoreAction() {
 
   const page = useCallback(
     async (from, to) => {
-      //TO-DO: Enable this before releasing
-      //PushNotification.pageUser(from, to);
+      PushNotification.pageUser(from, to);
 
       return await Pages.add({
         from,
