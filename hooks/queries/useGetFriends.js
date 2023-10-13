@@ -8,7 +8,7 @@ export default function useGetFriends(friends) {
   const { getFriends } = useFriendGraph();
 
   const { data, isInitialLoading, isFetching } = useQuery(
-    ["friends"],
+    ["friends", friends],
     () => {
       if (friends?.length > 0) {
         return getFriends(friends);
