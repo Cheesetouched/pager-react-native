@@ -73,45 +73,50 @@ export default function Home() {
         let isFree = false;
         let havePaged = false;
 
-        const sentPage = pages?.sent?.find((page) => {
-          if (page?.to === friend?.id && isValid(page?.validTill)) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-
-        const receivedPage = pages?.received?.find((page) => {
-          if (page?.from === friend?.id && isValid(page?.validTill)) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-
-        if (sentPage) {
-          if (sentPage?.response?.free) {
-            if (isValid(sentPage?.response?.freeTill)) {
-              isFree = true;
-              extras = { freeTill: sentPage?.response?.freeTill };
-            }
-          } else {
-            if (
-              sentPage?.response?.freeFrom &&
-              isAfter(sentPage?.response?.freeFrom, new Date())
-            ) {
-              extras = { freeFrom: sentPage?.response?.freeFrom };
-            }
-          }
-
-          if (!isFree) {
-            havePaged = true;
-          }
-        }
-
-        if (receivedPage) {
+        if (isValid(friend?.markedFreeTill)) {
           isFree = true;
-          extras = { freeTill: receivedPage?.validTill };
+          extras = { freeTill: friend?.markedFreeTill };
+        } else {
+          const sentPage = pages?.sent?.find((page) => {
+            if (page?.to === friend?.id && isValid(page?.validTill)) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+
+          const receivedPage = pages?.received?.find((page) => {
+            if (page?.from === friend?.id && isValid(page?.validTill)) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+
+          if (sentPage) {
+            if (sentPage?.response?.free) {
+              if (isValid(sentPage?.response?.freeTill)) {
+                isFree = true;
+                extras = { freeTill: sentPage?.response?.freeTill };
+              }
+            } else {
+              if (
+                sentPage?.response?.freeFrom &&
+                isAfter(sentPage?.response?.freeFrom, new Date())
+              ) {
+                extras = { freeFrom: sentPage?.response?.freeFrom };
+              }
+            }
+
+            if (!isFree) {
+              havePaged = true;
+            }
+          }
+
+          if (receivedPage) {
+            isFree = true;
+            extras = { freeTill: receivedPage?.validTill };
+          }
         }
 
         const user = {
@@ -223,9 +228,9 @@ export default function Home() {
       </View>
 
       {friends?.length > 0 && isMarkedFree(userData?.markedFreeTill) ? (
-        <View style={tw`gap-y-1 mb-7`}>
+        <View style={tw`gap-y-1 pb-8`}>
           <Text
-            style={tw.style(`text-white text-sm text-center`, {
+            style={tw.style(`text-white text-sm text-center pt-2`, {
               fontFamily: "Cabin_400Regular",
             })}
           >

@@ -17,7 +17,7 @@ export default function useMarkAway(props = {}) {
     onMutate: () => {
       update(["user", user?.uid], (old) => ({
         ...old,
-        freeTill: null,
+        markedFreeTill: null,
       }));
     },
     onSuccess: () => {

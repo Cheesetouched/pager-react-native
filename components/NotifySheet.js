@@ -44,7 +44,7 @@ const NotifySheet = forwardRef((_, ref) => {
             <Button
               onPress={() => {
                 setVisible(false);
-                notifyFriends(userData?.id, {
+                notifyFriends(userData?.friends, {
                   data: { action: "open_contact", uid: userData?.id },
                   body: `${userData?.name?.split(" ")[0]} is free to chat! 👋🏻`,
                 });

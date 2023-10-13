@@ -26,15 +26,16 @@ export default function usePushNotification() {
   const Users = useUsers();
 
   const notifyFriends = useCallback(
-    async (uid, { data, title, body }) => {
-      const user = await Users.get(uid);
-      const friends = await Users.getFriends(user?.friends);
+    async (friends, { data, title, body }) => {
+      const allFriends = await Users.getFriends(friends);
 
-      friends.map(({ pushToken }) => {
-        if (valid(pushToken)) {
-          send(pushToken, { data, title, body });
-        }
-      });
+      return await Promise.all(
+        allFriends.map(async ({ pushToken }) => {
+          if (valid(pushToken)) {
+            await send(pushToken, { data, title, body });
+          }
+        }),
+      );
     },
     [Users, send],
   );

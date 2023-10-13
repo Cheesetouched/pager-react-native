@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { addHours } from "date-fns";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import useFirebase from "@hooks/useFirebase";
@@ -17,7 +18,7 @@ export default function useMarkFree(props = {}) {
     onMutate: () => {
       update(["user", user?.uid], (old) => ({
         ...old,
-        freeTill: Date.now() + 1000 * 60 * 60,
+        markedFreeTill: addHours(new Date(), 1).getTime(),
       }));
     },
     onSuccess: () => {

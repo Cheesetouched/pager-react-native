@@ -2,15 +2,15 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import useFirebase from "@hooks/useFirebase";
-import useFirestore from "@hooks/useFirestore";
+import useUsers from "@hooks/firestore/useUsers";
 
 export default function useUser() {
+  const Users = useUsers();
   const { user } = useFirebase();
-  const { getUser } = useFirestore();
 
   const { data, isInitialLoading, isFetching } = useQuery(
     ["user", user?.uid],
-    () => getUser(user?.uid),
+    () => Users.get(user?.uid),
     {
       enabled: user !== null && user !== undefined,
       staleTime: 10 * (1000 * 60),
