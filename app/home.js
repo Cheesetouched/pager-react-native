@@ -84,45 +84,57 @@ export default function Home() {
         let isFree = false;
         let havePaged = false;
 
-        pages?.sent?.map((page) => {
+        const sentPage = pages?.sent?.find((page) => {
           if (page?.to === friend?.id && isValid(page?.validTill)) {
-            havePaged = true;
+            return true;
+          } else {
+            return false;
           }
+        });
 
-          if (page?.response?.free) {
-            if (isValid(page?.response?.freeTill)) {
-              console.log(
-                friend?.name,
-                "is free because he responded to your page",
-              );
+        const receivedPage = pages?.received?.find((page) => {
+          if (page?.from === friend?.id && isValid(page?.validTill)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+
+        if (sentPage) {
+          if (sentPage?.response?.free) {
+            if (isValid(sentPage?.response?.freeTill)) {
               isFree = true;
-              extras = { freeTill: page?.response?.freeTill };
+              extras = { freeTill: sentPage?.response?.freeTill };
             }
           } else {
-            if (page?.response?.freeFrom) {
-              if (isAfter(new Date(page?.response?.freeFrom), new Date())) {
-                extras = { freeFrom: page?.response?.freeFrom };
-              }
+            if (
+              sentPage?.response?.freeFrom &&
+              isAfter(sentPage?.response?.freeFrom, new Date())
+            ) {
+              extras = { freeFrom: sentPage?.response?.freeFrom };
             }
           }
-        });
 
-        pages?.received?.find((page) => {
-          if (page?.from === friend?.id && isValid(page?.validTill)) {
-            console.log(friend?.name, "is free because he paged you");
-            isFree = true;
-            extras = { freeTill: page?.validTill };
+          if (!isFree) {
+            havePaged = true;
           }
-        });
+        }
+
+        if (receivedPage) {
+          isFree = true;
+          extras = { freeTill: receivedPage?.validTill };
+        }
+
+        const user = {
+          ...extras,
+          ...friend,
+          paged: havePaged,
+        };
 
         if (isFree) {
-          free.push({ ...extras, ...friend });
+          free.push(user);
         } else {
-          all.push({
-            ...extras,
-            ...friend,
-            paged: havePaged,
-          });
+          all.push(user);
         }
       });
 

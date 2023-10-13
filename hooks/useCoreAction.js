@@ -34,6 +34,8 @@ export default function useCoreAction() {
         }),
       );
 
+      sent.sort((x, y) => y?.validTill - x?.validTill);
+      received.sort((x, y) => y?.validTill - x?.validTill);
       return { sent, received };
     },
     [Pages, Users],
@@ -53,6 +55,8 @@ export default function useCoreAction() {
         }
       });
 
+      sent.sort((x, y) => y?.validTill - x?.validTill);
+      received.sort((x, y) => y?.validTill - x?.validTill);
       return { sent, received };
     },
     [Pages],

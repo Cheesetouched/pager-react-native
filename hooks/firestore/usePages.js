@@ -29,7 +29,7 @@ export default function usePages() {
   const getAll = useCallback(
     async (uid) => {
       const yesterday = Timestamp.fromDate(
-        new Date(Date.now() - 1000 * 60 * 60 * 72),
+        new Date(Date.now() - 1000 * 60 * 60 * 24),
       );
 
       const q = query(
@@ -39,7 +39,8 @@ export default function usePages() {
       );
 
       const results = await getDocs(q);
-      const res = results.docs.map((doc) => {
+
+      return results.docs.map((doc) => {
         const page = {
           id: doc.id,
           ...doc.data(),
@@ -58,10 +59,6 @@ export default function usePages() {
 
         return page;
       });
-
-      console.log(res);
-
-      return res;
     },
     [pages],
   );

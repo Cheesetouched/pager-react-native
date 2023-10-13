@@ -15,6 +15,7 @@ export default function PageCard({ data, type }) {
         data={type === "received" ? data?.from : data?.to}
         dimension="55"
         free={type === "received" && !data?.response}
+        overrideFree={type === "sent"}
         showName={false}
         title="👋🏻"
         titleContainerStyle="h-[15px] bottom-[-5px] px-1"

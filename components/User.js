@@ -30,6 +30,7 @@ export default function User({
   freeTextStyle,
   nameOverride = null,
   nameStyle,
+  overrideFree = false,
   onPress,
   showName = true,
   paged = false,
@@ -51,7 +52,9 @@ export default function User({
         >
           <Image
             src={data?.dp}
-            style={`rounded-full ${!free || disabled ? "opacity-50" : ""}`}
+            style={`rounded-full ${
+              overrideFree ? "" : !free || disabled ? "opacity-50" : ""
+            }`}
           />
         </View>
 
