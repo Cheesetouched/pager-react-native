@@ -160,6 +160,7 @@ export default function Home() {
         }
       });
 
+      // Passing an extra value to keep the 3x3 grid in shape
       if (all?.length % 2 === 0) {
         all.push(null);
       }

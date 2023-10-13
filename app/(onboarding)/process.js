@@ -21,13 +21,10 @@ export default function Process() {
       remove("checkpoint");
 
       mixpanel.identify(user?.uid);
-
-      mixpanel.registerSuperPropertiesOnce({
-        $avatar: user?.data?.dp,
-        handle: user?.data?.handle,
-        $name: user?.data?.name,
-        $phone: user?.data?.phone?.full,
-      });
+      mixpanel.getPeople().set("$avatar", user?.data?.dp);
+      mixpanel.getPeople().set("handle", user?.data?.handle);
+      mixpanel.getPeople().set("$name", user?.data?.name);
+      mixpanel.getPeople().set("$phone", user?.data?.phone?.full);
 
       router.replace({
         pathname: "/friends",
