@@ -160,6 +160,10 @@ export default function Home() {
         }
       });
 
+      if (all?.length % 2 === 0) {
+        all.push(null);
+      }
+
       setAll(all);
       setFree(free);
     }
@@ -195,7 +199,7 @@ export default function Home() {
         />
 
         {friends?.length > 0 ? (
-          <View style={tw`flex flex-1 mb-2`}>
+          <View style={tw`flex flex-1`}>
             <FlatList
               ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
               ListHeaderComponent={
@@ -215,31 +219,37 @@ export default function Home() {
                   }}
                 />
               }
-              renderItem={({ item }) => (
-                <User
-                  data={item}
-                  onPress={() => {
-                    mixpanel.track("tapped_user");
+              renderItem={({ item }) => {
+                if (item !== null) {
+                  return (
+                    <User
+                      data={item}
+                      onPress={() => {
+                        mixpanel.track("tapped_user");
 
-                    router.push({
-                      pathname: "/contact",
-                      params: {
-                        data: JSON.stringify({
-                          ...item,
-                          free: false,
-                          paged: item?.paged,
-                        }),
-                      },
-                    });
-                  }}
-                  paged={item?.paged}
-                />
-              )}
+                        router.push({
+                          pathname: "/contact",
+                          params: {
+                            data: JSON.stringify({
+                              ...item,
+                              free: false,
+                              paged: item?.paged,
+                            }),
+                          },
+                        });
+                      }}
+                      paged={item?.paged}
+                    />
+                  );
+                } else {
+                  return <View style={tw`w-[92px]`} />;
+                }
+              }}
               showsVerticalScrollIndicator={false}
             />
           </View>
         ) : (
-          <View style={tw`flex flex-1 mb-2`}>
+          <View style={tw`flex flex-1`}>
             <Text
               style={tw.style(`text-text-2 text-lg pt-6`, {
                 fontFamily: "Cabin_700Bold",
