@@ -1,5 +1,11 @@
 import { memo, useCallback, useRef, useState } from "react";
-import { ActivityIndicator, Linking, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Linking,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
@@ -10,6 +16,7 @@ import useUser from "@hooks/useUser";
 import Input from "@components/Input";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
+import BackIcon from "@assets/svgs/BackIcon";
 import useContacts from "@hooks/useContacts";
 import useMixpanel from "@hooks/useMixpanel";
 import ExampleUser1 from "@assets/example_1.png";
@@ -66,9 +73,26 @@ export default function Friends() {
 
   return (
     <SafeView>
-      <View style={tw`flex flex-1 px-4 pt-4`}>
+      <View style={tw`flex flex-1 px-4 pt-2`}>
         {permission?.granted ? (
           <>
+            {params?.referrer !== "onboarding" ? (
+              <TouchableOpacity
+                onPress={router.back}
+                style={tw`flex flex-row items-center gap-x-2 mb-4`}
+              >
+                <BackIcon />
+
+                <Text
+                  style={tw.style(`text-base text-white font-semibold`, {
+                    fontFamily: "Cabin_600SemiBold",
+                  })}
+                >
+                  back
+                </Text>
+              </TouchableOpacity>
+            ) : null}
+
             <Input
               LeftComponent={
                 <AntDesign
@@ -78,7 +102,7 @@ export default function Friends() {
                   style={tw`ml-3`}
                 />
               }
-              containerStyle="h-[45px] mb-3"
+              containerStyle="h-[45px] mb-2"
               maxLength={25}
               onChangeText={searchContacts}
               placeholder="Search for people"
