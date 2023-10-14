@@ -87,7 +87,7 @@ export default function Page() {
                       response: {
                         response: {
                           free: true,
-                          freeTill: addHours(current, 1),
+                          freeTill: addHours(new Date(), 1),
                         },
                       },
                       senderUid: parsed?.id,

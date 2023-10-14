@@ -161,8 +161,12 @@ export default function Home() {
       });
 
       // Passing an extra value to keep the 3x3 grid in shape
-      if (all?.length % 2 === 0) {
+      if (all?.length > 1 && all?.length % 2 === 0) {
         all.push(null);
+      }
+
+      if (free?.length > 1 && free?.length % 2 === 0) {
+        free.push(null);
       }
 
       setAll(all);
@@ -340,25 +344,31 @@ const FreeFriends = memo(({ all, free, mixpanel }) => {
             data={free}
             estimatedItemSize={114}
             numColumns={3}
-            renderItem={({ item }) => (
-              <User
-                data={item}
-                free
-                onPress={() => {
-                  mixpanel.track("tapped_user");
+            renderItem={({ item }) => {
+              if (item !== null) {
+                return (
+                  <User
+                    data={item}
+                    free
+                    onPress={() => {
+                      mixpanel.track("tapped_user");
 
-                  router.push({
-                    pathname: "/contact",
-                    params: {
-                      data: JSON.stringify({
-                        ...item,
-                        free: true,
-                      }),
-                    },
-                  });
-                }}
-              />
-            )}
+                      router.push({
+                        pathname: "/contact",
+                        params: {
+                          data: JSON.stringify({
+                            ...item,
+                            free: true,
+                          }),
+                        },
+                      });
+                    }}
+                  />
+                );
+              } else {
+                return <View style={tw`w-[92px]`} />;
+              }
+            }}
           />
         </>
       ) : null}
@@ -369,7 +379,7 @@ const FreeFriends = memo(({ all, free, mixpanel }) => {
             fontFamily: "Cabin_700Bold",
           })}
         >
-          All friends 💤
+          Away 💤
         </Text>
       ) : null}
     </View>
