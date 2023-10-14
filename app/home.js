@@ -175,13 +175,17 @@ export default function Home() {
   }, [friends, pages, refetchingPages]);
 
   useEffect(() => {
-    if (
-      lastNotificationResponse?.notification?.request?.content?.data?.action ===
-      "open_requests"
-    ) {
-      router.push("/requests");
+    if (lastNotificationResponse && queryClient && userData?.id) {
+      const notifAction =
+        lastNotificationResponse?.notification?.request?.content?.data?.action;
+
+      if (notifAction === "open_requests") {
+        router.push("/requests");
+      } else if (notifAction === "invalidate_user") {
+        queryClient?.invalidateQueries(["user", userData?.id]);
+      }
     }
-  }, [lastNotificationResponse]);
+  }, [lastNotificationResponse, queryClient, userData]);
 
   if (!userData || !friends || !pages) {
     return (

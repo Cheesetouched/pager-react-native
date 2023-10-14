@@ -113,6 +113,7 @@ export default function usePushNotification() {
 
       if (valid(sender?.pushToken)) {
         send(sender?.pushToken, {
+          data: { action: "invalidate_user" },
           title: accepter?.name,
           body: "accepted your friend request!",
         });
