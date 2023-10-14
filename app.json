@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#181818"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "buildNumber": "5",
       "supportsTablet": false,
@@ -51,6 +53,12 @@
             "useFrameworks": "static"
           }
         }
+      ],
+      [
+        "expo-updates",
+        {
+          "username": "pingrishabh"
+        }
       ]
     ],
     "extra": {
@@ -61,6 +69,12 @@
         "projectId": "cfcac9f8-813f-4e5c-96ff-1d6caef5c302"
       }
     },
-    "owner": "pingrishabh"
+    "owner": "pingrishabh",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/cfcac9f8-813f-4e5c-96ff-1d6caef5c302"
+    }
   }
 }
