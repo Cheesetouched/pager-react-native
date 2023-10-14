@@ -25,10 +25,17 @@ export default function useAcceptRequest(props = {}) {
           onMutate();
         }
       },
-      onSuccess: () => {
+      onSuccess: (_, senderUid) => {
+        update(["user", user?.uid], (old) => ({
+          ...old,
+          friends: [...old?.friends, senderUid],
+          pendingRequests: old?.pendingRequests?.filter(
+            (uid) => uid !== senderUid,
+          ),
+        }));
+
         queryClient.invalidateQueries(["checkInvites"]);
         queryClient.invalidateQueries(["contactsSearch"]);
-        queryClient.invalidateQueries(["user", user?.uid]);
 
         if (onSuccess) {
           onSuccess();
