@@ -93,6 +93,13 @@ export default function Layout() {
             name="page"
             options={{ presentation: "transparentModal" }}
           />
+
+          <Stack.Screen
+            name="welcome_context"
+            options={{
+              presentation: "fullScreenModal",
+            }}
+          />
         </Stack>
       </QueryClientProvider>
 
