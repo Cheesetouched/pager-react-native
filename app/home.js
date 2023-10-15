@@ -161,11 +161,11 @@ export default function Home() {
       });
 
       // Passing an extra value to keep the 3x3 grid in shape
-      if (all?.length > 1 && all?.length % 2 === 0) {
+      if (all?.length % 3 === 2) {
         all.push(null);
       }
 
-      if (free?.length > 1 && free?.length % 2 === 0) {
+      if (free?.length % 3 === 2) {
         free.push(null);
       }
 
