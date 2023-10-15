@@ -89,7 +89,6 @@ export default function Contact() {
                 mixpanel.track("paged");
               }}
               textStyle="text-sm leading-tight"
-              variant="dark"
             >
               {`PAGE ${parsed?.name?.split(" ")[0].toUpperCase()}`} 📟
             </Button>
