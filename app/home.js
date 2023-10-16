@@ -27,6 +27,7 @@ import NotifySheet from "@components/NotifySheet";
 import { freeFor, isValid } from "@utils/helpers";
 import MessageIcon from "@assets/svgs/MessageIcon";
 import FriendsIcon from "@assets/svgs/FriendsIcon";
+import useLocalStorage from "@hooks/useLocalStorage";
 import useGetPages from "@hooks/queries/useGetPages";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
@@ -55,6 +56,7 @@ export default function Home() {
   const [free, setFree] = useState();
   const queryClient = useQueryClient();
   const { requests } = useGetRequests();
+  const localStorage = useLocalStorage();
   const { pages, refetchingPages } = useGetPages();
   const { pages: detailedPages } = useGetDetailedPages();
   const [badges, setBadges] = useState({ requests: 0, pages: 0 });
@@ -64,6 +66,17 @@ export default function Home() {
   useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
+
+  useEffect(() => {
+    async function hasSeenWelcomeContext() {
+      const welcomeContext = await localStorage.get("welcome_context");
+      if (welcomeContext !== "seen") {
+        router.push("/welcome_context");
+      }
+    }
+
+    hasSeenWelcomeContext();
+  }, [localStorage]);
 
   useEffect(() => {
     if (requests) {
