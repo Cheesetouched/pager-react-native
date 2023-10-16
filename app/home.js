@@ -414,7 +414,6 @@ function Header({ badges, onFriends, onPages, onSearch }) {
 
       <TouchableOpacity>
         <Text
-          onPress={() => router?.push("welcome_context")}
           style={tw.style(`text-3xl text-text-1`, {
             fontFamily: "Lalezar_400Regular",
           })}
