@@ -1,16 +1,67 @@
-import { forwardRef, useImperativeHandle, useMemo, useRef } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Text, View } from "react-native";
 
 import { BlurView } from "expo-blur";
-import { BottomSheetTextInput, BottomSheetModal } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetFlatList,
+  BottomSheetTextInput,
+  BottomSheetModal,
+} from "@gorhom/bottom-sheet";
 
 import tw from "@utils/tailwind";
 import SafeView from "@components/SafeView";
+import FriendCard from "@components/FriendCard";
 import SearchIconGray from "@assets/svgs/SearchIconGray";
 
-const FriendList = forwardRef((_, ref) => {
+const FriendList = forwardRef(({ friends }, ref) => {
   const localRef = useRef();
-  const snapPoints = useMemo(() => ["50%", "75%", "100%"], []);
+  const [selected, setSelected] = useState([]);
+  const [allFriends, setAllFriends] = useState(friends);
+  const snapPoints = useMemo(() => ["75%", "100%"], []);
+
+  const evaluateCheck = useCallback(
+    (user) => {
+      const checked = selected.find((friend) => user?.id === friend?.id);
+      return !!checked;
+    },
+    [selected],
+  );
+
+  const onCheck = useCallback(
+    (user) => {
+      const result = selected?.find((friend) => friend?.id === user?.id);
+
+      if (result) {
+        setSelected((current) =>
+          current?.filter((friend) => friend?.id !== user?.id),
+        );
+      } else {
+        setSelected((current) => [...current, user]);
+      }
+    },
+    [selected],
+  );
+
+  const search = useCallback(
+    (text) => {
+      const filtered = friends.filter((friend) => {
+        const lowercase = friend?.name.toLowerCase();
+        const searchTerm = text.toString().toLowerCase();
+        return lowercase.indexOf(searchTerm) > -1;
+      });
+
+      setAllFriends(filtered);
+    },
+    [friends],
+  );
 
   useImperativeHandle(ref, () => ({
     show: localRef?.current?.present,
@@ -47,12 +98,26 @@ const FriendList = forwardRef((_, ref) => {
             <SearchIconGray />
 
             <BottomSheetTextInput
+              onChangeText={search}
               placeholder="Search Friends"
               placeholderTextColor="#797979"
               selectionColor="#797979"
               style={tw`flex-1 ml-2 text-white`}
             />
           </BlurView>
+
+          <BottomSheetFlatList
+            ItemSeparatorComponent={() => <View style={{ height: 25 }} />}
+            data={allFriends}
+            renderItem={({ item }) => (
+              <FriendCard
+                checked={() => evaluateCheck(item)}
+                data={item}
+                onCheck={() => onCheck(item)}
+              />
+            )}
+            contentContainerStyle={tw`mt-6`}
+          />
         </BlurView>
       </SafeView>
     </BottomSheetModal>

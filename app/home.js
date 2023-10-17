@@ -344,7 +344,7 @@ export default function Home() {
         )
       ) : null}
 
-      <FriendList ref={friendListRef} />
+      <FriendList friends={friends} ref={friendListRef} />
 
       <NoFriendsSheet ref={noFriendsRef} />
 
