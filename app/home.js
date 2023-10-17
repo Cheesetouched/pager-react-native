@@ -32,6 +32,7 @@ import useGetPages from "@hooks/queries/useGetPages";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
 import useGetRequests from "@hooks/queries/useGetRequests";
+import usePushNotification from "@hooks/usePushNotification";
 import useGetDetailedPages from "@hooks/queries/useGetDetailedPages";
 
 function isMarkedFree(freeTill) {
@@ -58,6 +59,7 @@ export default function Home() {
   const { requests } = useGetRequests();
   const params = useLocalSearchParams();
   const localStorage = useLocalStorage();
+  const { notifyUsers } = usePushNotification();
   const { pages, refetchingPages } = useGetPages();
   const { pages: detailedPages } = useGetDetailedPages();
   const [badges, setBadges] = useState({ requests: 0, pages: 0 });
@@ -345,7 +347,18 @@ export default function Home() {
       ) : null}
 
       {all !== undefined && free !== undefined ? (
-        <FriendList friends={[...all, ...free]} ref={friendListRef} />
+        <FriendList
+          friends={[...all, ...free]}
+          onSelected={(friends) => {
+            const pushTokens = friends?.map((friend) => friend?.pushToken);
+
+            notifyUsers(pushTokens, {
+              data: { action: "open_contact", uid: userData?.id },
+              body: `${userData?.name?.split(" ")[0]} is free to chat! 👋🏻`,
+            });
+          }}
+          ref={friendListRef}
+        />
       ) : null}
 
       <NoFriendsSheet ref={noFriendsRef} />

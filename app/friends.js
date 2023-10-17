@@ -1,7 +1,9 @@
 import { memo, useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  KeyboardAvoidingView,
   Linking,
+  Platform,
   Text,
   TouchableOpacity,
   View,
@@ -73,7 +75,10 @@ export default function Friends() {
 
   return (
     <SafeView>
-      <View style={tw`flex flex-1 px-4 pt-2`}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={tw`flex flex-1 px-4 pt-2`}
+      >
         {permission?.granted ? (
           <>
             {params?.referrer !== "onboarding" ? (
@@ -155,7 +160,7 @@ export default function Friends() {
             params={params}
           />
         )}
-      </View>
+      </KeyboardAvoidingView>
 
       <InviteSheet ref={inviteSheetRef} />
     </SafeView>

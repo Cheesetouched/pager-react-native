@@ -4,17 +4,20 @@ import Checkbox from "expo-checkbox";
 
 import tw from "@utils/tailwind";
 import User from "@components/User";
+import { isValid } from "@utils/helpers";
 
 export default function FriendCard({ checked, data, onCheck }) {
+  const free = isValid(data?.freeTill || data?.markedFreeTill);
+
   return (
     <TouchableOpacity onPress={onCheck} style={tw`flex-row items-center`}>
       <User
         data={data}
         dimension="45"
-        free={data?.freeTill || data?.markedFreeTill}
-        title={data?.freeTill || data?.markedFreeTill ? "👋🏻" : "😴"}
+        free={free}
         paged={data?.paged}
         showName={false}
+        title={free ? "👋🏻" : "😴"}
         titleContainerStyle="bg-transparent"
       />
 

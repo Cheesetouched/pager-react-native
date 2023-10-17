@@ -51,6 +51,17 @@ export default function usePushNotification() {
     [Users, send],
   );
 
+  const notifyUsers = useCallback(
+    async (pushTokens, { data, title, body }) => {
+      pushTokens?.map((pushToken) => {
+        if (valid(pushToken)) {
+          send(pushToken, { data, title, body });
+        }
+      });
+    },
+    [send],
+  );
+
   const pageAccepted = useCallback(
     async (accepterUid, senderUid) => {
       const [accepter, sender] = await Promise.all([
@@ -154,6 +165,7 @@ export default function usePushNotification() {
     () => ({
       notifyFriends,
       notifyUser,
+      notifyUsers,
       pageAccepted,
       pageLater,
       pageUser,
@@ -164,6 +176,7 @@ export default function usePushNotification() {
     [
       notifyFriends,
       notifyUser,
+      notifyUsers,
       pageAccepted,
       pageLater,
       pageUser,

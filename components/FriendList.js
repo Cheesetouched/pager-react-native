@@ -24,7 +24,7 @@ import SafeView from "@components/SafeView";
 import FriendCard from "@components/FriendCard";
 import SearchIconGray from "@assets/svgs/SearchIconGray";
 
-const FriendList = forwardRef(({ friends }, ref) => {
+const FriendList = forwardRef(({ friends, onSelected }, ref) => {
   const localRef = useRef();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState([]);
@@ -104,6 +104,7 @@ const FriendList = forwardRef(({ friends }, ref) => {
               placeholderTextColor="#797979"
               selectionColor="#797979"
               style={tw`flex-1 ml-2 text-white`}
+              value={query}
             />
 
             {query?.length > 0 ? (
@@ -124,11 +125,21 @@ const FriendList = forwardRef(({ friends }, ref) => {
             }
             ListFooterComponent={
               selected?.length > 0 ? (
-                <Button style="h-[45px] self-center w-full mt-10 mb-10">
+                <Button
+                  onPress={() => {
+                    onSelected(selected);
+
+                    setQuery("");
+                    setSelected([]);
+                    localRef?.current?.close();
+                  }}
+                  style="h-[45px] self-center w-full mt-10"
+                >
                   Let them know
                 </Button>
               ) : null
             }
+            contentContainerStyle={tw`pb-10`}
             data={allFriends}
             keyboardShouldPersistTaps="handled"
             renderItem={({ item }) => (
@@ -165,7 +176,7 @@ function Everyone({ friends, setSelected, selected }) {
         intensity={15}
         style={tw`h-[45px] w-[45px] rounded-full overflow-hidden items-center justify-center`}
       >
-        <Text style={tw`text-lg`}>🌎</Text>
+        <Text style={tw`text-lg pl-[2px] pt-[2px]`}>🌎</Text>
       </BlurView>
 
       <Text
@@ -182,6 +193,13 @@ function Everyone({ friends, setSelected, selected }) {
 
       <Checkbox
         color={checked ? "#43C37C" : undefined}
+        onValueChange={() => {
+          if (checked) {
+            setSelected([]);
+          } else {
+            setSelected(friends);
+          }
+        }}
         style={tw`border-text-2 rounded-full h-6 w-6`}
         value={checked}
       />
