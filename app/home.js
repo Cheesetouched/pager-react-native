@@ -50,7 +50,6 @@ function isMarkedFree(freeTill) {
 export default function Home() {
   const noFriendsRef = useRef();
   const mixpanel = useMixpanel();
-  const { userData } = useUser();
   const statusSheetRef = useRef();
   const [all, setAll] = useState();
   const [free, setFree] = useState();
@@ -60,6 +59,7 @@ export default function Home() {
   const params = useLocalSearchParams();
   const localStorage = useLocalStorage();
   const { notifyUsers } = usePushNotification();
+  const { userData, refetchingUser } = useUser();
   const { pages, refetchingPages } = useGetPages();
   const { pages: detailedPages } = useGetDetailedPages();
   const [badges, setBadges] = useState({ requests: 0, pages: 0 });
@@ -243,9 +243,12 @@ export default function Home() {
               numColumns={3}
               refreshControl={
                 <RefreshControl
-                  refreshing={refetchingFriends || refetchingPages}
+                  refreshing={
+                    refetchingFriends || refetchingPages || refetchingUser
+                  }
                   onRefresh={() => {
                     queryClient.invalidateQueries(["friends"]);
+                    queryClient.invalidateQueries(["user", userData?.id]);
                     queryClient.invalidateQueries(["pages", userData?.id]);
                   }}
                 />

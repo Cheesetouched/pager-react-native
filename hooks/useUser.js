@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+
 import { useQuery } from "@tanstack/react-query";
 
 import useFirebase from "@hooks/useFirebase";
@@ -21,6 +22,7 @@ export default function useUser() {
     () => ({
       userData: data,
       userLoading: isInitialLoading || isFetching,
+      refetchingUser: isFetching,
     }),
     [data, isFetching, isInitialLoading],
   );
