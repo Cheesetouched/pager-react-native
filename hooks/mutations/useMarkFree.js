@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { addHours } from "date-fns";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import useFirebase from "@hooks/useFirebase";
 import useCoreAction from "@hooks/useCoreAction";
@@ -10,7 +10,6 @@ import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 export default function useMarkFree(props = {}) {
   const { onSuccess } = props;
   const { user } = useFirebase();
-  const queryClient = useQueryClient();
   const update = useOptimisticUpdate();
   const { markFree } = useCoreAction();
 
@@ -22,8 +21,6 @@ export default function useMarkFree(props = {}) {
       }));
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["user", user?.uid]);
-
       if (onSuccess) {
         onSuccess();
       }

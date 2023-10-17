@@ -24,7 +24,6 @@ import FriendList from "@components/FriendList";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
 import StatusSheet from "@components/StatusSheet";
-import NotifySheet from "@components/NotifySheet";
 import { freeFor, isValid } from "@utils/helpers";
 import MessageIcon from "@assets/svgs/MessageIcon";
 import FriendsIcon from "@assets/svgs/FriendsIcon";
@@ -52,7 +51,6 @@ export default function Home() {
   const mixpanel = useMixpanel();
   const { userData } = useUser();
   const statusSheetRef = useRef();
-  const notifySheetRef = useRef();
   const [all, setAll] = useState();
   const [free, setFree] = useState();
   const friendListRef = useRef(null);
@@ -348,12 +346,10 @@ export default function Home() {
 
       <FriendList ref={friendListRef} />
 
-      <NotifySheet ref={notifySheetRef} />
-
       <NoFriendsSheet ref={noFriendsRef} />
 
       <StatusSheet
-        onFree={() => notifySheetRef?.current?.show()}
+        onFree={() => friendListRef?.current?.show()}
         ref={statusSheetRef}
       />
     </SafeView>

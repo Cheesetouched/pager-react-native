@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import useFirebase from "@hooks/useFirebase";
 import useCoreAction from "@hooks/useCoreAction";
@@ -9,7 +9,6 @@ import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 export default function useMarkAway(props = {}) {
   const { onSuccess } = props;
   const { user } = useFirebase();
-  const queryClient = useQueryClient();
   const update = useOptimisticUpdate();
   const { markAway } = useCoreAction();
 
@@ -21,8 +20,6 @@ export default function useMarkAway(props = {}) {
       }));
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["user", user?.uid]);
-
       if (onSuccess) {
         onSuccess();
       }
