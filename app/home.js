@@ -344,7 +344,9 @@ export default function Home() {
         )
       ) : null}
 
-      <FriendList friends={friends} ref={friendListRef} />
+      {all !== undefined && free !== undefined ? (
+        <FriendList friends={[...all, ...free]} ref={friendListRef} />
+      ) : null}
 
       <NoFriendsSheet ref={noFriendsRef} />
 

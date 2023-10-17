@@ -11,14 +11,21 @@ export default function FriendCard({ checked, data, onCheck }) {
       <User
         data={data}
         dimension="45"
+        free={data?.freeTill || data?.markedFreeTill}
+        title={data?.freeTill || data?.markedFreeTill ? "👋🏻" : "😴"}
+        paged={data?.paged}
         showName={false}
         titleContainerStyle="bg-transparent"
       />
 
       <Text
-        style={tw.style(`flex-1 text-base text-text-2 ml-3`, {
-          fontFamily: "Cabin_700Bold",
-        })}
+        style={tw.style(
+          `flex-1 text-base ml-3 leading-none`,
+          checked() ? "text-white" : "text-text-2",
+          {
+            fontFamily: "Cabin_700Bold",
+          },
+        )}
       >
         {data?.name}
       </Text>

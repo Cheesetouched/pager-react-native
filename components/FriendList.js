@@ -1,14 +1,17 @@
 import {
   forwardRef,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
+import Checkbox from "expo-checkbox";
+import { AntDesign } from "@expo/vector-icons";
 import {
   BottomSheetFlatList,
   BottomSheetTextInput,
@@ -16,12 +19,14 @@ import {
 } from "@gorhom/bottom-sheet";
 
 import tw from "@utils/tailwind";
+import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import FriendCard from "@components/FriendCard";
 import SearchIconGray from "@assets/svgs/SearchIconGray";
 
 const FriendList = forwardRef(({ friends }, ref) => {
   const localRef = useRef();
+  const [query, setQuery] = useState("");
   const [selected, setSelected] = useState([]);
   const [allFriends, setAllFriends] = useState(friends);
   const snapPoints = useMemo(() => ["75%", "100%"], []);
@@ -49,18 +54,15 @@ const FriendList = forwardRef(({ friends }, ref) => {
     [selected],
   );
 
-  const search = useCallback(
-    (text) => {
-      const filtered = friends.filter((friend) => {
-        const lowercase = friend?.name.toLowerCase();
-        const searchTerm = text.toString().toLowerCase();
-        return lowercase.indexOf(searchTerm) > -1;
-      });
+  useEffect(() => {
+    const filtered = friends.filter((friend) => {
+      const lowercase = friend?.name.toLowerCase();
+      const searchTerm = query.toString().toLowerCase();
+      return lowercase.indexOf(searchTerm) > -1;
+    });
 
-      setAllFriends(filtered);
-    },
-    [friends],
-  );
+    setAllFriends(filtered);
+  }, [friends, query]);
 
   useImperativeHandle(ref, () => ({
     show: localRef?.current?.present,
@@ -97,17 +99,38 @@ const FriendList = forwardRef(({ friends }, ref) => {
             <SearchIconGray />
 
             <BottomSheetTextInput
-              onChangeText={search}
+              onChangeText={setQuery}
               placeholder="Search Friends"
               placeholderTextColor="#797979"
               selectionColor="#797979"
               style={tw`flex-1 ml-2 text-white`}
             />
+
+            {query?.length > 0 ? (
+              <TouchableOpacity onPress={() => setQuery("")}>
+                <AntDesign name="close" size={16} color="#797979" />
+              </TouchableOpacity>
+            ) : null}
           </BlurView>
 
           <BottomSheetFlatList
             ItemSeparatorComponent={() => <View style={{ height: 25 }} />}
+            ListHeaderComponent={
+              <Everyone
+                friends={friends}
+                setSelected={setSelected}
+                selected={selected}
+              />
+            }
+            ListFooterComponent={
+              selected?.length > 0 ? (
+                <Button style="h-[45px] self-center w-full mt-10 mb-10">
+                  Let them know
+                </Button>
+              ) : null
+            }
             data={allFriends}
+            keyboardShouldPersistTaps="handled"
             renderItem={({ item }) => (
               <FriendCard
                 checked={() => evaluateCheck(item)}
@@ -115,12 +138,55 @@ const FriendList = forwardRef(({ friends }, ref) => {
                 onCheck={() => onCheck(item)}
               />
             )}
-            contentContainerStyle={tw`mt-6`}
+            showsVerticalScrollIndicator={false}
+            style={tw`mt-2 pt-4`}
           />
         </BlurView>
       </SafeView>
     </BottomSheetModal>
   );
 });
+
+function Everyone({ friends, setSelected, selected }) {
+  const checked = friends?.length === selected?.length;
+
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        if (checked) {
+          setSelected([]);
+        } else {
+          setSelected(friends);
+        }
+      }}
+      style={tw`flex-row items-center mb-[20px]`}
+    >
+      <BlurView
+        intensity={15}
+        style={tw`h-[45px] w-[45px] rounded-full overflow-hidden items-center justify-center`}
+      >
+        <Text style={tw`text-lg`}>🌎</Text>
+      </BlurView>
+
+      <Text
+        style={tw.style(
+          `flex-1 text-base text-text-2 ml-3 leading-none`,
+          checked ? "text-white" : "text-text-2",
+          {
+            fontFamily: "Cabin_700Bold",
+          },
+        )}
+      >
+        Notify All
+      </Text>
+
+      <Checkbox
+        color={checked ? "#43C37C" : undefined}
+        style={tw`border-text-2 rounded-full h-6 w-6`}
+        value={checked}
+      />
+    </TouchableOpacity>
+  );
+}
 
 export default FriendList;
