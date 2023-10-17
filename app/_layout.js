@@ -4,12 +4,15 @@ import { AppState, LogBox } from "react-native";
 import { Stack } from "expo-router";
 import { Mixpanel } from "mixpanel-react-native";
 import * as Notifications from "expo-notifications";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   QueryClient,
   QueryClientProvider,
   focusManager,
 } from "@tanstack/react-query";
 
+import tw from "@utils/tailwind";
 import Alert from "@components/Alert";
 import AppContext from "@utils/context";
 import constants from "@utils/constants";
@@ -60,48 +63,52 @@ export default function Layout() {
   }, []);
 
   return (
-    <AppContext.Provider value={{ appState, alert: alertRef, mixpanel }}>
-      <QueryClientProvider client={queryClient}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
+    <GestureHandlerRootView style={tw`flex-1`}>
+      <BottomSheetModalProvider>
+        <AppContext.Provider value={{ appState, alert: alertRef, mixpanel }}>
+          <QueryClientProvider client={queryClient}>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
 
-          <Stack.Screen
-            name="contact"
-            options={{
-              presentation: "modal",
-              contentStyle: { backgroundColor: "#00000000" },
-            }}
-          />
+              <Stack.Screen
+                name="contact"
+                options={{
+                  presentation: "modal",
+                  contentStyle: { backgroundColor: "#00000000" },
+                }}
+              />
 
-          <Stack.Screen
-            name="pages"
-            options={{
-              presentation: "modal",
-              contentStyle: { backgroundColor: "#00000000" },
-            }}
-          />
+              <Stack.Screen
+                name="pages"
+                options={{
+                  presentation: "modal",
+                  contentStyle: { backgroundColor: "#00000000" },
+                }}
+              />
 
-          <Stack.Screen
-            name="requests"
-            options={{
-              presentation: "modal",
-              contentStyle: { backgroundColor: "#00000000" },
-            }}
-          />
+              <Stack.Screen
+                name="requests"
+                options={{
+                  presentation: "modal",
+                  contentStyle: { backgroundColor: "#00000000" },
+                }}
+              />
 
-          <Stack.Screen
-            name="page"
-            options={{ presentation: "transparentModal" }}
-          />
+              <Stack.Screen
+                name="page"
+                options={{ presentation: "transparentModal" }}
+              />
 
-          <Stack.Screen
-            name="(context)/welcome_context"
-            options={{ presentation: "fullScreenModal" }}
-          />
-        </Stack>
-      </QueryClientProvider>
+              <Stack.Screen
+                name="(context)/welcome_context"
+                options={{ presentation: "fullScreenModal" }}
+              />
+            </Stack>
+          </QueryClientProvider>
 
-      <Alert ref={alertRef} />
-    </AppContext.Provider>
+          <Alert ref={alertRef} />
+        </AppContext.Provider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }

@@ -21,6 +21,7 @@ import SafeView from "@components/SafeView";
 import useMixpanel from "@hooks/useMixpanel";
 import PageSheet from "@components/PageSheet";
 import BadgeIcon from "@components/BadgeIcon";
+import FriendList from "@components/FriendList";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
 import NotifySheet from "@components/NotifySheet";
@@ -54,6 +55,7 @@ export default function Home() {
   const notifySheetRef = useRef();
   const [all, setAll] = useState();
   const [free, setFree] = useState();
+  const friendListRef = useRef(null);
   const queryClient = useQueryClient();
   const { requests } = useGetRequests();
   const localStorage = useLocalStorage();
@@ -186,6 +188,12 @@ export default function Home() {
       setFree(free);
     }
   }, [friends, pages, refetchingPages]);
+
+  useEffect(() => {
+    if (friendListRef) {
+      friendListRef?.current?.present();
+    }
+  }, [friendListRef]);
 
   useEffect(() => {
     if (lastNotificationResponse && queryClient && userData?.id) {
@@ -328,6 +336,8 @@ export default function Home() {
           </Button>
         )
       ) : null}
+
+      <FriendList ref={friendListRef} />
 
       <NotifySheet ref={notifySheetRef} />
 
