@@ -10,7 +10,7 @@ const FriendList = forwardRef((_, ref) => {
   const snapPoints = useMemo(() => ["50%", "75%", "100%"], []);
 
   useImperativeHandle(ref, () => ({
-    present: localRef?.current?.present(),
+    present: localRef?.current?.present,
   }));
 
   return (

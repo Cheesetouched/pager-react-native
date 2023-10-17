@@ -9,9 +9,9 @@ import {
 } from "react-native";
 
 import { isAfter } from "date-fns";
-import { SplashScreen, router } from "expo-router";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "@tanstack/react-query";
+import { SplashScreen, router, useLocalSearchParams } from "expo-router";
 
 import tw from "@utils/tailwind";
 import User from "@components/User";
@@ -19,11 +19,11 @@ import useUser from "@hooks/useUser";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import useMixpanel from "@hooks/useMixpanel";
-import PageSheet from "@components/PageSheet";
 import BadgeIcon from "@components/BadgeIcon";
 import FriendList from "@components/FriendList";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
+import StatusSheet from "@components/StatusSheet";
 import NotifySheet from "@components/NotifySheet";
 import { freeFor, isValid } from "@utils/helpers";
 import MessageIcon from "@assets/svgs/MessageIcon";
@@ -49,15 +49,16 @@ function isMarkedFree(freeTill) {
 
 export default function Home() {
   const noFriendsRef = useRef();
-  const pageSheetRef = useRef();
   const mixpanel = useMixpanel();
   const { userData } = useUser();
+  const statusSheetRef = useRef();
   const notifySheetRef = useRef();
   const [all, setAll] = useState();
   const [free, setFree] = useState();
   const friendListRef = useRef(null);
   const queryClient = useQueryClient();
   const { requests } = useGetRequests();
+  const params = useLocalSearchParams();
   const localStorage = useLocalStorage();
   const { pages, refetchingPages } = useGetPages();
   const { pages: detailedPages } = useGetDetailedPages();
@@ -79,6 +80,12 @@ export default function Home() {
 
     hasSeenWelcomeContext();
   }, [localStorage]);
+
+  useEffect(() => {
+    if (params?.showStatusSheet) {
+      statusSheetRef?.current?.show();
+    }
+  }, [params]);
 
   useEffect(() => {
     if (requests) {
@@ -188,12 +195,6 @@ export default function Home() {
       setFree(free);
     }
   }, [friends, pages, refetchingPages]);
-
-  useEffect(() => {
-    if (friendListRef) {
-      friendListRef?.current?.present();
-    }
-  }, [friendListRef]);
 
   useEffect(() => {
     if (lastNotificationResponse && queryClient && userData?.id) {
@@ -319,7 +320,7 @@ export default function Home() {
       {friends?.length > 0 ? (
         isMarkedFree(userData?.markedFreeTill) ? (
           <Button
-            onPress={() => pageSheetRef?.current?.show()}
+            onPress={() => statusSheetRef?.current?.show()}
             style="absolute h-[50px] w-[50px] bottom-16 right-6"
             textStyle="text-xl leading-0"
           >
@@ -327,7 +328,15 @@ export default function Home() {
           </Button>
         ) : (
           <Button
-            onPress={() => pageSheetRef?.current?.show()}
+            onPress={async () => {
+              const statusContext = await localStorage.get("status_context");
+
+              if (statusContext === "seen") {
+                statusSheetRef?.current?.show();
+              } else {
+                router.push("status_context");
+              }
+            }}
             style="absolute h-[50px] w-[50px] bottom-16 right-6"
             textStyle="text-xl leading-0"
             variant="dark"
@@ -343,9 +352,9 @@ export default function Home() {
 
       <NoFriendsSheet ref={noFriendsRef} />
 
-      <PageSheet
+      <StatusSheet
         onFree={() => notifySheetRef?.current?.show()}
-        ref={pageSheetRef}
+        ref={statusSheetRef}
       />
     </SafeView>
   );

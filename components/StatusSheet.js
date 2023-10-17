@@ -6,7 +6,7 @@ import Button from "@components/Button";
 import useMarkAway from "@hooks/mutations/useMarkAway";
 import useMarkFree from "@hooks/mutations/useMarkFree";
 
-const PageSheet = forwardRef(({ onFree }, ref) => {
+const StatusSheet = forwardRef(({ onFree }, ref) => {
   const { markAway } = useMarkAway();
   const { markFree } = useMarkFree();
   const [visible, setVisible] = useState(false);
@@ -72,4 +72,4 @@ const PageSheet = forwardRef(({ onFree }, ref) => {
   );
 });
 
-export default PageSheet;
+export default StatusSheet;
