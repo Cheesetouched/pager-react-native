@@ -120,6 +120,7 @@ export default function Home() {
       const away = [];
       const free = [];
       let extras = {};
+      let latestValidPage = null;
 
       friends.map((friend) => {
         let isFree = false;
@@ -168,6 +169,13 @@ export default function Home() {
           if (receivedPage) {
             isFree = true;
             extras = { freeTill: receivedPage?.validTill };
+
+            if (!receivedPage?.response && latestValidPage === null) {
+              latestValidPage = {
+                ...friend,
+                freeTill: receivedPage?.validTill,
+              };
+            }
           }
         }
 
@@ -198,6 +206,18 @@ export default function Home() {
 
       setAway(away);
       setFree(free);
+
+      if (latestValidPage !== null) {
+        router.push({
+          pathname: "/contact",
+          params: {
+            data: JSON.stringify({
+              ...latestValidPage,
+              free: true,
+            }),
+          },
+        });
+      }
     }
   }, [friends, pages, refetchingPages]);
 

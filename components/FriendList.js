@@ -56,12 +56,6 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
   );
 
   useEffect(() => {
-    if (selected?.length > 0) {
-      localRef?.current?.snapToIndex(1);
-    }
-  }, [selected]);
-
-  useEffect(() => {
     const filtered = friends.filter((friend) => {
       const lowercase = friend?.name.toLowerCase();
       const searchTerm = query.toString().toLowerCase();
@@ -78,7 +72,7 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
   return (
     <BottomSheetModal
       backgroundStyle={tw`bg-transparent`}
-      index={0}
+      index={1}
       ref={localRef}
       snapPoints={snapPoints}
       handleComponent={null}

@@ -15,7 +15,7 @@ import constants from "@utils/constants";
 import IMessageBigIcon from "@assets/svgs/IMessageBigIcon";
 import WhatsAppBigIcon from "@assets/svgs/WhatsAppBigIcon";
 
-const inviteText = `Just got access to this app that lets you tell friends when you’re free to chat and when not - added you on the app, try it out!\n\n${constants.INVITE_LINK}`;
+const inviteText = `You free to chat right now? let me know\n\nsent via ${constants.INVITE_LINK}`;
 
 const InviteSheet = forwardRef((_, ref) => {
   const [number, setNumber] = useState(null);

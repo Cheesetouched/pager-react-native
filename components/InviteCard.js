@@ -6,7 +6,7 @@ import Image from "@components/Image";
 import constants from "@utils/constants";
 import ShareIcon from "@assets/svgs/ShareIcon";
 
-const intent = "Found an app that tells you who is free to chat and when.";
+const message = `I found an app that tells you who is free to chat and when.\n\nCheck it ${constants.INVITE_LINK}`;
 
 export default function InviteCard({ style }) {
   const { userData } = useUser();
@@ -14,10 +14,7 @@ export default function InviteCard({ style }) {
   return (
     <TouchableOpacity
       onPress={() => {
-        Share.share({
-          message: intent,
-          url: `${constants.PAGER_BASE_URL}/${userData?.handle}`,
-        });
+        Share.share({ message });
       }}
       style={tw.style(
         `bg-black/30 h-[65px] flex-row rounded-[14px] items-center px-4`,
