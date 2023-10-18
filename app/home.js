@@ -272,6 +272,7 @@ export default function Home() {
                     refetchingFriends || refetchingPages || refetchingUser
                   }
                   onRefresh={() => {
+                    queryClient.invalidateQueries(["friends"]);
                     queryClient.invalidateQueries(["user", userData?.id]);
                     queryClient.invalidateQueries(["pages", userData?.id]);
                   }}
@@ -320,6 +321,7 @@ export default function Home() {
                   refetchingFriends || refetchingPages || refetchingUser
                 }
                 onRefresh={() => {
+                  queryClient.invalidateQueries(["friends"]);
                   queryClient.invalidateQueries(["user", userData?.id]);
                   queryClient.invalidateQueries(["pages", userData?.id]);
                 }}
