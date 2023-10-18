@@ -128,7 +128,12 @@ export default function Phone() {
       } else {
         navigation.reset({
           index: 0,
-          routes: [{ name: "home" }],
+          routes: [
+            {
+              name: "(onboarding)/notification",
+              params: { mode: "login" },
+            },
+          ],
         });
       }
     },

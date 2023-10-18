@@ -14,6 +14,7 @@ import useMixpanel from "@hooks/useMixpanel";
 import NotifExample from "@components/NotifExample";
 import PermissionBox from "@components/PermissionBox";
 import useNotifications from "@hooks/useNotifications";
+import useUpdateUser from "@hooks/mutations/useUpdateUser";
 
 export default function Notification() {
   const mixpanel = useMixpanel();
@@ -21,24 +22,38 @@ export default function Notification() {
   const navigation = useRootNavigation();
   const [deniedView, setDeniedView] = useState(false);
 
+  const onSuccess = useCallback(() => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "home" }],
+    });
+  }, [navigation]);
+
+  const { update, updating } = useUpdateUser({ onSuccess });
+
   const onGranted = useCallback(
-    (pushToken) => {
+    async (pushToken) => {
       mixpanel.track("allowed_notifications");
 
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: "(onboarding)/process",
-            params: {
-              ...params,
-              pushToken,
+      if (params?.mode === "login") {
+        //Updating push token on login
+        update({ pushToken });
+      } else {
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: "(onboarding)/process",
+              params: {
+                ...params,
+                pushToken,
+              },
             },
-          },
-        ],
-      });
+          ],
+        });
+      }
     },
-    [mixpanel, navigation, params],
+    [mixpanel, navigation, params, update],
   );
 
   const { loading, permission, requestNotifications } = useNotifications({
@@ -105,7 +120,7 @@ export default function Notification() {
             </Text>
 
             <Button
-              loading={loading}
+              loading={loading || updating}
               onPress={() => {
                 if (permission?.canAskAgain) {
                   requestNotifications();
@@ -129,7 +144,7 @@ export default function Notification() {
             <View style={tw`mx-3`}>
               <PermissionBox
                 explanation="Pager will let you know when your friends are free to chat."
-                loading={loading}
+                loading={loading || updating}
                 onAllow={() => {
                   if (permission?.canAskAgain) {
                     requestNotifications();
