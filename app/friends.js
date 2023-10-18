@@ -146,7 +146,7 @@ export default function Friends() {
                   });
                 }}
                 variant="dark"
-                style="mt-2 mb-4"
+                style="my-2"
               >
                 Take me to the app
               </Button>
