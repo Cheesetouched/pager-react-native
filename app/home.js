@@ -51,6 +51,7 @@ function isMarkedFree(freeTill) {
 export default function Home() {
   const noFriendsRef = useRef();
   const mixpanel = useMixpanel();
+  const closedStuff = useRef([]);
   const statusSheetRef = useRef();
   const [all, setAll] = useState();
   const [away, setAway] = useState();
@@ -116,67 +117,67 @@ export default function Home() {
   }, [detailedPages]);
 
   useEffect(() => {
-    if (friends && pages) {
+    if (friends && pages && !refetchingPages) {
       const away = [];
       const free = [];
-      let extras = {};
       let latestValidPage = null;
 
       friends.map((friend) => {
+        let extras = {};
         let isFree = false;
         let havePaged = false;
+
+        const sentPage = pages?.sent?.find((page) => {
+          if (page?.to === friend?.id && isValid(page?.validTill)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+
+        const receivedPage = pages?.received?.find((page) => {
+          if (page?.from === friend?.id && isValid(page?.validTill)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+
+        if (sentPage) {
+          if (sentPage?.response?.free) {
+            if (isValid(sentPage?.response?.freeTill)) {
+              isFree = true;
+              extras = { freeTill: sentPage?.response?.freeTill };
+            }
+          } else {
+            if (
+              sentPage?.response?.freeFrom &&
+              isAfter(sentPage?.response?.freeFrom, new Date())
+            ) {
+              extras = { freeFrom: sentPage?.response?.freeFrom };
+            }
+          }
+
+          if (!isFree) {
+            havePaged = true;
+          }
+        }
+
+        if (receivedPage) {
+          isFree = true;
+          extras = { freeTill: receivedPage?.validTill };
+
+          if (!receivedPage?.response && latestValidPage === null) {
+            latestValidPage = {
+              ...friend,
+              freeTill: receivedPage?.validTill,
+            };
+          }
+        }
 
         if (isValid(friend?.markedFreeTill)) {
           isFree = true;
           extras = { freeTill: friend?.markedFreeTill };
-        } else {
-          const sentPage = pages?.sent?.find((page) => {
-            if (page?.to === friend?.id && isValid(page?.validTill)) {
-              return true;
-            } else {
-              return false;
-            }
-          });
-
-          const receivedPage = pages?.received?.find((page) => {
-            if (page?.from === friend?.id && isValid(page?.validTill)) {
-              return true;
-            } else {
-              return false;
-            }
-          });
-
-          if (sentPage) {
-            if (sentPage?.response?.free) {
-              if (isValid(sentPage?.response?.freeTill)) {
-                isFree = true;
-                extras = { freeTill: sentPage?.response?.freeTill };
-              }
-            } else {
-              if (
-                sentPage?.response?.freeFrom &&
-                isAfter(sentPage?.response?.freeFrom, new Date())
-              ) {
-                extras = { freeFrom: sentPage?.response?.freeFrom };
-              }
-            }
-
-            if (!isFree) {
-              havePaged = true;
-            }
-          }
-
-          if (receivedPage) {
-            isFree = true;
-            extras = { freeTill: receivedPage?.validTill };
-
-            if (!receivedPage?.response && latestValidPage === null) {
-              latestValidPage = {
-                ...friend,
-                freeTill: receivedPage?.validTill,
-              };
-            }
-          }
         }
 
         const user = {
@@ -207,7 +208,12 @@ export default function Home() {
       setAway(away);
       setFree(free);
 
-      if (latestValidPage !== null) {
+      if (
+        !closedStuff.current.includes(latestValidPage?.id) &&
+        latestValidPage !== null
+      ) {
+        closedStuff.current = [...closedStuff.current, latestValidPage?.id];
+
         router.push({
           pathname: "/contact",
           params: {
@@ -226,7 +232,11 @@ export default function Home() {
       const notifAction =
         lastNotificationResponse?.notification?.request?.content?.data?.action;
 
-      if (notifAction === "open_requests") {
+      if (
+        notifAction === "open_requests" &&
+        !closedStuff.current?.includes("open_requests")
+      ) {
+        closedStuff.current = [...closedStuff.current, "open_requests"];
         router.push("/requests");
       } else if (notifAction === "invalidate_user") {
         queryClient?.invalidateQueries(["user", userData?.id]);
