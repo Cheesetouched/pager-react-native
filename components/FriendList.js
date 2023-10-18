@@ -153,7 +153,15 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
             >
               Let them know
             </Button>
-          ) : null}
+          ) : (
+            <Button
+              onPress={() => localRef?.current?.close()}
+              style="h-[45px] self-center w-full mb-10"
+              variant="dark"
+            >
+              Skip
+            </Button>
+          )}
         </BlurView>
       </SafeView>
     </BottomSheetModal>
