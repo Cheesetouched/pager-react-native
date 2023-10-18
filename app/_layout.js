@@ -64,9 +64,9 @@ export default function Layout() {
 
   return (
     <GestureHandlerRootView style={tw`flex-1`}>
-      <BottomSheetModalProvider>
-        <AppContext.Provider value={{ appState, alert: alertRef, mixpanel }}>
-          <QueryClientProvider client={queryClient}>
+      <AppContext.Provider value={{ appState, alert: alertRef, mixpanel }}>
+        <QueryClientProvider client={queryClient}>
+          <BottomSheetModalProvider>
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="index" options={{ headerShown: false }} />
 
@@ -109,11 +109,11 @@ export default function Layout() {
                 options={{ presentation: "fullScreenModal" }}
               />
             </Stack>
-          </QueryClientProvider>
+          </BottomSheetModalProvider>
+        </QueryClientProvider>
 
-          <Alert ref={alertRef} />
-        </AppContext.Provider>
-      </BottomSheetModalProvider>
+        <Alert ref={alertRef} />
+      </AppContext.Provider>
     </GestureHandlerRootView>
   );
 }

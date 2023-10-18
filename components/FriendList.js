@@ -22,6 +22,7 @@ import tw from "@utils/tailwind";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
 import FriendCard from "@components/FriendCard";
+import InviteCard from "@components/InviteCard";
 import SearchIconGray from "@assets/svgs/SearchIconGray";
 
 const FriendList = forwardRef(({ friends, onSelected }, ref) => {
@@ -53,6 +54,12 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
     },
     [selected],
   );
+
+  useEffect(() => {
+    if (selected?.length > 0) {
+      localRef?.current?.snapToIndex(1);
+    }
+  }, [selected]);
 
   useEffect(() => {
     const filtered = friends.filter((friend) => {
@@ -92,9 +99,11 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
             Notify Friends
           </Text>
 
+          <InviteCard style="mt-4" />
+
           <BlurView
             intensity={15}
-            style={tw`flex-row h-[45px] rounded-xl overflow-hidden mt-6 items-center px-3`}
+            style={tw`flex-row h-[45px] rounded-xl overflow-hidden mt-4 items-center px-3`}
           >
             <SearchIconGray />
 
@@ -123,22 +132,6 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
                 selected={selected}
               />
             }
-            ListFooterComponent={
-              selected?.length > 0 ? (
-                <Button
-                  onPress={() => {
-                    onSelected(selected);
-
-                    setQuery("");
-                    setSelected([]);
-                    localRef?.current?.close();
-                  }}
-                  style="h-[45px] self-center w-full mt-10"
-                >
-                  Let them know
-                </Button>
-              ) : null
-            }
             contentContainerStyle={tw`pb-10`}
             data={allFriends}
             keyboardShouldPersistTaps="handled"
@@ -150,8 +143,23 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
               />
             )}
             showsVerticalScrollIndicator={false}
-            style={tw`mt-2 pt-4`}
+            style={tw`my-2 pt-4`}
           />
+
+          {selected?.length > 0 ? (
+            <Button
+              onPress={() => {
+                onSelected(selected);
+
+                setQuery("");
+                setSelected([]);
+                localRef?.current?.close();
+              }}
+              style="h-[45px] self-center w-full mb-10"
+            >
+              Let them know
+            </Button>
+          ) : null}
         </BlurView>
       </SafeView>
     </BottomSheetModal>
