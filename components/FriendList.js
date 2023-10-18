@@ -21,6 +21,7 @@ import {
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
 import SafeView from "@components/SafeView";
+import useKeyboard from "@hooks/useKeyboard";
 import FriendCard from "@components/FriendCard";
 import InviteCard from "@components/InviteCard";
 import SearchIconGray from "@assets/svgs/SearchIconGray";
@@ -28,6 +29,7 @@ import SearchIconGray from "@assets/svgs/SearchIconGray";
 const FriendList = forwardRef(({ friends, onSelected }, ref) => {
   const localRef = useRef();
   const [query, setQuery] = useState("");
+  const { keyboardVisible } = useKeyboard();
   const [selected, setSelected] = useState([]);
   const [allFriends, setAllFriends] = useState(friends);
   const snapPoints = useMemo(() => ["75%", "100%"], []);
@@ -149,14 +151,18 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
                 setSelected([]);
                 localRef?.current?.close();
               }}
-              style="h-[45px] self-center w-full mb-10"
+              style={`h-[45px] self-center w-full ${
+                keyboardVisible ? "mb-2" : "mb-10"
+              }`}
             >
               Let them know
             </Button>
           ) : (
             <Button
               onPress={() => localRef?.current?.close()}
-              style="h-[45px] self-center w-full mb-10"
+              style={`h-[45px] self-center w-full ${
+                keyboardVisible ? "mb-2" : "mb-10"
+              }`}
               variant="dark"
             >
               Skip
