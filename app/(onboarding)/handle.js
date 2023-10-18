@@ -22,7 +22,7 @@ import CloseIcon from "@assets/svgs/CloseIcon";
 import useAppContext from "@hooks/useAppContext";
 import useCheckHandle from "@hooks/queries/useCheckHandle";
 
-const minimumHandleLength = 1;
+const minimumHandleLength = 5;
 
 export default function Handle() {
   const mixpanel = useMixpanel();
@@ -40,7 +40,7 @@ export default function Handle() {
     if (handle !== "" && handle.length < minimumHandleLength) {
       alert.current.show({
         title: "oops 😕",
-        message: "handle needs to be minimum 4 characters",
+        message: `handle needs to be minimum ${minimumHandleLength} characters`,
       });
     }
 
