@@ -461,7 +461,7 @@ const FreeFriends = memo(({ away, free, mixpanel }) => {
 
 function Header({ badges, onFriends, onPages, onSearch }) {
   return (
-    <View style={tw`flex flex-row justify-center mb-2`}>
+    <View style={tw`flex flex-row justify-center`}>
       <TouchableOpacity onPress={onFriends} style={tw`absolute left-0`}>
         <BadgeIcon count={badges?.requests}>
           <FriendsIcon />
