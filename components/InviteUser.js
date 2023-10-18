@@ -32,7 +32,15 @@ export default function InviteUser({ onPress, style }) {
           fontFamily: "Cabin_600SemiBold",
         })}
       >
-        Invite someone
+        Page someone
+      </Text>
+
+      <Text
+        style={tw.style(`text-gray-4 text-[10px] text-center`, {
+          fontFamily: "Cabin_600SemiBold",
+        })}
+      >
+        From your contacts
       </Text>
     </View>
   );

@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -52,6 +53,7 @@ export default function Home() {
   const mixpanel = useMixpanel();
   const statusSheetRef = useRef();
   const [all, setAll] = useState();
+  const [away, setAway] = useState();
   const [free, setFree] = useState();
   const friendListRef = useRef(null);
   const queryClient = useQueryClient();
@@ -115,7 +117,7 @@ export default function Home() {
 
   useEffect(() => {
     if (friends && pages) {
-      const all = [];
+      const away = [];
       const free = [];
       let extras = {};
 
@@ -178,20 +180,23 @@ export default function Home() {
         if (isFree) {
           free.push(user);
         } else {
-          all.push(user);
+          away.push(user);
         }
       });
 
+      // Creating a combined list
+      setAll([...away, ...free]);
+
       // Passing an extra value to keep the 3x3 grid in shape
-      if (all?.length % 3 === 2) {
-        all.push(null);
+      if (away?.length % 3 === 1) {
+        away.push(null);
       }
 
       if (free?.length % 3 === 2) {
         free.push(null);
       }
 
-      setAll(all);
+      setAway(away);
       setFree(free);
     }
   }, [friends, pages, refetchingPages]);
@@ -229,16 +234,16 @@ export default function Home() {
           onSearch={() => router.push("/friends")}
         />
 
-        {friends?.length > 0 ? (
+        {away !== undefined && friends?.length > 0 ? (
           <View style={tw`flex flex-1`}>
             <FlatList
               ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
               ListHeaderComponent={
-                <FreeFriends all={all} free={free} mixpanel={mixpanel} />
+                <FreeFriends away={away} free={free} mixpanel={mixpanel} />
               }
               columnWrapperStyle={tw`justify-between`}
               contentContainerStyle={tw`pt-6 pb-10`}
-              data={all}
+              data={["invite", ...away]}
               estimatedItemSize={114}
               numColumns={3}
               refreshControl={
@@ -247,7 +252,6 @@ export default function Home() {
                     refetchingFriends || refetchingPages || refetchingUser
                   }
                   onRefresh={() => {
-                    queryClient.invalidateQueries(["friends"]);
                     queryClient.invalidateQueries(["user", userData?.id]);
                     queryClient.invalidateQueries(["pages", userData?.id]);
                   }}
@@ -255,26 +259,32 @@ export default function Home() {
               }
               renderItem={({ item }) => {
                 if (item !== null) {
-                  return (
-                    <User
-                      data={item}
-                      onPress={() => {
-                        mixpanel.track("tapped_user");
+                  if (item === "invite") {
+                    return (
+                      <InviteUser onPress={() => router.push("/friends")} />
+                    );
+                  } else {
+                    return (
+                      <User
+                        data={item}
+                        onPress={() => {
+                          mixpanel.track("tapped_user");
 
-                        router.push({
-                          pathname: "/contact",
-                          params: {
-                            data: JSON.stringify({
-                              ...item,
-                              free: false,
-                              paged: item?.paged,
-                            }),
-                          },
-                        });
-                      }}
-                      paged={item?.paged}
-                    />
-                  );
+                          router.push({
+                            pathname: "/contact",
+                            params: {
+                              data: JSON.stringify({
+                                ...item,
+                                free: false,
+                                paged: item?.paged,
+                              }),
+                            },
+                          });
+                        }}
+                        paged={item?.paged}
+                      />
+                    );
+                  }
                 } else {
                   return <View style={tw`w-[92px]`} />;
                 }
@@ -283,7 +293,20 @@ export default function Home() {
             />
           </View>
         ) : (
-          <View style={tw`flex flex-1`}>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={
+                  refetchingFriends || refetchingPages || refetchingUser
+                }
+                onRefresh={() => {
+                  queryClient.invalidateQueries(["user", userData?.id]);
+                  queryClient.invalidateQueries(["pages", userData?.id]);
+                }}
+              />
+            }
+            style={tw`flex flex-1`}
+          >
             <Text
               style={tw.style(`text-text-2 text-lg pt-6`, {
                 fontFamily: "Cabin_700Bold",
@@ -296,7 +319,7 @@ export default function Home() {
               onPress={() => router.push("/friends")}
               style={tw`mt-5`}
             />
-          </View>
+          </ScrollView>
         )}
       </View>
 
@@ -349,9 +372,9 @@ export default function Home() {
         )
       ) : null}
 
-      {all !== undefined && free !== undefined ? (
+      {all !== undefined ? (
         <FriendList
-          friends={[...all, ...free]}
+          friends={all}
           onSelected={(friends) => {
             const pushTokens = friends?.map((friend) => friend?.pushToken);
 
@@ -374,7 +397,7 @@ export default function Home() {
   );
 }
 
-const FreeFriends = memo(({ all, free, mixpanel }) => {
+const FreeFriends = memo(({ away, free, mixpanel }) => {
   return (
     <View>
       {free?.length > 0 ? (
@@ -423,7 +446,7 @@ const FreeFriends = memo(({ all, free, mixpanel }) => {
         </>
       ) : null}
 
-      {all?.length > 0 ? (
+      {away?.length > 0 ? (
         <Text
           style={tw.style(`text-lg text-white leading-snug mb-6`, {
             fontFamily: "Cabin_700Bold",
