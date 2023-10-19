@@ -164,7 +164,7 @@ export default function Home() {
               }
             }
 
-            if (!isFree) {
+            if (!isFree && isValid(sentPage?.validTill)) {
               havePaged = true;
             }
           }
