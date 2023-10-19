@@ -8,7 +8,7 @@ import ShareIcon from "@assets/svgs/ShareIcon";
 
 const message = `I found an app that tells you who is free to chat and when.\n\nCheck it ${constants.INVITE_LINK}`;
 
-export default function InviteCard({ style }) {
+export default function InviteCard({ style, titleStyle, subtitleStyle }) {
   const { userData } = useUser();
 
   return (
@@ -27,7 +27,7 @@ export default function InviteCard({ style }) {
 
       <View style={tw`ml-3 flex-1 gap-y-1 justify-center `}>
         <Text
-          style={tw.style(`text-white text-base leading-none`, {
+          style={tw.style(`text-white text-base leading-none`, titleStyle, {
             fontFamily: "Cabin_600SemiBold",
           })}
         >
@@ -35,7 +35,7 @@ export default function InviteCard({ style }) {
         </Text>
 
         <Text
-          style={tw.style(`text-gray-4 text-sm leading-none`, {
+          style={tw.style(`text-gray-4 text-sm leading-none`, subtitleStyle, {
             fontFamily: "Cabin_400Regular",
           })}
         >

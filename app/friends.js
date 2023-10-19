@@ -21,6 +21,7 @@ import SafeView from "@components/SafeView";
 import BackIcon from "@assets/svgs/BackIcon";
 import useContacts from "@hooks/useContacts";
 import useMixpanel from "@hooks/useMixpanel";
+import InviteCard from "@components/InviteCard";
 import ExampleUser1 from "@assets/example_1.png";
 import ExampleUser2 from "@assets/example_2.png";
 import ContactCard from "@components/ContactCard";
@@ -125,7 +126,7 @@ export default function Friends() {
                 />
               }
               ListEmptyComponent={<NoContacts />}
-              contentContainerStyle={tw`pt-4 pb-5`}
+              contentContainerStyle={tw`pt-2 pb-5`}
               data={contacts}
               estimatedItemSize={68}
               keyboardShouldPersistTaps="handled"
@@ -172,12 +173,14 @@ const ContactListHeader = memo(({ friendsOnApp, invites, onInvite }) => {
 
   return (
     <View style={tw`flex`}>
+      <InviteCard style="bg-white/20 mb-4" subtitleStyle="text-gray-2" />
+
       {invites?.checking || friendsOnApp?.checking ? (
         <View style={tw`flex mb-7 gap-y-3`}>
           <ActivityIndicator />
 
           <Text
-            style={tw.style(`text-white text-base text-center`, {
+            style={tw.style(`text-gray-2 text-base text-center`, {
               fontFamily: "Cabin_600SemiBold",
             })}
           >
