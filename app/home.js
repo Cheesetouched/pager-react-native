@@ -169,8 +169,8 @@ export default function Home() {
 
           if (!receivedPage?.response && latestValidPage === null) {
             latestValidPage = {
-              ...friend,
-              freeTill: receivedPage?.validTill,
+              from: JSON.stringify(friend),
+              pageId: receivedPage?.id,
             };
           }
         }
@@ -209,19 +209,14 @@ export default function Home() {
       setFree(free);
 
       if (
-        !closedStuff.current.includes(latestValidPage?.id) &&
+        !closedStuff.current.includes(latestValidPage?.pageId) &&
         latestValidPage !== null
       ) {
-        closedStuff.current = [...closedStuff.current, latestValidPage?.id];
+        closedStuff.current = [...closedStuff.current, latestValidPage?.pageId];
 
         router.push({
-          pathname: "/contact",
-          params: {
-            data: JSON.stringify({
-              ...latestValidPage,
-              free: true,
-            }),
-          },
+          pathname: "/page",
+          params: latestValidPage,
         });
       }
     }
