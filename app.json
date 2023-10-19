@@ -14,7 +14,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "10",
+      "buildNumber": "11",
       "supportsTablet": false,
       "bundleIdentifier": "app.getpager",
       "config": {
@@ -72,6 +72,7 @@
       "policy": "appVersion"
     },
     "updates": {
+      "fallbackToCacheTimeout": 15000,
       "url": "https://u.expo.dev/cfcac9f8-813f-4e5c-96ff-1d6caef5c302"
     }
   }
