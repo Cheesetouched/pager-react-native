@@ -36,11 +36,11 @@ export default function InviteUser({ onPress, style }) {
       </Text>
 
       <Text
-        style={tw.style(`text-gray-4 text-[10px] text-center`, {
-          fontFamily: "Cabin_600SemiBold",
+        style={tw.style(`text-gray-4 text-xs text-center`, {
+          fontFamily: "Cabin_400Regular",
         })}
       >
-        From your contacts
+        from your contacts
       </Text>
     </View>
   );

@@ -65,9 +65,9 @@ export default function Home() {
   const { userData, refetchingUser } = useUser();
   const { pages, refetchingPages } = useGetPages();
   const { pages: detailedPages } = useGetDetailedPages();
+  const lastNotif = Notifications.useLastNotificationResponse();
   const [badges, setBadges] = useState({ requests: 0, pages: 0 });
   const { friends, refetchingFriends } = useGetFriends(userData?.friends);
-  const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
   useEffect(() => {
     SplashScreen.hideAsync();
@@ -117,127 +117,160 @@ export default function Home() {
   }, [detailedPages]);
 
   useEffect(() => {
-    if (friends && pages && !refetchingPages) {
-      const away = [];
-      const free = [];
-      let latestValidPage = null;
+    async function coreLogic() {
+      if (friends && pages && !refetchingFriends && !refetchingPages) {
+        const away = [];
+        const free = [];
+        let openContact = null;
+        let latestValidPage = null;
 
-      friends.map((friend) => {
-        let extras = {};
-        let isFree = false;
-        let havePaged = false;
+        // Getting last notif data
+        const notif = await Notifications.getLastNotificationResponseAsync();
+        const notifData = notif?.notification?.request?.content?.data;
 
-        const sentPage = pages?.sent?.find((page) => {
-          if (page?.to === friend?.id && isValid(page?.validTill)) {
-            return true;
-          } else {
-            return false;
-          }
-        });
+        friends.map((friend) => {
+          let extras = {};
+          let isFree = false;
+          let havePaged = false;
 
-        const receivedPage = pages?.received?.find((page) => {
-          if (page?.from === friend?.id && isValid(page?.validTill)) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-
-        if (sentPage) {
-          if (sentPage?.response?.free) {
-            if (isValid(sentPage?.response?.freeTill)) {
-              isFree = true;
-              extras = { freeTill: sentPage?.response?.freeTill };
+          const sentPage = pages?.sent?.find((page) => {
+            if (page?.to === friend?.id) {
+              return true;
+            } else {
+              return false;
             }
-          } else {
-            if (
-              sentPage?.response?.freeFrom &&
-              isAfter(sentPage?.response?.freeFrom, new Date())
-            ) {
-              extras = { freeFrom: sentPage?.response?.freeFrom };
+          });
+
+          const receivedPage = pages?.received?.find((page) => {
+            if (page?.from === friend?.id && isValid(page?.validTill)) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+
+          if (sentPage) {
+            if (sentPage?.response?.free) {
+              if (isValid(sentPage?.response?.freeTill)) {
+                isFree = true;
+                extras = { freeTill: sentPage?.response?.freeTill };
+              }
+            } else {
+              if (
+                sentPage?.response?.freeFrom &&
+                isAfter(sentPage?.response?.freeFrom, new Date())
+              ) {
+                extras = { freeFrom: sentPage?.response?.freeFrom };
+              }
+            }
+
+            if (!isFree) {
+              havePaged = true;
             }
           }
 
-          if (!isFree) {
-            havePaged = true;
+          if (receivedPage) {
+            isFree = true;
+            extras = { freeTill: receivedPage?.validTill };
+
+            if (!receivedPage?.response && latestValidPage === null) {
+              latestValidPage = {
+                from: JSON.stringify(friend),
+                pageId: receivedPage?.id,
+              };
+            }
           }
-        }
 
-        if (receivedPage) {
-          isFree = true;
-          extras = { freeTill: receivedPage?.validTill };
-
-          if (!receivedPage?.response && latestValidPage === null) {
-            latestValidPage = {
-              from: JSON.stringify(friend),
-              pageId: receivedPage?.id,
-            };
+          if (isValid(friend?.markedFreeTill)) {
+            isFree = true;
+            extras = { freeTill: friend?.markedFreeTill };
           }
-        }
 
-        if (isValid(friend?.markedFreeTill)) {
-          isFree = true;
-          extras = { freeTill: friend?.markedFreeTill };
-        }
+          const user = {
+            ...extras,
+            ...friend,
+            free: isFree,
+            paged: havePaged,
+          };
 
-        const user = {
-          ...extras,
-          ...friend,
-          paged: havePaged,
-        };
+          if (
+            notifData?.action === "open_contact" &&
+            notifData?.uid === friend?.id
+          ) {
+            openContact = user;
+          }
 
-        if (isFree) {
-          free.push(user);
-        } else {
-          away.push(user);
-        }
-      });
-
-      // Creating a combined list
-      setAll([...away, ...free]);
-
-      // Passing an extra value to keep the 3x3 grid in shape
-      if (away?.length % 3 === 1) {
-        away.push(null);
-      }
-
-      if (free?.length % 3 === 2) {
-        free.push(null);
-      }
-
-      setAway(away);
-      setFree(free);
-
-      if (
-        !closedStuff.current.includes(latestValidPage?.pageId) &&
-        latestValidPage !== null
-      ) {
-        closedStuff.current = [...closedStuff.current, latestValidPage?.pageId];
-
-        router.push({
-          pathname: "/page",
-          params: latestValidPage,
+          if (isFree) {
+            free.push(user);
+          } else {
+            away.push(user);
+          }
         });
+
+        // Creating a combined list
+        setAll([...away, ...free]);
+
+        // Passing an extra value to keep the 3x3 grid in shape
+        if (away?.length % 3 === 1) {
+          away.push(null);
+        }
+
+        if (free?.length % 3 === 2) {
+          free.push(null);
+        }
+
+        setAway(away);
+        setFree(free);
+
+        // Opening page response sheet if a valid page is found
+        if (
+          !closedStuff.current.includes(latestValidPage?.pageId) &&
+          latestValidPage !== null
+        ) {
+          closedStuff.current = [
+            ...closedStuff.current,
+            latestValidPage?.pageId,
+          ];
+
+          router.push({
+            pathname: "/page",
+            params: latestValidPage,
+          });
+        }
+
+        // Opening contact sheet if a user is free to sheet
+        if (
+          !closedStuff.current.includes(openContact?.id) &&
+          openContact !== null
+        ) {
+          closedStuff.current = [...closedStuff.current, openContact?.id];
+
+          router.push({
+            pathname: "/contact",
+            params: { data: JSON.stringify(openContact) },
+          });
+        }
       }
     }
-  }, [friends, pages, refetchingPages]);
+
+    coreLogic();
+  }, [friends, pages, refetchingFriends, refetchingPages]);
 
   useEffect(() => {
-    if (lastNotificationResponse && queryClient && userData?.id) {
-      const notifAction =
-        lastNotificationResponse?.notification?.request?.content?.data?.action;
+    const notifId = lastNotif?.notification.request.identifier;
+    const notifData = lastNotif?.notification?.request?.content?.data;
+    const closed = closedStuff.current.includes(notifId);
 
-      if (
-        notifAction === "open_requests" &&
-        !closedStuff.current?.includes("open_requests")
-      ) {
-        closedStuff.current = [...closedStuff.current, "open_requests"];
+    if (all && !closed && lastNotif && queryClient && userData) {
+      closedStuff.current = [...closedStuff.current, notifId];
+
+      if (notifData?.action === "open_requests") {
         router.push("/requests");
-      } else if (notifAction === "invalidate_user") {
+      } else if (notifData?.action === "invalidate_user") {
         queryClient?.invalidateQueries(["user", userData?.id]);
       }
     }
-  }, [lastNotificationResponse, queryClient, userData]);
+  }, [all, lastNotif, queryClient, userData, refetchingPages]);
 
   if (!userData || !friends || !pages) {
     return (
@@ -293,18 +326,13 @@ export default function Home() {
                     return (
                       <User
                         data={item}
+                        free={item?.free}
                         onPress={() => {
                           mixpanel.track("tapped_user");
 
                           router.push({
                             pathname: "/contact",
-                            params: {
-                              data: JSON.stringify({
-                                ...item,
-                                free: false,
-                                paged: item?.paged,
-                              }),
-                            },
+                            params: { data: JSON.stringify(item) },
                           });
                         }}
                         paged={item?.paged}
@@ -449,18 +477,13 @@ const FreeFriends = memo(({ away, free, mixpanel }) => {
                 return (
                   <User
                     data={item}
-                    free
+                    free={item?.free}
                     onPress={() => {
                       mixpanel.track("tapped_user");
 
                       router.push({
                         pathname: "/contact",
-                        params: {
-                          data: JSON.stringify({
-                            ...item,
-                            free: true,
-                          }),
-                        },
+                        params: { data: JSON.stringify(item) },
                       });
                     }}
                   />

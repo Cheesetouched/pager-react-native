@@ -92,7 +92,7 @@ export default function User({
 
       {data?.freeFrom ? (
         <Text
-          style={tw.style(`text-gray-4 text-xs mt-1`, freeTextStyle, {
+          style={tw.style(`text-gray-4 text-xs`, freeTextStyle, {
             fontFamily: "Cabin_400Regular",
           })}
         >
