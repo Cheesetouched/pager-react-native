@@ -6,15 +6,15 @@ import Image from "@components/Image";
 import constants from "@utils/constants";
 import ShareIcon from "@assets/svgs/ShareIcon";
 
-const message = `I found an app that tells you who is free to chat and when.\n\nCheck it ${constants.INVITE_LINK}`;
-
 export default function InviteCard({ style, titleStyle, subtitleStyle }) {
   const { userData } = useUser();
 
   return (
     <TouchableOpacity
       onPress={() => {
-        Share.share({ message });
+        Share.share({
+          message: `${constants.PAGER_BASE_URL}/${userData?.handle}`,
+        });
       }}
       style={tw.style(
         `bg-black/30 h-[65px] flex-row rounded-[14px] items-center px-4`,
@@ -31,7 +31,7 @@ export default function InviteCard({ style, titleStyle, subtitleStyle }) {
             fontFamily: "Cabin_600SemiBold",
           })}
         >
-          Invite friends on Pager
+          Share your pager link
         </Text>
 
         <Text

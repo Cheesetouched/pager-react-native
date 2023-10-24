@@ -107,7 +107,7 @@ const Input = forwardRef(
             }
           }}
           placeholder={placeholder}
-          placeholderTextColor="#B5B5B5"
+          placeholderTextColor="#929292"
           ref={localRef}
           selectionColor="black"
           style={tw.style(

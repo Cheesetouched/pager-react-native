@@ -85,17 +85,48 @@ export default function Friends() {
             {params?.referrer !== "onboarding" ? (
               <TouchableOpacity
                 onPress={router.back}
-                style={tw`flex flex-row items-center gap-x-2 mb-4`}
+                style={tw`flex flex-row gap-x-2 mb-4 justify-center`}
               >
-                <BackIcon />
-
-                <Text
-                  style={tw.style(`text-base text-white font-semibold`, {
-                    fontFamily: "Cabin_600SemiBold",
-                  })}
+                <View
+                  style={tw`absolute left-0 flex flex-row justify-center items-center gap-x-2`}
                 >
-                  back
-                </Text>
+                  <BackIcon />
+
+                  <Text
+                    style={tw.style(
+                      `text-base text-white font-semibold leading-tight`,
+                      {
+                        fontFamily: "Cabin_600SemiBold",
+                      },
+                    )}
+                  >
+                    back
+                  </Text>
+                </View>
+
+                <View style={tw`items-center`}>
+                  <Text
+                    style={tw.style(
+                      `text-xl text-white font-semibold leading-none`,
+                      {
+                        fontFamily: "Cabin_600SemiBold",
+                      },
+                    )}
+                  >
+                    Invite friends
+                  </Text>
+
+                  <Text
+                    style={tw.style(
+                      `text-sm text-gray-4 font-semibold leading-tight`,
+                      {
+                        fontFamily: "Cabin_600SemiBold",
+                      },
+                    )}
+                  >
+                    in beta - iOS only
+                  </Text>
+                </View>
               </TouchableOpacity>
             ) : null}
 
@@ -111,7 +142,7 @@ export default function Friends() {
               containerStyle="h-[45px] mb-2"
               maxLength={25}
               onChangeText={searchContacts}
-              placeholder="Search for people"
+              placeholder="Search for people to invite"
               style="text-left"
               trim
             />
