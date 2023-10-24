@@ -7,17 +7,21 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import tw from "@utils/tailwind";
 import Button from "@components/Button";
+import useFirebase from "@hooks/useFirebase";
 import { getInitials } from "@utils/helpers";
 import PhoneIcon from "@assets/svgs/PhoneIcon";
 import usePages from "@hooks/firestore/usePages";
 import WhatsAppIcon from "@assets/svgs/WhatsAppIcon";
 import OutlineButton from "@components/OutlineButton";
+import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 
 export default function ExternalPageResponse() {
   const Pages = usePages();
+  const { user } = useFirebase();
+  const update = useOptimisticUpdate();
   const { data } = useLocalSearchParams();
   const [response, setResponse] = useState(null);
-  const page = JSON.parse(data);
+  const parsed = JSON.parse(data);
 
   return (
     <BlurView intensity={75} style={tw`flex flex-1`} tint="dark">
@@ -34,7 +38,7 @@ export default function ExternalPageResponse() {
                       fontFamily: "Cabin_700Bold",
                     })}
                   >
-                    {getInitials(page?.name)}
+                    {getInitials(parsed?.name)}
                   </Text>
                 </View>
 
@@ -58,9 +62,9 @@ export default function ExternalPageResponse() {
                       fontFamily: "Cabin_400Regular",
                     },
                   )}
-                >{`${page?.name?.split(" ")[0]} paged you`}</Text>
+                >{`${parsed?.name?.split(" ")[0]} paged you`}</Text>
 
-                {page?.message ? (
+                {parsed?.message ? (
                   <View style={tw`bg-black/40 rounded-2xl`}>
                     <Text
                       style={tw.style(
@@ -70,7 +74,7 @@ export default function ExternalPageResponse() {
                         },
                       )}
                     >
-                      "{page?.message}"
+                      "{parsed?.message}"
                     </Text>
                   </View>
                 ) : null}
@@ -92,7 +96,24 @@ export default function ExternalPageResponse() {
                   onPress={() => {
                     setResponse("free");
 
-                    Pages.update(page?.id, {
+                    update(["detailedPages", user?.uid], (current) => ({
+                      ...current,
+                      received: {
+                        ...current?.received,
+                        external: current?.received?.external?.map((page) => {
+                          if (page?.id === parsed?.id) {
+                            return {
+                              ...page,
+                              response: { free: true },
+                            };
+                          } else {
+                            return page;
+                          }
+                        }),
+                      },
+                    }));
+
+                    Pages.update(parsed?.id, {
                       response: { free: true },
                     });
                   }}
@@ -105,7 +126,24 @@ export default function ExternalPageResponse() {
                   onPress={() => {
                     setResponse("ignore");
 
-                    Pages.update(page?.id, {
+                    update(["detailedPages", user?.uid], (current) => ({
+                      ...current,
+                      received: {
+                        ...current?.received,
+                        external: current?.received?.external?.map((page) => {
+                          if (page?.id === parsed?.id) {
+                            return {
+                              ...page,
+                              response: { free: false },
+                            };
+                          } else {
+                            return page;
+                          }
+                        }),
+                      },
+                    }));
+
+                    Pages.update(parsed?.id, {
                       response: { free: false },
                     });
                   }}
@@ -128,7 +166,7 @@ export default function ExternalPageResponse() {
                     fontFamily: "Cabin_700Bold",
                   })}
                 >
-                  {getInitials(page?.name)}
+                  {getInitials(parsed?.name)}
                 </Text>
               </View>
 
@@ -140,7 +178,7 @@ export default function ExternalPageResponse() {
                   },
                 )}
               >
-                {page?.name}
+                {parsed?.name}
               </Text>
 
               <Text
@@ -194,7 +232,7 @@ export default function ExternalPageResponse() {
                     fontFamily: "Cabin_700Bold",
                   })}
                 >
-                  {getInitials(page?.name)}
+                  {getInitials(parsed?.name)}
                 </Text>
               </View>
 

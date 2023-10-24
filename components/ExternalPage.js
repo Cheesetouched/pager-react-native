@@ -77,7 +77,7 @@ export default function ExternalPage({ data }) {
           textStyle="text-xs"
           variant="dark"
         >
-          Replied
+          {data?.response?.free ? "Replied" : "Ignored"}
         </OutlineButton>
       )}
     </View>

@@ -17,16 +17,19 @@ export default function usePageResponse(props = {}) {
     onMutate: ({ pageId, response: { response } }) => {
       update(["detailedPages", user?.uid], (current) => ({
         ...current,
-        received: current?.received?.map((page) => {
-          if (page?.id === pageId) {
-            return {
-              ...page,
-              response,
-            };
-          } else {
-            return page;
-          }
-        }),
+        received: {
+          ...current?.received,
+          internal: current?.received?.internal?.map((page) => {
+            if (page?.id === pageId) {
+              return {
+                ...page,
+                response,
+              };
+            } else {
+              return page;
+            }
+          }),
+        },
       }));
     },
     onSuccess: () => {
