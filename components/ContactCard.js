@@ -6,24 +6,12 @@ import { AntDesign } from "@expo/vector-icons";
 import tw from "@utils/tailwind";
 import useUser from "@hooks/useUser";
 import Image from "@components/Image";
+import { getInitials } from "@utils/helpers";
 import useMixpanel from "@hooks/useMixpanel";
 import useAppContext from "@hooks/useAppContext";
 import OutlineButton from "@components/OutlineButton";
 import useAddFriend from "@hooks/mutations/useAddFriend";
 import useInviteUser from "@hooks/mutations/useInviteUser";
-
-const getInitials = (name) => {
-  if (!name) return "?";
-  const parts = name?.split(" ");
-
-  if (parts.length === 0) {
-    return "?";
-  } else if (parts.length === 1) {
-    return parts[0][0].toString().toUpperCase();
-  } else {
-    return (parts[0][0] + parts[1][0]).toString().toUpperCase();
-  }
-};
 
 export default function ContactCard({ data, onInvite, type = "contact" }) {
   const { userData } = useUser();

@@ -32,6 +32,19 @@ export async function getBlobFromUri(uri) {
   });
 }
 
+export function getInitials(name) {
+  if (!name) return "?";
+  const parts = name?.split(" ");
+
+  if (parts.length === 0) {
+    return "?";
+  } else if (parts.length === 1) {
+    return parts[0][0].toString().toUpperCase();
+  } else {
+    return (parts[0][0] + parts[1][0]).toString().toUpperCase();
+  }
+}
+
 export function isValid(validTill) {
   if (!validTill) {
     return false;

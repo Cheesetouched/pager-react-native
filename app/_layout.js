@@ -100,6 +100,11 @@ export default function Layout() {
               />
 
               <Stack.Screen
+                name="external_page"
+                options={{ presentation: "transparentModal" }}
+              />
+
+              <Stack.Screen
                 name="(context)/welcome_context"
                 options={{ presentation: "fullScreenModal" }}
               />

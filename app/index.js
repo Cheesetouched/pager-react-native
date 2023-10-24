@@ -5,6 +5,7 @@ import { Lalezar_400Regular } from "@expo-google-fonts/lalezar";
 import {
   useFonts,
   Cabin_400Regular,
+  Cabin_400Regular_Italic,
   Cabin_600SemiBold,
   Cabin_700Bold,
 } from "@expo-google-fonts/cabin";
@@ -22,6 +23,7 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     Lalezar_400Regular,
     Cabin_400Regular,
+    Cabin_400Regular_Italic,
     Cabin_600SemiBold,
     Cabin_700Bold,
   });

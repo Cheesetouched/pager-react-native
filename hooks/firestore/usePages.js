@@ -64,8 +64,8 @@ export default function usePages() {
   );
 
   const update = useCallback(
-    async (uid, data) => {
-      const pageDoc = doc(firestore, "pages", uid);
+    async (id, data) => {
+      const pageDoc = doc(firestore, "pages", id);
       return await setDoc(pageDoc, data, { merge: true });
     },
     [firestore],

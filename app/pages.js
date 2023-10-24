@@ -6,6 +6,7 @@ import { FlashList } from "@shopify/flash-list";
 
 import tw from "@utils/tailwind";
 import PageCard from "@components/PageCard";
+import ExternalPage from "@components/ExternalPage";
 import useGetDetailedPages from "@hooks/queries/useGetDetailedPages";
 
 export default function Pages() {
@@ -23,7 +24,7 @@ export default function Pages() {
       ) : selected === "received" &&
         (pages?.received?.internal?.length > 0 ||
           pages?.received?.external?.length > 0) ? (
-        <View style={tw`flex-1 mt-2`}>
+        <View style={tw`flex-1`}>
           <FlashList
             ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
             ListHeaderComponent={
@@ -40,7 +41,7 @@ export default function Pages() {
           />
         </View>
       ) : selected === "sent" && pages["sent"]?.length > 0 ? (
-        <View style={tw`flex-1 mt-2`}>
+        <View style={tw`flex-1`}>
           <FlashList
             ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
             contentContainerStyle={tw`pt-6 px-6`}
@@ -81,7 +82,7 @@ const ExternalPages = memo(({ pages, showInternalTitle }) => {
           ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
           data={pages}
           estimatedItemSize={50}
-          renderItem={({ item }) => <PageCard data={item} type="received" />}
+          renderItem={({ item }) => <ExternalPage data={item} />}
           showsVerticalScrollIndicator={false}
         />
       </View>
