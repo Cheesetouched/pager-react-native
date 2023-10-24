@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
@@ -20,12 +20,31 @@ export default function Pages() {
         <View style={tw`flex-1 justify-center mb-10`}>
           <ActivityIndicator />
         </View>
-      ) : pages[selected]?.length > 0 ? (
+      ) : selected === "received" &&
+        (pages?.received?.internal?.length > 0 ||
+          pages?.received?.external?.length > 0) ? (
+        <View style={tw`flex-1 mt-2`}>
+          <FlashList
+            ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
+            ListHeaderComponent={
+              <ExternalPages
+                pages={pages?.received?.external}
+                showInternalTitle={pages?.received?.internal?.length > 0}
+              />
+            }
+            contentContainerStyle={tw`pt-6 px-6`}
+            data={pages?.received?.internal}
+            estimatedItemSize={50}
+            renderItem={({ item }) => <PageCard data={item} type={selected} />}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      ) : selected === "sent" && pages["sent"]?.length > 0 ? (
         <View style={tw`flex-1 mt-2`}>
           <FlashList
             ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
             contentContainerStyle={tw`pt-6 px-6`}
-            data={pages[selected]}
+            data={pages["sent"]}
             estimatedItemSize={50}
             renderItem={({ item }) => <PageCard data={item} type={selected} />}
             showsVerticalScrollIndicator={false}
@@ -45,6 +64,44 @@ export default function Pages() {
     </BlurView>
   );
 }
+
+const ExternalPages = memo(({ pages, showInternalTitle }) => {
+  return pages?.length > 0 ? (
+    <View style={tw`flex`}>
+      <Text
+        style={tw.style(`text-white text-base mb-5`, {
+          fontFamily: "Cabin_600SemiBold",
+        })}
+      >
+        From your pager link
+      </Text>
+
+      <View style={tw`min-h-[2px]`}>
+        <FlashList
+          ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
+          data={pages}
+          estimatedItemSize={50}
+          renderItem={({ item }) => <PageCard data={item} type="received" />}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+
+      {showInternalTitle ? (
+        <>
+          <View style={tw`bg-gray-4 h-[1px] my-5`} />
+
+          <Text
+            style={tw.style(`text-white text-base mb-5`, {
+              fontFamily: "Cabin_600SemiBold",
+            })}
+          >
+            On Pager
+          </Text>
+        </>
+      ) : null}
+    </View>
+  ) : null;
+});
 
 function DualSelector({ selected, onSelected }) {
   return (

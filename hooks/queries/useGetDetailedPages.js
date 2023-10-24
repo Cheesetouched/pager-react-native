@@ -12,12 +12,24 @@ export default function useGetDetailedPages() {
   const { data, isInitialLoading, isFetching } = useQuery(
     ["detailedPages", userData?.id],
     async () => {
+      const received = { external: [], internal: [] };
       const pages = await getDetailedPages(userData?.id);
 
-      pages["received"] = pages?.received?.map((page) => ({
-        ...page,
-        to: userData,
-      }));
+      pages?.received?.map((page) => {
+        if (page?.type === "external") {
+          received?.external?.push({
+            ...page,
+            to: userData,
+          });
+        } else {
+          received?.internal?.push({
+            ...page,
+            to: userData,
+          });
+        }
+      });
+
+      pages["received"] = received;
 
       pages["sent"] = pages?.sent?.map((page) => ({
         ...page,

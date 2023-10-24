@@ -103,7 +103,13 @@ export default function Home() {
     if (detailedPages) {
       let awaitingResponse = 0;
 
-      detailedPages?.received?.map((page) => {
+      detailedPages?.received?.external?.map((page) => {
+        if (!page?.response) {
+          awaitingResponse += 1;
+        }
+      });
+
+      detailedPages?.received?.internal?.map((page) => {
         if (!page?.response) {
           awaitingResponse += 1;
         }
