@@ -68,7 +68,7 @@ export default function ExternalPageResponse() {
                   <View style={tw`bg-black/40 rounded-2xl`}>
                     <Text
                       style={tw.style(
-                        `text-white text-base mt-1 self-center leading-none p-6`,
+                        `text-white text-center text-base mt-1 self-center leading-none p-6`,
                         {
                           fontFamily: "Cabin_400Regular",
                         },
