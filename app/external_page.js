@@ -194,7 +194,7 @@ export default function ExternalPageResponse() {
 
               <View style={tw`flex flex-row mt-14 gap-x-8`}>
                 <TouchableOpacity
-                  onPress={() => Linking.openURL(`tel:${data?.phone?.full}`)}
+                  onPress={() => Linking.openURL(`tel:${parsed?.phone?.full}`)}
                 >
                   <PhoneIcon />
                 </TouchableOpacity>
@@ -202,7 +202,7 @@ export default function ExternalPageResponse() {
                 <TouchableOpacity
                   onPress={() =>
                     Linking.openURL(
-                      `whatsapp://send?phone=${data?.phone?.full}`,
+                      `whatsapp://send?phone=${parsed?.phone?.full}`,
                     )
                   }
                 >
