@@ -151,7 +151,7 @@ export default function Friends() {
                 searchContacts(text);
                 setSearchQuery(text);
               }}
-              placeholder="Search for people to invite"
+              placeholder="Search for people"
               style="text-left"
               trim
             />
