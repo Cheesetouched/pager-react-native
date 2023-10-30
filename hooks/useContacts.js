@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import * as Contacts from "expo-contacts";
+import { useDebounce } from "@uidotdev/usehooks";
 
 import Countries from "@utils/countries";
 import { cleanupPhone, resize } from "@utils/helpers";
+import useUserSearch from "@hooks/queries/useUserSearch";
 import useOptimisticUpdate from "@hooks/useOptimisticUpdate";
 import useCheckInvites from "@hooks/queries/useCheckInvites";
 import useContactsSearch from "@hooks/queries/useContactsSearch";
@@ -12,13 +14,14 @@ export default function useContacts(props = {}) {
   // Make sure these prop functions are wrapped in a useCallback
   // function, inside the hook consumer, to prevent unnecessary
   // re-rendering
-
   const update = useOptimisticUpdate();
   const [contacts, setContacts] = useState(null);
   const [inMemory, setInMemory] = useState(null);
-  const { userPhone, onDenied, onGranted } = props;
   const [permission, setPermission] = useState(null);
   const [numbersOnly, setNumbersOnly] = useState(null);
+  const { userPhone, searchQuery, onDenied, onGranted } = props;
+  const searchResult = useUserSearch(useDebounce(searchQuery, 500));
+
   // Breaking import order here because otherwise numbersOnly
   // would be undefined when passed to the useContactsSearch hook
   const invites = useCheckInvites(userPhone);
@@ -137,19 +140,41 @@ export default function useContacts(props = {}) {
     if (friendsOnApp?.success && invites?.success) {
       const inviterUids = invites?.inviters?.map((inviter) => inviter?.id);
 
-      // Removing people from the list if they are already in the
-      // invite list or if the person is the logged in user
       update(["contactsSearch"], (current) => ({
         ...current,
-        results: current?.results?.filter((friend) => {
-          return (
-            !inviterUids?.includes(friend?.objectID) &&
-            friend?.phone?.full !== userPhone
-          );
-        }),
+        results: current?.results?.map((friend) => ({
+          ...friend,
+          invited: inviterUids?.includes(friend?.objectID),
+        })),
       }));
     }
-  }, [invites, userPhone, friendsOnApp, update]);
+  }, [friendsOnApp?.success, invites?.inviters, invites?.success, update]);
+
+  useEffect(() => {
+    if (searchResult?.results?.length > 0) {
+      const friendsOnAppUids = friendsOnApp.results.map(
+        (friend) => friend?.objectID,
+      );
+
+      update(["search", searchQuery], (current) => {
+        return {
+          ...current,
+          results: current?.results?.filter((friend) => {
+            return (
+              !friendsOnAppUids?.includes(friend?.objectID) &&
+              friend?.phone?.full !== userPhone
+            );
+          }),
+        };
+      });
+    }
+  }, [
+    friendsOnApp,
+    searchQuery,
+    searchResult?.results?.length,
+    update,
+    userPhone,
+  ]);
 
   useEffect(() => {
     Contacts.getPermissionsAsync().then((permission) => {
@@ -170,6 +195,7 @@ export default function useContacts(props = {}) {
       ready: typeof userPhone === "string",
       requestContacts,
       searchContacts,
+      searchResult,
     }),
     [
       contacts,
@@ -178,6 +204,7 @@ export default function useContacts(props = {}) {
       permission,
       requestContacts,
       searchContacts,
+      searchResult,
       userPhone,
     ],
   );

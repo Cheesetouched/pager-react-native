@@ -36,6 +36,7 @@ export default function Friends() {
   const inviteSheetRef = useRef();
   const params = useLocalSearchParams();
   const navigation = useRootNavigation();
+  const [searchQuery, setSearchQuery] = useState();
 
   const onInvite = useCallback(
     (number) => {
@@ -57,12 +58,16 @@ export default function Friends() {
   const {
     contacts,
     friendsOnApp,
-    invites,
     permission,
     ready,
     requestContacts,
     searchContacts,
-  } = useContacts({ userPhone: userData?.phone?.full, onGranted });
+    searchResult,
+  } = useContacts({
+    userPhone: userData?.phone?.full,
+    searchQuery,
+    onGranted,
+  });
 
   if (!ready) {
     return (
@@ -140,8 +145,12 @@ export default function Friends() {
                 />
               }
               containerStyle="h-[45px] mb-2"
+              loading={searchResult.searching}
               maxLength={25}
-              onChangeText={searchContacts}
+              onChangeText={(text) => {
+                searchContacts(text);
+                setSearchQuery(text);
+              }}
               placeholder="Search for people to invite"
               style="text-left"
               trim
@@ -152,8 +161,8 @@ export default function Friends() {
               ListHeaderComponent={
                 <ContactListHeader
                   friendsOnApp={friendsOnApp}
-                  invites={invites}
                   onInvite={onInvite}
+                  searchResults={searchResult.results || []}
                 />
               }
               ListEmptyComponent={<NoContacts />}
@@ -199,14 +208,14 @@ export default function Friends() {
   );
 }
 
-const ContactListHeader = memo(({ friendsOnApp, invites, onInvite }) => {
+const ContactListHeader = memo(({ friendsOnApp, onInvite, searchResults }) => {
   const { userData } = useUser();
 
   return (
     <View style={tw`flex`}>
       <InviteCard style="bg-white/20 mb-4" subtitleStyle="text-gray-2" />
 
-      {invites?.checking || friendsOnApp?.checking ? (
+      {friendsOnApp?.searching ? (
         <View style={tw`flex mb-7 gap-y-3`}>
           <ActivityIndicator />
 
@@ -218,39 +227,9 @@ const ContactListHeader = memo(({ friendsOnApp, invites, onInvite }) => {
             finding your friends
           </Text>
         </View>
-      ) : invites?.inviters?.length > 0 ? (
-        <View style={tw`pb-[15px]`}>
-          <Text
-            style={tw.style(`text-white text-base mb-[15px]`, {
-              fontFamily: "Cabin_700Bold",
-            })}
-          >
-            Invited you
-          </Text>
-
-          <View style={tw`min-h-[2px]`}>
-            <FlashList
-              ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-              data={invites?.inviters}
-              estimatedItemSize={68}
-              extraData={userData}
-              keyboardShouldPersistTaps="handled"
-              renderItem={({ item }) => {
-                if (userData?.pendingRequests?.includes(item?.id)) {
-                  return <RequestCard data={item} />;
-                } else {
-                  return (
-                    <ContactCard data={item} onInvite={onInvite} type="user" />
-                  );
-                }
-              }}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-        </View>
       ) : null}
 
-      {friendsOnApp?.results?.length > 0 ? (
+      {searchResults?.length > 0 || friendsOnApp?.results?.length > 0 ? (
         <View style={tw`pb-5`}>
           <Text
             style={tw.style(`text-white text-base mb-5`, {
@@ -263,7 +242,7 @@ const ContactListHeader = memo(({ friendsOnApp, invites, onInvite }) => {
           <View style={tw`min-h-[2px]`}>
             <FlashList
               ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-              data={friendsOnApp?.results}
+              data={[...searchResults, ...friendsOnApp?.results]}
               estimatedItemSize={68}
               extraData={userData}
               keyboardShouldPersistTaps="handled"

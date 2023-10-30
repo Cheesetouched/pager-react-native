@@ -82,58 +82,72 @@ export default function ContactCard({ data, onInvite, type = "contact" }) {
         </Text>
       </View>
 
-      {type === "user" ? (
-        status === "friends" ? (
-          <AntDesign name="checkcircle" size={24} color="#52A98F" />
-        ) : status === "sent" ? (
-          <Text
-            style={tw.style(`text-accent`, {
-              fontFamily: "Cabin_600SemiBold",
-            })}
-          >
-            request sent
-          </Text>
+      <View style={tw`items-center gap-y-1`}>
+        {type === "user" ? (
+          status === "friends" ? (
+            <AntDesign name="checkcircle" size={24} color="#52A98F" />
+          ) : status === "sent" ? (
+            <Text
+              style={tw.style(`text-accent`, {
+                fontFamily: "Cabin_600SemiBold",
+              })}
+            >
+              request sent
+            </Text>
+          ) : (
+            <OutlineButton
+              onPress={() => {
+                mixpanel.track("added_friend");
+
+                addFriend({
+                  adderUid: userData?.id,
+                  addeeUid: data?.id || data?.objectID,
+                });
+              }}
+              style="h-[35px] w-[90px] rounded-full"
+              textStyle="text-xs"
+            >
+              Add friend
+            </OutlineButton>
+          )
         ) : (
           <OutlineButton
+            loading={inviting}
             onPress={() => {
-              mixpanel.track("added_friend");
-
-              addFriend({
-                adderUid: userData?.id,
-                addeeUid: data?.id || data?.objectID,
-              });
-            }}
-            style="h-[35px] w-[90px] rounded-full"
-            textStyle="text-xs"
-          >
-            Add friend
-          </OutlineButton>
-        )
-      ) : (
-        <OutlineButton
-          loading={inviting}
-          onPress={() => {
-            if (!invited) {
-              if (userData?.phone?.full === data?.phone?.full) {
-                alert.current.show({
-                  title: "???",
-                  message: "you cannot invite yourself 😭",
-                });
-              } else {
-                inviteUser({
-                  number: data?.phone?.full,
-                  invited_by: userData?.id,
-                });
+              if (!invited) {
+                if (userData?.phone?.full === data?.phone?.full) {
+                  alert.current.show({
+                    title: "???",
+                    message: "you cannot invite yourself 😭",
+                  });
+                } else {
+                  inviteUser({
+                    number: data?.phone?.full,
+                    invited_by: userData?.id,
+                  });
+                }
               }
-            }
-          }}
-          style="h-[35px] w-[75px] rounded-full"
-          textStyle={`text-xs ${invited ? "text-gray-4" : "text-white"}`}
-          variant={invited ? "dark" : "main"}
-        >
-          {invited ? "Invited" : "Invite"}
-        </OutlineButton>
-      )}
+            }}
+            style="h-[35px] w-[75px] rounded-full"
+            textStyle={`text-xs ${invited ? "text-gray-4" : "text-white"}`}
+            variant={invited ? "dark" : "main"}
+          >
+            {invited ? "Invited" : "Invite"}
+          </OutlineButton>
+        )}
+
+        {data?.invited && status !== "sent" ? (
+          <Text
+            style={tw.style(`text-xs text-gray-2`, {
+              fontFamily: "Cabin_400Regular",
+            })}
+          >
+            invited you
+          </Text>
+        ) : (
+          false
+        )}
+      </View>
     </View>
   );
 }

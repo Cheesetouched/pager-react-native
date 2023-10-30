@@ -12,13 +12,17 @@ export default function useCheckInvites(number) {
   const { data, isInitialLoading, isFetching } = useQuery(
     ["checkInvites", number],
     async () => {
-      // Removing inviters who are already friends
       const eligibleInviters = [];
       const result = await checkInvites(number);
 
       if (result?.inviters?.length > 0) {
+        // Removing inviters who are already friends
+        // Also removing logged in user
         result.inviters.map((inviter) => {
-          if (!inviter?.friends?.includes(user?.uid)) {
+          if (
+            !inviter?.friends?.includes(user?.uid) &&
+            inviter?.id !== user?.uid
+          ) {
             eligibleInviters.push(inviter);
           }
         });

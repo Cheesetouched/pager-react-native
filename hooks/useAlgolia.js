@@ -11,6 +11,8 @@ const client = algoliasearch(
   Constants.ALGOLIA_API_KEY,
 );
 
+const Users = client.initIndex("users");
+
 function numbersToQueries(numbers) {
   const queries = numbers.map((number) => ({
     indexName: "users",
@@ -22,6 +24,11 @@ function numbersToQueries(numbers) {
 }
 
 export default function useAlgolia() {
+  const searchUsers = useCallback(async (query) => {
+    const search = await Users.search(query);
+    return { success: true, results: search.hits };
+  }, []);
+
   const contactsSearch = useCallback(async (numbers) => {
     const allHits = [];
     const objectIDs = [];
@@ -48,5 +55,5 @@ export default function useAlgolia() {
     return { success: true, results: allHits };
   }, []);
 
-  return { contactsSearch };
+  return { contactsSearch, searchUsers };
 }

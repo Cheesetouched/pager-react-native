@@ -5,38 +5,33 @@ import { useQuery } from "@tanstack/react-query";
 import useAlgolia from "@hooks/useAlgolia";
 import useFirebase from "@hooks/useFirebase";
 
-export default function useContactsSearch(numbers) {
+export default function useUserSearch(query, minimumLength = 2) {
   const { user } = useFirebase();
-  const { contactsSearch } = useAlgolia();
+  const { searchUsers } = useAlgolia();
 
   const { data, isInitialLoading, isFetching } = useQuery(
-    ["contactsSearch"],
+    ["search", query],
     async () => {
-      const eligibleContacts = [];
-      const search = await contactsSearch(numbers);
+      const eligibleSearch = [];
+      const search = await searchUsers(query);
 
       if (search?.results?.length > 0) {
-        // Removing inviters who are already friends
+        // Removing people who are already friends
         // Also removing logged in user
         search?.results?.map((result) => {
           if (
             !result?.friends?.includes(user?.uid) &&
             result?.id !== user?.uid
           ) {
-            eligibleContacts.push(result);
+            eligibleSearch.push(result);
           }
         });
       }
 
-      return { ...search, results: eligibleContacts };
+      return { ...search, results: eligibleSearch };
     },
     {
-      enabled:
-        numbers !== undefined &&
-        typeof numbers === "object" &&
-        numbers?.length > 0 &&
-        user?.uid !== undefined &&
-        typeof user?.uid === "string",
+      enabled: typeof query === "string" && query.length > minimumLength,
     },
   );
 
