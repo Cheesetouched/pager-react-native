@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Linking, Text, TouchableOpacity, View } from "react-native";
+import { Linking, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
 import { router, useLocalSearchParams } from "expo-router";
@@ -15,10 +15,14 @@ import WhatsAppIcon from "@assets/svgs/WhatsAppIcon";
 import FacetimeIcon from "@assets/svgs/FacetimeIcon";
 import OutlineButton from "@components/OutlineButton";
 
+const noteMaxLength = 60;
+
 export default function Contact() {
   const { page } = usePage();
   const mixpanel = useMixpanel();
+  const [note, setNote] = useState("");
   const { data } = useLocalSearchParams();
+  const [mode, setMode] = useState("start");
   const [paged, setPaged] = useState(false);
   const parsed = JSON.parse(data);
 
@@ -76,24 +80,63 @@ export default function Contact() {
       </View>
 
       {!parsed?.free ? (
-        <View style={tw`w-60 mt-20`}>
-          {paged || parsed?.paged || parsed?.freeFrom ? (
+        paged || parsed?.paged || parsed?.freeFrom ? (
+          <View style={tw`w-72 mt-20`}>
             <OutlineButton textStyle="text-base text-gray-2" variant="dark">
               PAGE SENT!
             </OutlineButton>
-          ) : (
+          </View>
+        ) : mode === "start" ? (
+          <View style={tw`w-72 mt-20`}>
             <Button
               onPress={() => {
-                setPaged(true);
-                page(parsed?.id);
-                mixpanel.track("paged");
+                setMode("note");
+                setNote(
+                  `${
+                    parsed?.name?.split(" ")[0]
+                  } - lets chat today when you have time.`,
+                );
               }}
               textStyle="text-sm leading-tight"
             >
               {`PAGE ${parsed?.name?.split(" ")[0].toUpperCase()}`} 📟
             </Button>
-          )}
-        </View>
+          </View>
+        ) : mode === "note" ? (
+          <View style={tw`w-72 mt-10`}>
+            <TextInput
+              maxLength={noteMaxLength}
+              multiline
+              onChangeText={setNote}
+              selectionColor="white"
+              style={tw.style(
+                `bg-gray-3 h-[65px] rounded-xl px-6 py-4 text-white`,
+                { fontFamily: "Cabin_400Regular" },
+              )}
+              value={note}
+            />
+
+            <Text
+              style={tw.style(`text-white/50 text-xs text-right mt-2`, {
+                fontFamily: "Cabin_400Regular",
+              })}
+            >
+              {note.length}/{noteMaxLength} (Optional)
+            </Text>
+
+            <Button
+              onPress={() => {
+                setPaged(true);
+                page({ to: parsed?.id, note });
+                mixpanel.track("paged");
+              }}
+              style="mt-7"
+              textStyle="text-sm leading-tight"
+            >
+              {`SEND PAGE `} 📟
+            </Button>
+          </View>
+        ) : null
       ) : null}
 
       <TouchableOpacity onPress={router.back} style={tw`mt-30`}>

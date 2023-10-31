@@ -14,31 +14,35 @@ export default function usePage(props = {}) {
   const update = useOptimisticUpdate();
   const queryClient = useQueryClient();
 
-  const { isLoading, mutate } = useMutation((to) => page(user?.uid, to), {
-    onMutate: (to) => {
-      update(["pages", user?.uid], (current) => ({
-        received: current?.received,
-        sent: [
-          {
-            id: Date.now(),
-            from: user?.uid,
-            to,
-            sentAt: Date.now(),
-            validTill: addHours(Date.now(), 1).getTime(),
-          },
-          ...current?.sent,
-        ],
-      }));
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["pages", user?.uid]);
-      queryClient.invalidateQueries(["detailedPages", user?.uid]);
+  const { isLoading, mutate } = useMutation(
+    ({ to, note }) => page({ from: user?.uid, to, note }),
+    {
+      onMutate: ({ to, note }) => {
+        update(["pages", user?.uid], (current) => ({
+          received: current?.received,
+          sent: [
+            {
+              id: Date.now(),
+              from: user?.uid,
+              to,
+              note,
+              sentAt: Date.now(),
+              validTill: addHours(Date.now(), 1).getTime(),
+            },
+            ...current?.sent,
+          ],
+        }));
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["pages", user?.uid]);
+        queryClient.invalidateQueries(["detailedPages", user?.uid]);
 
-      if (onSuccess) {
-        onSuccess();
-      }
+        if (onSuccess) {
+          onSuccess();
+        }
+      },
     },
-  });
+  );
 
   return useMemo(
     () => ({

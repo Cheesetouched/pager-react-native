@@ -91,12 +91,13 @@ export default function useCoreAction() {
   );
 
   const page = useCallback(
-    async (from, to) => {
+    async ({ from, to, note }) => {
       PushNotification.pageUser(from, to);
 
       return await Pages.add({
         from,
         to,
+        note,
         sentAt: Timestamp.now(),
         validTill: Timestamp.fromDate(addHours(new Date(), 1)),
       });
