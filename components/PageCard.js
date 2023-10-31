@@ -48,7 +48,7 @@ export default function PageCard({ data, type }) {
                 pathname: "/page",
                 params: {
                   from: JSON.stringify(data?.from),
-                  pageId: data?.id,
+                  page: JSON.stringify(data),
                 },
               })
             }

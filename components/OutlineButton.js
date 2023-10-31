@@ -5,6 +5,7 @@ import tw from "@utils/tailwind";
 export default function OutlineButton({
   children,
   disabled = false,
+  fontFamily = "Cabin_700Bold",
   icon = null,
   loading = false,
   onPress,
@@ -44,9 +45,7 @@ export default function OutlineButton({
               style={tw.style(
                 `text-white text-center text-lg leading-tight`,
                 `${textStyle ? textStyle : ""}`,
-                {
-                  fontFamily: "Cabin_700Bold",
-                },
+                { fontFamily },
               )}
             >
               {children}

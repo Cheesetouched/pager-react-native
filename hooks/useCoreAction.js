@@ -106,21 +106,25 @@ export default function useCoreAction() {
   );
 
   const respondToPage = useCallback(
-    async ({ accepterUid, pageId, response, senderUid }) => {
+    async ({ accepterUid, pageId, picked, response, senderUid }) => {
       if (response?.response?.free) {
         PushNotification.pageAccepted(accepterUid, senderUid);
       }
 
       if (response?.response?.freeFrom) {
-        const laterAt = response?.response?.freeFrom.toLocaleTimeString(
-          "en-US",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-          },
-        );
+        if (picked) {
+          PushNotification.pageLaterOptions({ accepterUid, senderUid, picked });
+        } else {
+          const laterAt = response?.response?.freeFrom.toLocaleTimeString(
+            "en-US",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+            },
+          );
 
-        PushNotification.pageLater({ accepterUid, senderUid, laterAt });
+          PushNotification.pageLater({ accepterUid, senderUid, laterAt });
+        }
 
         response["response"]["freeFrom"] = Timestamp.fromDate(
           response?.response?.freeFrom,

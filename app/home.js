@@ -182,7 +182,7 @@ export default function Home() {
             if (!receivedPage?.response && latestValidPage === null) {
               latestValidPage = {
                 from: JSON.stringify(friend),
-                pageId: receivedPage?.id,
+                page: JSON.stringify(receivedPage),
               };
             }
           }
@@ -230,12 +230,12 @@ export default function Home() {
 
         // Opening page response sheet if a valid page is found
         if (
-          !closedStuff.current.includes(latestValidPage?.pageId) &&
+          !closedStuff.current.includes(latestValidPage?.page?.id) &&
           latestValidPage !== null
         ) {
           closedStuff.current = [
             ...closedStuff.current,
-            latestValidPage?.pageId,
+            latestValidPage?.page?.id,
           ];
 
           router.push({

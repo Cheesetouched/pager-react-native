@@ -97,6 +97,32 @@ export default function usePushNotification() {
     [Users, send],
   );
 
+  const pageLaterOptions = useCallback(
+    async ({ accepterUid, senderUid, picked }) => {
+      const [accepter, sender] = await Promise.all([
+        Users.get(accepterUid),
+        Users.get(senderUid),
+      ]);
+
+      if (valid(sender?.pushToken)) {
+        let body = "";
+
+        if (picked === 1) {
+          body = `${accepter?.name?.split(" ")[0]} is free in 15 mins`;
+        } else if (picked === 2) {
+          body = `${accepter?.name?.split(" ")[0]} is free in 1 hr`;
+        } else if (picked === 3) {
+          body = `${accepter?.name?.split(" ")[0]} is free tomorrow`;
+        } else {
+          body = `${accepter?.name?.split(" ")[0]} is free later`;
+        }
+
+        send(sender?.pushToken, { body });
+      }
+    },
+    [Users, send],
+  );
+
   const pageUser = useCallback(
     async (pagerUid, pageeUid) => {
       const [pager, pagee] = await Promise.all([
@@ -168,6 +194,7 @@ export default function usePushNotification() {
       notifyUsers,
       pageAccepted,
       pageLater,
+      pageLaterOptions,
       pageUser,
       requestAccepted,
       requestSent,
@@ -179,6 +206,7 @@ export default function usePushNotification() {
       notifyUsers,
       pageAccepted,
       pageLater,
+      pageLaterOptions,
       pageUser,
       requestAccepted,
       requestSent,

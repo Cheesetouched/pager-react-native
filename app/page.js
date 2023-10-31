@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
-import { addHours, roundToNearestMinutes } from "date-fns";
 import { router, useLocalSearchParams } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { addHours, addMinutes, roundToNearestMinutes } from "date-fns";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import tw from "@utils/tailwind";
@@ -16,41 +16,44 @@ import useMixpanel from "@hooks/useMixpanel";
 import OutlineButton from "@components/OutlineButton";
 import usePageResponse from "@hooks/mutations/usePageResponse";
 
-const current = new Date();
-const maximumDate = addHours(current, 12);
-
-const defaultDate = roundToNearestMinutes(addHours(current, 1), {
-  nearestTo: 15,
-  roundingMethod: "floor",
-});
-
-const minimumDate = roundToNearestMinutes(current, {
-  nearestTo: 15,
-  roundingMethod: "ceil",
-});
-
 export default function Page() {
+  const current = new Date();
+  const maximumDate = addHours(current, 12);
+
+  const defaultDate = roundToNearestMinutes(addHours(current, 1), {
+    nearestTo: 15,
+    roundingMethod: "floor",
+  });
+
+  const minimumDate = roundToNearestMinutes(current, {
+    nearestTo: 15,
+    roundingMethod: "ceil",
+  });
+
   const { userData } = useUser();
   const mixpanel = useMixpanel();
   const { respond } = usePageResponse();
+  const [freeIn, setFreeIn] = useState(1);
   const [response, setResponse] = useState(null);
-  const { from, pageId } = useLocalSearchParams();
+  const { from, page } = useLocalSearchParams();
   const [freeAt, setFreeAt] = useState(defaultDate);
-  const parsed = JSON.parse(from);
+  const [laterMode, setLaterMode] = useState("picker");
+  const fromData = JSON.parse(from);
+  const pageData = JSON.parse(page);
 
   function handleChange(_, date) {
     setFreeAt(date);
   }
 
   return (
-    <BlurView intensity={75} style={tw`flex flex-1`} tint="dark">
+    <BlurView intensity={100} style={tw`flex flex-1`} tint="dark">
       <SafeAreaProvider>
         <SafeAreaView style={tw`flex flex-1 px-8`}>
           {response === null ? (
-            <View style={tw`flex-1 justify-center`}>
+            <View style={tw`flex-1 justify-center px-7`}>
               <View style={tw`items-center relative`}>
                 <User
-                  data={parsed}
+                  data={fromData}
                   dimension="100"
                   free
                   titleContainerStyle="h-[28px]"
@@ -62,20 +65,38 @@ export default function Page() {
               </View>
 
               <Text
-                style={tw.style(`text-white text-xl mt-5 self-center`, {
+                style={tw.style(`text-white text-xl mt-7 self-center`, {
                   fontFamily: "Cabin_400Regular",
                 })}
-              >{`${parsed?.name?.split(" ")[0]} paged you`}</Text>
+              >{`${fromData?.name?.split(" ")[0]} paged you`}</Text>
+
+              {pageData?.note ? (
+                <View style={tw`bg-black/40 rounded-2xl my-5`}>
+                  <Text
+                    style={tw.style(
+                      `text-white text-center text-sm self-center px-6 py-4`,
+                      {
+                        fontFamily: "Cabin_400Regular",
+                      },
+                    )}
+                  >
+                    {pageData?.note}
+                  </Text>
+                </View>
+              ) : null}
 
               <Text
-                style={tw.style(`text-gray-2 text-sm mt-1 self-center`, {
-                  fontFamily: "Cabin_400Regular",
-                })}
+                style={tw.style(
+                  `text-gray-2 text-sm self-center ${
+                    pageData?.note ? "mt-0" : "mt-1"
+                  }`,
+                  { fontFamily: "Cabin_400Regular" },
+                )}
               >
                 Are you free to chat right now?
               </Text>
 
-              <View style={tw`gap-y-5 mt-10 px-7`}>
+              <View style={tw`gap-y-5 ${pageData?.note ? "mt-5" : "mt-10"}`}>
                 <Button
                   onPress={() => {
                     setResponse("free");
@@ -83,14 +104,14 @@ export default function Page() {
 
                     respond({
                       accepterUid: userData?.id,
-                      pageId,
+                      pageId: pageData?.id,
                       response: {
                         response: {
                           free: true,
                           freeTill: addHours(new Date(), 1),
                         },
                       },
-                      senderUid: parsed?.id,
+                      senderUid: fromData?.id,
                     });
                   }}
                   textStyle="text-sm"
@@ -118,13 +139,13 @@ export default function Page() {
 
                       respond({
                         accepterUid: userData?.id,
-                        pageId,
+                        pageId: pageData?.id,
                         response: {
                           response: {
                             free: false,
                           },
                         },
-                        senderUid: parsed?.id,
+                        senderUid: fromData?.id,
                       });
                     }}
                     style="flex-1"
@@ -149,13 +170,13 @@ export default function Page() {
                 )}
               >
                 {`Alright! We told ${
-                  parsed?.name?.split(" ")[0]
+                  fromData?.name?.split(" ")[0]
                 } you're free 🎉`}
               </Text>
 
               <View style={tw`flex-row mt-10`}>
                 <User
-                  data={parsed}
+                  data={fromData}
                   dimension="100"
                   free
                   nameStyle="text-white"
@@ -195,7 +216,7 @@ export default function Page() {
           {response === "ignore" ? (
             <View style={tw`flex-1 items-center justify-center`}>
               <User
-                data={parsed}
+                data={fromData}
                 dimension="100"
                 disabled
                 free
@@ -229,7 +250,13 @@ export default function Page() {
           {response === "promptLater" ? (
             <View style={tw`flex-1`}>
               <TouchableOpacity
-                onPress={() => setResponse(null)}
+                onPress={() => {
+                  if (laterMode === "custom") {
+                    setLaterMode("picker");
+                  } else {
+                    setResponse(null);
+                  }
+                }}
                 style={tw` flex flex-row items-center gap-x-2 top-4 z-10`}
               >
                 <BackIcon />
@@ -245,7 +272,7 @@ export default function Page() {
 
               <View style={tw`flex-1 justify-center`}>
                 <User
-                  data={parsed}
+                  data={fromData}
                   dimension="100"
                   free
                   nameStyle="text-white"
@@ -274,41 +301,123 @@ export default function Page() {
                   We’ll send them a notification with the time you pick.
                 </Text>
 
-                <DateTimePicker
-                  display="spinner"
-                  mode="time"
-                  minuteInterval={15}
-                  maximumDate={maximumDate}
-                  minimumDate={minimumDate}
-                  onChange={handleChange}
-                  style={tw`my-5`}
-                  value={freeAt}
-                />
+                {laterMode === "picker" ? (
+                  <View style={tw`gap-y-3 my-10`}>
+                    <View style={tw`flex-row gap-x-3`}>
+                      <BlackButton
+                        onPress={() => setFreeIn(1)}
+                        selected={freeIn === 1}
+                      >
+                        Free in 15 mins
+                      </BlackButton>
 
-                <Button
-                  onPress={() => {
-                    setResponse("later");
-                    mixpanel.track("chose_a_time");
+                      <BlackButton
+                        onPress={() => setFreeIn(2)}
+                        selected={freeIn === 2}
+                      >
+                        Free in 1 hr
+                      </BlackButton>
+                    </View>
 
-                    respond({
-                      accepterUid: userData?.id,
-                      pageId,
-                      response: {
+                    <View style={tw`flex-row gap-x-3`}>
+                      <BlackButton
+                        onPress={() => setFreeIn(3)}
+                        selected={freeIn === 3}
+                      >
+                        Tomorrow
+                      </BlackButton>
+
+                      <GrayButton onPress={() => setLaterMode("custom")}>
+                        Set custom
+                      </GrayButton>
+                    </View>
+                  </View>
+                ) : null}
+
+                {laterMode === "custom" ? (
+                  <DateTimePicker
+                    display="spinner"
+                    mode="time"
+                    minuteInterval={15}
+                    maximumDate={maximumDate}
+                    minimumDate={minimumDate}
+                    onChange={handleChange}
+                    style={tw`my-5`}
+                    value={freeAt}
+                  />
+                ) : null}
+
+                {laterMode === "picker" ? (
+                  <Button
+                    onPress={() => {
+                      let freeFromTime = null;
+                      let freeTillTime = null;
+
+                      setResponse("later");
+                      mixpanel.track("picked_a_time");
+
+                      if (freeIn === 1) {
+                        freeFromTime = addMinutes(current, 15);
+                        freeTillTime = addHours(freeFromTime, 1);
+                        setFreeAt(freeFromTime);
+                      } else if (freeIn === 2) {
+                        freeFromTime = addHours(current, 1);
+                        freeTillTime = addHours(freeFromTime, 1);
+                        setFreeAt(freeFromTime);
+                      } else if (freeIn === 3) {
+                        freeFromTime = addHours(current, 24);
+                        freeTillTime = addHours(freeFromTime, 1);
+                        setFreeAt(freeFromTime);
+                      }
+
+                      respond({
+                        accepterUid: userData?.id,
+                        pageId: pageData?.id,
+                        picked: freeIn,
                         response: {
-                          free: false,
-                          freeFrom: freeAt,
-                          freeTill: addHours(freeAt, 1),
+                          response: {
+                            free: false,
+                            freeFrom: freeFromTime,
+                            freeTill: freeTillTime,
+                          },
                         },
-                      },
-                      senderUid: parsed?.id,
-                    });
-                  }}
-                  style="w-full"
-                  textStyle="text-sm"
-                  variant="dark"
-                >
-                  LET THEM KNOW
-                </Button>
+                        senderUid: fromData?.id,
+                      });
+                    }}
+                    style="w-full"
+                    textStyle="text-sm"
+                    variant="dark"
+                  >
+                    LET THEM KNOW
+                  </Button>
+                ) : null}
+
+                {laterMode === "custom" ? (
+                  <Button
+                    onPress={() => {
+                      setResponse("later");
+                      mixpanel.track("chose_a_time");
+
+                      respond({
+                        accepterUid: userData?.id,
+                        pageId: pageData?.id,
+                        response: {
+                          response: {
+                            free: false,
+                            freeFrom: freeAt,
+                            freeTill: addHours(freeAt, 1),
+                          },
+                        },
+                        senderUid: fromData?.id,
+                      });
+                    }}
+                    style="w-full"
+                    textStyle="text-sm"
+                    variant="dark"
+                  >
+                    LET THEM KNOW
+                  </Button>
+                ) : null}
               </View>
             </View>
           ) : null}
@@ -324,13 +433,13 @@ export default function Page() {
                 )}
               >
                 {`Okay! We’ll let ${
-                  parsed?.name?.split(" ")[0]
+                  fromData?.name?.split(" ")[0]
                 } know when you’re likely to be free.`}
               </Text>
 
               <View style={tw`flex-row mt-10`}>
                 <User
-                  data={parsed}
+                  data={fromData}
                   dimension="100"
                   free
                   nameStyle="text-white"
@@ -353,17 +462,33 @@ export default function Page() {
                     titleStyle="text-xs leading-relaxed"
                   />
 
-                  <Text
-                    style={tw.style(`text-gray-4 text-xs mt-1`, {
-                      fontFamily: "Cabin_400Regular",
-                    })}
-                  >
-                    Free at{" "}
-                    {freeAt?.toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </Text>
+                  {laterMode === "picker" ? (
+                    <Text
+                      style={tw.style(`text-gray-4 text-xs mt-1`, {
+                        fontFamily: "Cabin_400Regular",
+                      })}
+                    >
+                      {freeIn === 1
+                        ? "Free in 15 mins"
+                        : freeIn === 2
+                        ? "Free in 1 hr"
+                        : freeIn === 3
+                        ? "Free tomorrow"
+                        : null}
+                    </Text>
+                  ) : (
+                    <Text
+                      style={tw.style(`text-gray-4 text-xs mt-1`, {
+                        fontFamily: "Cabin_400Regular",
+                      })}
+                    >
+                      Free at{" "}
+                      {freeAt?.toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </Text>
+                  )}
                 </View>
               </View>
 
@@ -381,5 +506,45 @@ export default function Page() {
         </SafeAreaView>
       </SafeAreaProvider>
     </BlurView>
+  );
+}
+
+function BlackButton({ children, onPress, selected = false }) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={tw.style(
+        `h-[45px] bg-black/40 justify-center items-center rounded-2xl flex-1 border-white`,
+        selected ? "border" : "border-0",
+      )}
+    >
+      <Text
+        style={tw.style(`text-white`, {
+          fontFamily: "Cabin_400Regular",
+        })}
+      >
+        {children}
+      </Text>
+    </TouchableOpacity>
+  );
+}
+
+function GrayButton({ children, onPress, selected = false }) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={tw.style(
+        `h-[45px] bg-gray-3 justify-center items-center rounded-2xl flex-1 border-white`,
+        selected ? "border" : "border-0",
+      )}
+    >
+      <Text
+        style={tw.style(`text-gray-4`, {
+          fontFamily: "Cabin_400Regular",
+        })}
+      >
+        {children}
+      </Text>
+    </TouchableOpacity>
   );
 }
