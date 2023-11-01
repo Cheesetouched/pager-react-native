@@ -54,13 +54,13 @@ export default function Home() {
   const closedStuff = useRef([]);
   const statusSheetRef = useRef();
   const [all, setAll] = useState();
-  const [away, setAway] = useState();
   const [free, setFree] = useState();
   const friendListRef = useRef(null);
   const queryClient = useQueryClient();
   const { requests } = useGetRequests();
   const params = useLocalSearchParams();
   const localStorage = useLocalStorage();
+  const [freeLater, setFreeLater] = useState();
   const { notifyUsers } = usePushNotification();
   const { userData, refetchingUser } = useUser();
   const { pages, refetchingPages } = useGetPages();
@@ -125,8 +125,8 @@ export default function Home() {
   useEffect(() => {
     async function coreLogic() {
       if (friends && pages && !refetchingFriends && !refetchingPages) {
-        const away = [];
         const free = [];
+        const freeLater = [];
         let openContact = null;
         let latestValidPage = null;
 
@@ -209,24 +209,26 @@ export default function Home() {
           if (isFree) {
             free.push(user);
           } else {
-            away.push(user);
+            if (extras?.freeFrom) {
+              freeLater.push(user);
+            }
           }
         });
 
         // Creating a combined list
-        setAll([...away, ...free]);
+        setAll([...freeLater, ...free]);
 
         // Passing an extra value to keep the 3x3 grid in shape
-        if (away?.length % 3 === 1) {
-          away.push(null);
+        if (freeLater?.length % 3 === 2) {
+          freeLater.push(null);
         }
 
         if (free?.length % 3 === 2) {
           free.push(null);
         }
 
-        setAway(away);
         setFree(free);
+        setFreeLater(freeLater);
 
         // Opening page response sheet if a valid page is found
         if (
@@ -244,7 +246,7 @@ export default function Home() {
           });
         }
 
-        // Opening contact sheet if a user is free to sheet
+        // Opening contact sheet if a user is free to chat
         if (
           !closedStuff.current.includes(openContact?.id) &&
           openContact !== null
@@ -298,16 +300,20 @@ export default function Home() {
           onSearch={() => router.push("/friends")}
         />
 
-        {away !== undefined && friends?.length > 0 ? (
+        {freeLater !== undefined && friends?.length > 0 ? (
           <View style={tw`flex flex-1`}>
             <FlatList
               ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
               ListHeaderComponent={
-                <FreeFriends away={away} free={free} mixpanel={mixpanel} />
+                <FreeFriends
+                  freeLater={freeLater}
+                  free={free}
+                  mixpanel={mixpanel}
+                />
               }
               columnWrapperStyle={tw`justify-between`}
               contentContainerStyle={tw`pt-6 pb-10`}
-              data={["invite", ...away]}
+              data={freeLater}
               estimatedItemSize={114}
               numColumns={3}
               refreshControl={
@@ -324,29 +330,24 @@ export default function Home() {
               }
               renderItem={({ item }) => {
                 if (item !== null) {
-                  if (item === "invite") {
-                    return (
-                      <InviteUser onPress={() => router.push("/friends")} />
-                    );
-                  } else {
-                    return (
-                      <User
-                        data={item}
-                        free={item?.free}
-                        onPress={() => {
-                          mixpanel.track("tapped_user");
+                  return (
+                    <User
+                      data={item}
+                      free={item?.free}
+                      indicator={false}
+                      onPress={() => {
+                        mixpanel.track("tapped_user");
 
-                          router.push({
-                            pathname: "/contact",
-                            params: { data: JSON.stringify(item) },
-                          });
-                        }}
-                        paged={item?.paged}
-                      />
-                    );
-                  }
+                        router.push({
+                          pathname: "/contact",
+                          params: { data: JSON.stringify(item) },
+                        });
+                      }}
+                      paged={item?.paged}
+                    />
+                  );
                 } else {
-                  return <View style={tw`w-[92px]`} />;
+                  return <View style={tw`w-[80px]`} />;
                 }
               }}
               showsVerticalScrollIndicator={false}
@@ -458,13 +459,13 @@ export default function Home() {
   );
 }
 
-const FreeFriends = memo(({ away, free, mixpanel }) => {
+const FreeFriends = memo(({ freeLater, free, mixpanel }) => {
   return (
     <View>
       {free?.length > 0 ? (
         <>
           <Text
-            style={tw.style(`text-lg text-white leading-snug mb-6`, {
+            style={tw.style(`text-lg text-white leading-snug mb-5`, {
               fontFamily: "Cabin_700Bold",
             })}
           >
@@ -473,7 +474,7 @@ const FreeFriends = memo(({ away, free, mixpanel }) => {
 
           <FlatList
             ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-            style={tw`mb-8`}
+            style={tw`mb-10`}
             columnWrapperStyle={tw`justify-between`}
             data={free}
             estimatedItemSize={114}
@@ -484,6 +485,7 @@ const FreeFriends = memo(({ away, free, mixpanel }) => {
                   <User
                     data={item}
                     free={item?.free}
+                    indicator={false}
                     onPress={() => {
                       mixpanel.track("tapped_user");
 
@@ -495,20 +497,20 @@ const FreeFriends = memo(({ away, free, mixpanel }) => {
                   />
                 );
               } else {
-                return <View style={tw`w-[92px]`} />;
+                return <View style={tw`w-[80px]`} />;
               }
             }}
           />
         </>
       ) : null}
 
-      {away?.length > 0 ? (
+      {freeLater?.length > 0 ? (
         <Text
-          style={tw.style(`text-lg text-white leading-snug mb-6`, {
+          style={tw.style(`text-lg text-white leading-snug mb-5`, {
             fontFamily: "Cabin_700Bold",
           })}
         >
-          Away 💤
+          Free Later 🕒
         </Text>
       ) : null}
     </View>

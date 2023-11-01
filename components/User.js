@@ -24,8 +24,9 @@ function getBorderStyle(disabled, free, freeFrom, paged) {
 
 export default function User({
   data,
-  dimension = "92",
+  dimension = "80",
   disabled = false,
+  indicator = true,
   free = false,
   freeTextStyle,
   nameOverride = null,
@@ -58,31 +59,33 @@ export default function User({
           />
         </View>
 
-        <View
-          style={tw.style(
-            `absolute bg-gray-5 h-[25px] px-3 self-center bottom-[-10px] rounded-full items-center justify-center`,
-            titleContainerStyle,
-          )}
-        >
-          <Text
-            style={tw.style(`text-white text-xs leading-loose`, titleStyle, {
-              fontFamily: "Cabin_700Bold",
-            })}
+        {indicator ? (
+          <View
+            style={tw.style(
+              `absolute bg-gray-5 h-[25px] px-3 self-center bottom-[-10px] rounded-full items-center justify-center`,
+              titleContainerStyle,
+            )}
           >
-            {title
-              ? title
-              : free
-              ? freeFor(data?.freeTill)
-              : data?.freeFrom
-              ? "🕒"
-              : "😴"}
-          </Text>
-        </View>
+            <Text
+              style={tw.style(`text-white text-xs leading-loose`, titleStyle, {
+                fontFamily: "Cabin_700Bold",
+              })}
+            >
+              {title
+                ? title
+                : free
+                ? freeFor(data?.freeTill)
+                : data?.freeFrom
+                ? "🕒"
+                : "😴"}
+            </Text>
+          </View>
+        ) : null}
       </TouchableOpacity>
 
       {showName ? (
         <Text
-          style={tw.style(`text-gray-4 text-sm text-center mt-5`, nameStyle, {
+          style={tw.style(`text-white text-base text-center mt-3`, nameStyle, {
             fontFamily: "Cabin_600SemiBold",
           })}
         >
@@ -92,7 +95,7 @@ export default function User({
 
       {data?.freeFrom ? (
         <Text
-          style={tw.style(`text-gray-4 text-xs`, freeTextStyle, {
+          style={tw.style(`text-gray-4 text-xs mt-1`, freeTextStyle, {
             fontFamily: "Cabin_400Regular",
           })}
         >
