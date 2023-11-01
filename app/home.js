@@ -114,6 +114,7 @@ export default function Home() {
   useEffect(() => {
     async function coreLogic() {
       if (friends && pages && !refetchingFriends && !refetchingPages) {
+        const all = [];
         const free = [];
         const freeLater = [];
         let openContact = null;
@@ -202,10 +203,9 @@ export default function Home() {
               freeLater.push(user);
             }
           }
-        });
 
-        // Creating a combined list
-        setAll([...freeLater, ...free]);
+          all.push(user);
+        });
 
         // Passing an extra value to keep the 3x3 grid in shape
         if (freeLater?.length % 3 === 2) {
@@ -216,6 +216,7 @@ export default function Home() {
           free.push(null);
         }
 
+        setAll(all);
         setFree(free);
         setFreeLater(freeLater);
 
@@ -359,6 +360,7 @@ export default function Home() {
               />
             }
             style={tw`flex flex-1`}
+            showsVerticalScrollIndicator={false}
           >
             <Text
               style={tw.style(`text-text-2 text-lg pt-6`, {
@@ -378,7 +380,21 @@ export default function Home() {
         {free?.length > 0 || freeLater?.length > 0 ? (
           <Pager onPress={() => friendListRef.current.show()} />
         ) : (
-          <PagerFullView onPress={() => friendListRef.current.show()} />
+          <PagerFullView
+            onPress={() => friendListRef.current.show()}
+            refreshControl={
+              <RefreshControl
+                refreshing={
+                  refetchingFriends || refetchingPages || refetchingUser
+                }
+                onRefresh={() => {
+                  queryClient.invalidateQueries(["friends"]);
+                  queryClient.invalidateQueries(["user", userData?.id]);
+                  queryClient.invalidateQueries(["pages", userData?.id]);
+                }}
+              />
+            }
+          />
         )}
       </View>
 
@@ -528,11 +544,12 @@ function Pager({ onPress }) {
   );
 }
 
-function PagerFullView({ onPress, onRefresh }) {
+function PagerFullView({ onPress, refreshControl }) {
   return (
     <ScrollView
-      contentContainerStyle={tw`flex-1 justify-center items-center pt-2 mb-4`}
-      refreshControl={onRefresh}
+      contentContainerStyle={tw`flex-1 justify-center items-center`}
+      refreshControl={refreshControl}
+      showsVerticalScrollIndicator={false}
     >
       <Text
         style={tw.style(`text-gray-2 text-xl`, {
