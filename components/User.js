@@ -34,6 +34,7 @@ export default function User({
   overrideFree = false,
   onPress,
   showName = true,
+  showMetadata = true,
   paged = false,
   title,
   titleContainerStyle,
@@ -93,7 +94,7 @@ export default function User({
         </Text>
       ) : null}
 
-      {data?.freeFrom ? (
+      {showMetadata && data?.freeFrom ? (
         <Text
           style={tw.style(`text-gray-4 text-xs mt-1`, freeTextStyle, {
             fontFamily: "Cabin_400Regular",

@@ -85,14 +85,14 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
           style={tw`flex-1 rounded-t-3xl overflow-hidden px-6`}
           tint="dark"
         >
-          <View style={tw`bg-text-2 h-1 w-20 self-center my-6 rounded-full`} />
+          <View style={tw`bg-text-2 h-1 w-24 self-center my-5 rounded-full`} />
 
           <Text
             style={tw.style(`text-white text-center text-lg leading-none`, {
               fontFamily: "Cabin_600SemiBold",
             })}
           >
-            Notify Friends
+            Page Friends
           </Text>
 
           <InviteCard style="mt-4" />
@@ -155,19 +155,9 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
                 keyboardVisible ? "mb-2" : "mb-10"
               }`}
             >
-              Let them know
+              Ask if they're free
             </Button>
-          ) : (
-            <Button
-              onPress={() => localRef?.current?.close()}
-              style={`h-[45px] self-center w-full ${
-                keyboardVisible ? "mb-2" : "mb-10"
-              }`}
-              variant="dark"
-            >
-              Skip
-            </Button>
-          )}
+          ) : null}
         </BlurView>
       </SafeView>
     </BottomSheetModal>
@@ -204,7 +194,7 @@ function Everyone({ friends, setSelected, selected }) {
           },
         )}
       >
-        Notify All
+        Page All
       </Text>
 
       <Checkbox

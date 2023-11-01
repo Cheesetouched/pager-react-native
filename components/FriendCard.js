@@ -17,6 +17,7 @@ export default function FriendCard({ checked, data, onCheck }) {
         free={free}
         paged={data?.paged}
         showName={false}
+        showMetadata={false}
         title={free ? "👋🏻" : "😴"}
         titleContainerStyle="bg-transparent"
       />

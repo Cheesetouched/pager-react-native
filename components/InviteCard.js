@@ -31,7 +31,7 @@ export default function InviteCard({ style, titleStyle, subtitleStyle }) {
             fontFamily: "Cabin_600SemiBold",
           })}
         >
-          Share your pager link
+          Invite friends on Pager
         </Text>
 
         <Text

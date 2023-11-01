@@ -10,14 +10,16 @@ import {
 } from "react-native";
 
 import { isAfter } from "date-fns";
+import { Image } from "expo-image";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "@tanstack/react-query";
 import { SplashScreen, router, useLocalSearchParams } from "expo-router";
 
 import tw from "@utils/tailwind";
 import User from "@components/User";
+import Logo from "@assets/logo.png";
 import useUser from "@hooks/useUser";
-import Button from "@components/Button";
+import { isValid } from "@utils/helpers";
 import SafeView from "@components/SafeView";
 import useMixpanel from "@hooks/useMixpanel";
 import BadgeIcon from "@components/BadgeIcon";
@@ -25,7 +27,6 @@ import FriendList from "@components/FriendList";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
 import StatusSheet from "@components/StatusSheet";
-import { freeFor, isValid } from "@utils/helpers";
 import MessageIcon from "@assets/svgs/MessageIcon";
 import FriendsIcon from "@assets/svgs/FriendsIcon";
 import useLocalStorage from "@hooks/useLocalStorage";
@@ -35,18 +36,6 @@ import useGetFriends from "@hooks/queries/useGetFriends";
 import useGetRequests from "@hooks/queries/useGetRequests";
 import usePushNotification from "@hooks/usePushNotification";
 import useGetDetailedPages from "@hooks/queries/useGetDetailedPages";
-
-function isMarkedFree(freeTill) {
-  if (!freeTill) {
-    return false;
-  }
-
-  if (isValid(freeTill)) {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 export default function Home() {
   const noFriendsRef = useRef();
@@ -280,7 +269,7 @@ export default function Home() {
     }
   }, [all, lastNotif, queryClient, userData, refetchingPages]);
 
-  if (!userData || !friends || !pages) {
+  if (!userData || !friends || !pages || !free || !freeLater) {
     return (
       <SafeView>
         <View style={tw`flex flex-1 items-center justify-center`}>
@@ -300,59 +289,61 @@ export default function Home() {
           onSearch={() => router.push("/friends")}
         />
 
-        {freeLater !== undefined && friends?.length > 0 ? (
-          <View style={tw`flex flex-1`}>
-            <FlatList
-              ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-              ListHeaderComponent={
-                <FreeFriends
-                  freeLater={freeLater}
-                  free={free}
-                  mixpanel={mixpanel}
-                />
-              }
-              columnWrapperStyle={tw`justify-between`}
-              contentContainerStyle={tw`pt-6 pb-10`}
-              data={freeLater}
-              estimatedItemSize={114}
-              numColumns={3}
-              refreshControl={
-                <RefreshControl
-                  refreshing={
-                    refetchingFriends || refetchingPages || refetchingUser
-                  }
-                  onRefresh={() => {
-                    queryClient.invalidateQueries(["friends"]);
-                    queryClient.invalidateQueries(["user", userData?.id]);
-                    queryClient.invalidateQueries(["pages", userData?.id]);
-                  }}
-                />
-              }
-              renderItem={({ item }) => {
-                if (item !== null) {
-                  return (
-                    <User
-                      data={item}
-                      free={item?.free}
-                      indicator={false}
-                      onPress={() => {
-                        mixpanel.track("tapped_user");
-
-                        router.push({
-                          pathname: "/contact",
-                          params: { data: JSON.stringify(item) },
-                        });
-                      }}
-                      paged={item?.paged}
-                    />
-                  );
-                } else {
-                  return <View style={tw`w-[80px]`} />;
+        {friends?.length >= 3 ? (
+          free?.length > 0 || freeLater?.length > 0 ? (
+            <View style={tw`flex flex-1`}>
+              <FlatList
+                ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
+                ListHeaderComponent={
+                  <FreeFriends
+                    freeLater={freeLater}
+                    free={free}
+                    mixpanel={mixpanel}
+                  />
                 }
-              }}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
+                columnWrapperStyle={tw`justify-between`}
+                contentContainerStyle={tw`pt-6 pb-10`}
+                data={freeLater}
+                estimatedItemSize={114}
+                numColumns={3}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={
+                      refetchingFriends || refetchingPages || refetchingUser
+                    }
+                    onRefresh={() => {
+                      queryClient.invalidateQueries(["friends"]);
+                      queryClient.invalidateQueries(["user", userData?.id]);
+                      queryClient.invalidateQueries(["pages", userData?.id]);
+                    }}
+                  />
+                }
+                renderItem={({ item }) => {
+                  if (item !== null) {
+                    return (
+                      <User
+                        data={item}
+                        free={item?.free}
+                        indicator={false}
+                        onPress={() => {
+                          mixpanel.track("tapped_user");
+
+                          router.push({
+                            pathname: "/contact",
+                            params: { data: JSON.stringify(item) },
+                          });
+                        }}
+                        paged={item?.paged}
+                      />
+                    );
+                  } else {
+                    return <View style={tw`w-[80px]`} />;
+                  }
+                }}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+          ) : null
         ) : (
           <ScrollView
             refreshControl={
@@ -383,56 +374,13 @@ export default function Home() {
             />
           </ScrollView>
         )}
-      </View>
 
-      {friends?.length > 0 && isMarkedFree(userData?.markedFreeTill) ? (
-        <View style={tw`gap-y-1 pb-8`}>
-          <Text
-            style={tw.style(`text-white text-sm text-center pt-2`, {
-              fontFamily: "Cabin_400Regular",
-            })}
-          >
-            You're now marked free for
-          </Text>
-
-          <Text
-            style={tw.style(`text-text-1 text-base text-center`, {
-              fontFamily: "Cabin_700Bold",
-            })}
-          >
-            {freeFor(userData?.markedFreeTill, "long")}
-          </Text>
-        </View>
-      ) : null}
-
-      {friends?.length > 0 ? (
-        isMarkedFree(userData?.markedFreeTill) ? (
-          <Button
-            onPress={() => statusSheetRef?.current?.show()}
-            style="absolute h-[50px] w-[50px] bottom-16 right-6"
-            textStyle="text-xl leading-0"
-          >
-            👋🏻
-          </Button>
+        {free?.length > 0 || freeLater?.length > 0 ? (
+          <Pager onPress={() => friendListRef.current.show()} />
         ) : (
-          <Button
-            onPress={async () => {
-              const statusContext = await localStorage.get("status_context");
-
-              if (statusContext === "seen") {
-                statusSheetRef?.current?.show();
-              } else {
-                router.push("status_context");
-              }
-            }}
-            style="absolute h-[50px] w-[50px] bottom-16 right-6"
-            textStyle="text-xl leading-0"
-            variant="dark"
-          >
-            😴
-          </Button>
-        )
-      ) : null}
+          <PagerFullView onPress={() => friendListRef.current.show()} />
+        )}
+      </View>
 
       {all !== undefined ? (
         <FriendList
@@ -469,7 +417,7 @@ const FreeFriends = memo(({ freeLater, free, mixpanel }) => {
               fontFamily: "Cabin_700Bold",
             })}
           >
-            Free to Chat 👋🏻
+            Free to chat 👋🏻
           </Text>
 
           <FlatList
@@ -510,7 +458,7 @@ const FreeFriends = memo(({ freeLater, free, mixpanel }) => {
             fontFamily: "Cabin_700Bold",
           })}
         >
-          Free Later 🕒
+          Free later 🕒
         </Text>
       ) : null}
     </View>
@@ -548,5 +496,66 @@ function Header({ badges, onFriends, onPages, onSearch }) {
         </TouchableOpacity>
       </View>
     </View>
+  );
+}
+
+function Pager({ onPress }) {
+  return (
+    <View style={tw`justify-center items-center pt-2 mb-4`}>
+      <Text
+        style={tw.style(`text-gray-2 text-xl`, {
+          fontFamily: "Lalezar_400Regular",
+        })}
+      >
+        Tap the pager button to
+      </Text>
+
+      <Text
+        style={tw.style(`text-gray-2 text-xl`, {
+          fontFamily: "Lalezar_400Regular",
+        })}
+      >
+        ping someone
+      </Text>
+
+      <TouchableOpacity
+        onPress={onPress}
+        style={tw`border border-gray-4 mt-5 rounded-full p-[6px] border-dashed shadow-xl shadow-black bg-bg`}
+      >
+        <Image source={Logo} style={tw`h-[65px] w-[65px]`} />
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function PagerFullView({ onPress, onRefresh }) {
+  return (
+    <ScrollView
+      contentContainerStyle={tw`flex-1 justify-center items-center pt-2 mb-4`}
+      refreshControl={onRefresh}
+    >
+      <Text
+        style={tw.style(`text-gray-2 text-xl`, {
+          fontFamily: "Lalezar_400Regular",
+        })}
+      >
+        Tap the pager button to
+      </Text>
+
+      <Text
+        style={tw.style(`text-gray-2 text-xl`, {
+          fontFamily: "Lalezar_400Regular",
+        })}
+      >
+        ping someone
+      </Text>
+
+      <TouchableOpacity
+        onPress={onPress}
+        style={tw`border border-gray-4 mt-5 rounded-full p-[6px] border-dashed shadow-xl shadow-black bg-bg`}
+      >
+        <Image source={Logo} style={tw`h-[65px] w-[65px]`} />
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
