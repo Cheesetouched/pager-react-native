@@ -35,6 +35,7 @@ import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
 import useGetRequests from "@hooks/queries/useGetRequests";
 import usePushNotification from "@hooks/usePushNotification";
+import useGetInviteCount from "@hooks/queries/useGetInviteCount";
 import useGetDetailedPages from "@hooks/queries/useGetDetailedPages";
 
 export default function Home() {
@@ -49,6 +50,7 @@ export default function Home() {
   const { requests } = useGetRequests();
   const params = useLocalSearchParams();
   const localStorage = useLocalStorage();
+  const { invites } = useGetInviteCount();
   const [freeLater, setFreeLater] = useState();
   const { notifyUsers } = usePushNotification();
   const { userData, refetchingUser } = useUser();
@@ -270,7 +272,14 @@ export default function Home() {
     }
   }, [all, lastNotif, queryClient, userData, refetchingPages]);
 
-  if (!userData || !friends || !pages || !free || !freeLater) {
+  if (
+    !userData ||
+    !friends ||
+    invites === undefined ||
+    !pages ||
+    !free ||
+    !freeLater
+  ) {
     return (
       <SafeView>
         <View style={tw`flex flex-1 items-center justify-center`}>
@@ -290,7 +299,7 @@ export default function Home() {
           onSearch={() => router.push("/friends")}
         />
 
-        {friends?.length >= 3 ? (
+        {invites >= 3 ? (
           free?.length > 0 || freeLater?.length > 0 ? (
             <View style={tw`flex flex-1`}>
               <FlatList
@@ -347,6 +356,7 @@ export default function Home() {
           ) : null
         ) : (
           <ScrollView
+            contentContainerStyle={tw`flex-1 items-center justify-center`}
             refreshControl={
               <RefreshControl
                 refreshing={
@@ -359,43 +369,62 @@ export default function Home() {
                 }}
               />
             }
-            style={tw`flex flex-1`}
             showsVerticalScrollIndicator={false}
           >
             <Text
-              style={tw.style(`text-text-2 text-lg pt-6`, {
-                fontFamily: "Cabin_700Bold",
+              style={tw.style(`text-gray-2 text-xl`, {
+                fontFamily: "Lalezar_400Regular",
               })}
             >
-              Pretty empty in here...
+              INVITE 3 FRIENDS TO
+            </Text>
+
+            <Text
+              style={tw.style(`text-gray-2 text-xl`, {
+                fontFamily: "Lalezar_400Regular",
+              })}
+            >
+              USE PAGER
             </Text>
 
             <InviteUser
               onPress={() => router.push("/friends")}
-              style={tw`mt-5`}
+              style={tw`mt-10`}
             />
+
+            <Text
+              style={tw.style(`text-gray-2 text-xl mt-10`, {
+                fontFamily: "Lalezar_400Regular",
+              })}
+            >
+              {invites}/3 invited
+            </Text>
           </ScrollView>
         )}
 
-        {free?.length > 0 || freeLater?.length > 0 ? (
-          <Pager onPress={() => friendListRef.current.show()} />
-        ) : (
-          <PagerFullView
-            onPress={() => friendListRef.current.show()}
-            refreshControl={
-              <RefreshControl
-                refreshing={
-                  refetchingFriends || refetchingPages || refetchingUser
+        {invites >= 3 ? (
+          <>
+            {free?.length > 0 || freeLater?.length > 0 ? (
+              <Pager onPress={() => friendListRef.current.show()} />
+            ) : (
+              <PagerFullView
+                onPress={() => friendListRef.current.show()}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={
+                      refetchingFriends || refetchingPages || refetchingUser
+                    }
+                    onRefresh={() => {
+                      queryClient.invalidateQueries(["friends"]);
+                      queryClient.invalidateQueries(["user", userData?.id]);
+                      queryClient.invalidateQueries(["pages", userData?.id]);
+                    }}
+                  />
                 }
-                onRefresh={() => {
-                  queryClient.invalidateQueries(["friends"]);
-                  queryClient.invalidateQueries(["user", userData?.id]);
-                  queryClient.invalidateQueries(["pages", userData?.id]);
-                }}
               />
-            }
-          />
-        )}
+            )}
+          </>
+        ) : null}
       </View>
 
       {all !== undefined ? (
