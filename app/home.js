@@ -299,7 +299,7 @@ export default function Home() {
           onSearch={() => router.push("/friends")}
         />
 
-        {invites >= 3 ? (
+        {invites >= 1 ? (
           free?.length > 0 || freeLater?.length > 0 ? (
             <View style={tw`flex flex-1`}>
               <FlatList
@@ -376,7 +376,7 @@ export default function Home() {
                 fontFamily: "Lalezar_400Regular",
               })}
             >
-              INVITE 3 FRIENDS TO
+              INVITE A FRIEND TO
             </Text>
 
             <Text
@@ -391,18 +391,10 @@ export default function Home() {
               onPress={() => router.push("/friends")}
               style={tw`mt-10`}
             />
-
-            <Text
-              style={tw.style(`text-gray-2 text-xl mt-10`, {
-                fontFamily: "Lalezar_400Regular",
-              })}
-            >
-              {invites}/3 invited
-            </Text>
           </ScrollView>
         )}
 
-        {invites >= 3 ? (
+        {invites >= 1 ? (
           <>
             {free?.length > 0 || freeLater?.length > 0 ? (
               <Pager onPress={() => friendListRef.current.show()} />
@@ -429,7 +421,7 @@ export default function Home() {
 
       {all !== undefined ? (
         <FriendList
-          friends={all}
+          friends={[]}
           onSelected={(friends) => {
             const pushTokens = friends?.map((friend) => friend?.pushToken);
 

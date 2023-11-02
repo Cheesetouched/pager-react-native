@@ -10,6 +10,7 @@ import {
 import { Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
+import { router } from "expo-router";
 import Checkbox from "expo-checkbox";
 import { AntDesign } from "@expo/vector-icons";
 import {
@@ -119,28 +120,54 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
             ) : null}
           </BlurView>
 
-          <BottomSheetFlatList
-            ItemSeparatorComponent={() => <View style={{ height: 25 }} />}
-            ListHeaderComponent={
-              <Everyone
-                friends={friends}
-                setSelected={setSelected}
-                selected={selected}
-              />
-            }
-            contentContainerStyle={tw`pb-10`}
-            data={allFriends}
-            keyboardShouldPersistTaps="handled"
-            renderItem={({ item }) => (
-              <FriendCard
-                checked={() => evaluateCheck(item)}
-                data={item}
-                onCheck={() => onCheck(item)}
-              />
-            )}
-            showsVerticalScrollIndicator={false}
-            style={tw`my-2 pt-4`}
-          />
+          {friends?.length > 0 ? (
+            <BottomSheetFlatList
+              ItemSeparatorComponent={() => <View style={{ height: 25 }} />}
+              ListHeaderComponent={
+                <Everyone
+                  friends={friends}
+                  setSelected={setSelected}
+                  selected={selected}
+                />
+              }
+              contentContainerStyle={tw`pb-10`}
+              data={allFriends}
+              keyboardShouldPersistTaps="handled"
+              renderItem={({ item }) => (
+                <FriendCard
+                  checked={() => evaluateCheck(item)}
+                  data={item}
+                  onCheck={() => onCheck(item)}
+                />
+              )}
+              showsVerticalScrollIndicator={false}
+              style={tw`my-2 pt-4`}
+            />
+          ) : (
+            <View style={tw`flex-1 justify-center gap-y-1`}>
+              <Text
+                style={tw.style(
+                  `text-gray-4 text-center text-lg leading-none`,
+                  {
+                    fontFamily: "Cabin_600SemiBold",
+                  },
+                )}
+              >
+                No one here yet
+              </Text>
+
+              <Text
+                style={tw.style(
+                  `text-gray-4 text-center text-lg leading-none`,
+                  {
+                    fontFamily: "Cabin_600SemiBold",
+                  },
+                )}
+              >
+                invite friends to start paging
+              </Text>
+            </View>
+          )}
 
           {selected?.length > 0 ? (
             <Button
@@ -156,6 +183,21 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
               }`}
             >
               Ask if they're free
+            </Button>
+          ) : null}
+
+          {friends?.length === 0 ? (
+            <Button
+              onPress={() => {
+                localRef?.current?.close();
+                router.push("/friends");
+              }}
+              style={`h-[45px] self-center w-full ${
+                keyboardVisible ? "mb-2" : "mb-10"
+              }`}
+              variant="dark"
+            >
+              Invite friends
             </Button>
           ) : null}
         </BlurView>
