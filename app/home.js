@@ -26,6 +26,7 @@ import BadgeIcon from "@components/BadgeIcon";
 import FriendList from "@components/FriendList";
 import InviteUser from "@components/InviteUser";
 import SearchIcon from "@assets/svgs/SearchIcon";
+import useCoreAction from "@hooks/useCoreAction";
 import StatusSheet from "@components/StatusSheet";
 import MessageIcon from "@assets/svgs/MessageIcon";
 import FriendsIcon from "@assets/svgs/FriendsIcon";
@@ -34,7 +35,6 @@ import useGetPages from "@hooks/queries/useGetPages";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
 import useGetRequests from "@hooks/queries/useGetRequests";
-import usePushNotification from "@hooks/usePushNotification";
 import useGetInviteCount from "@hooks/queries/useGetInviteCount";
 import useGetDetailedPages from "@hooks/queries/useGetDetailedPages";
 
@@ -43,6 +43,7 @@ export default function Home() {
   const mixpanel = useMixpanel();
   const closedStuff = useRef([]);
   const statusSheetRef = useRef();
+  const { page } = useCoreAction();
   const [all, setAll] = useState();
   const [free, setFree] = useState();
   const friendListRef = useRef(null);
@@ -52,7 +53,6 @@ export default function Home() {
   const localStorage = useLocalStorage();
   const { invites } = useGetInviteCount();
   const [freeLater, setFreeLater] = useState();
-  const { notifyUsers } = usePushNotification();
   const { userData, refetchingUser } = useUser();
   const { pages, refetchingPages } = useGetPages();
   const { pages: detailedPages } = useGetDetailedPages();
@@ -421,14 +421,17 @@ export default function Home() {
 
       {all !== undefined ? (
         <FriendList
-          friends={[]}
-          onSelected={(friends) => {
-            const pushTokens = friends?.map((friend) => friend?.pushToken);
-
-            notifyUsers(pushTokens, {
-              data: { action: "open_contact", uid: userData?.id },
-              body: `${userData?.name?.split(" ")[0]} is free to chat! 👋🏻`,
-            });
+          friends={all}
+          onSelected={async (friends, note) => {
+            await Promise.all(
+              friends?.map((friend) =>
+                page({
+                  from: userData?.id,
+                  to: friend?.id,
+                  note,
+                }),
+              ),
+            );
           }}
           ref={friendListRef}
         />

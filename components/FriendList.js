@@ -29,6 +29,7 @@ import SearchIconGray from "@assets/svgs/SearchIconGray";
 
 const FriendList = forwardRef(({ friends, onSelected }, ref) => {
   const localRef = useRef();
+  const [note, setNote] = useState("");
   const [query, setQuery] = useState("");
   const { keyboardVisible } = useKeyboard();
   const [selected, setSelected] = useState([]);
@@ -83,122 +84,146 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
       <SafeView style="bg-transparent">
         <BlurView
           intensity={75}
-          style={tw`flex-1 rounded-t-3xl overflow-hidden px-6`}
+          style={tw`flex-1 rounded-t-3xl overflow-hidden`}
           tint="dark"
         >
-          <View style={tw`bg-text-2 h-1 w-24 self-center my-5 rounded-full`} />
-
-          <Text
-            style={tw.style(`text-white text-center text-lg leading-none`, {
-              fontFamily: "Cabin_600SemiBold",
-            })}
-          >
-            Page Friends
-          </Text>
-
-          <InviteCard style="mt-4" />
-
-          <BlurView
-            intensity={15}
-            style={tw`flex-row h-[45px] rounded-xl overflow-hidden mt-4 items-center px-3`}
-          >
-            <SearchIconGray />
-
-            <BottomSheetTextInput
-              onChangeText={setQuery}
-              placeholder="Search Friends"
-              placeholderTextColor="#797979"
-              selectionColor="#797979"
-              style={tw`flex-1 ml-2 text-white`}
-              value={query}
+          <View style={tw`flex-1 px-6`}>
+            <View
+              style={tw`bg-text-2 h-1 w-24 self-center my-5 rounded-full`}
             />
 
-            {query?.length > 0 ? (
-              <TouchableOpacity onPress={() => setQuery("")}>
-                <AntDesign name="close" size={16} color="#797979" />
-              </TouchableOpacity>
-            ) : null}
-          </BlurView>
-
-          {friends?.length > 0 ? (
-            <BottomSheetFlatList
-              ItemSeparatorComponent={() => <View style={{ height: 25 }} />}
-              ListHeaderComponent={
-                <Everyone
-                  friends={friends}
-                  setSelected={setSelected}
-                  selected={selected}
-                />
-              }
-              contentContainerStyle={tw`pb-10`}
-              data={allFriends}
-              keyboardShouldPersistTaps="handled"
-              renderItem={({ item }) => (
-                <FriendCard
-                  checked={() => evaluateCheck(item)}
-                  data={item}
-                  onCheck={() => onCheck(item)}
-                />
-              )}
-              showsVerticalScrollIndicator={false}
-              style={tw`my-2 pt-4`}
-            />
-          ) : (
-            <View style={tw`flex-1 justify-center gap-y-1`}>
-              <Text
-                style={tw.style(
-                  `text-gray-4 text-center text-lg leading-none`,
-                  {
-                    fontFamily: "Cabin_600SemiBold",
-                  },
-                )}
-              >
-                No one here yet
-              </Text>
-
-              <Text
-                style={tw.style(
-                  `text-gray-4 text-center text-lg leading-none`,
-                  {
-                    fontFamily: "Cabin_600SemiBold",
-                  },
-                )}
-              >
-                invite friends to start paging
-              </Text>
-            </View>
-          )}
-
-          {selected?.length > 0 ? (
-            <Button
-              onPress={() => {
-                onSelected(selected);
-
-                setQuery("");
-                setSelected([]);
-                localRef?.current?.close();
-              }}
-              style={`h-[45px] self-center w-full ${
-                keyboardVisible ? "mb-2" : "mb-10"
-              }`}
+            <Text
+              style={tw.style(`text-white text-center text-lg leading-none`, {
+                fontFamily: "Cabin_600SemiBold",
+              })}
             >
-              Ask if they're free
-            </Button>
-          ) : null}
+              Page Friends
+            </Text>
+
+            <InviteCard style="mt-4" />
+
+            <BlurView
+              intensity={15}
+              style={tw`flex-row h-[45px] rounded-xl overflow-hidden mt-4 items-center px-3`}
+            >
+              <SearchIconGray />
+
+              <BottomSheetTextInput
+                onChangeText={setQuery}
+                placeholder="Search Friends"
+                placeholderTextColor="#797979"
+                selectionColor="#797979"
+                style={tw`flex-1 ml-2 text-white`}
+                value={query}
+              />
+
+              {query?.length > 0 ? (
+                <TouchableOpacity onPress={() => setQuery("")}>
+                  <AntDesign name="close" size={16} color="#797979" />
+                </TouchableOpacity>
+              ) : null}
+            </BlurView>
+
+            {friends?.length > 0 ? (
+              <BottomSheetFlatList
+                ItemSeparatorComponent={() => <View style={{ height: 25 }} />}
+                ListHeaderComponent={
+                  <Everyone
+                    friends={friends}
+                    setSelected={setSelected}
+                    selected={selected}
+                  />
+                }
+                contentContainerStyle={tw`pb-10`}
+                data={allFriends}
+                keyboardShouldPersistTaps="handled"
+                renderItem={({ item }) => (
+                  <FriendCard
+                    checked={() => evaluateCheck(item)}
+                    data={item}
+                    onCheck={() => onCheck(item)}
+                  />
+                )}
+                showsVerticalScrollIndicator={false}
+                style={tw`my-2 pt-4`}
+              />
+            ) : (
+              <View style={tw`flex-1 justify-center gap-y-1`}>
+                <Text
+                  style={tw.style(
+                    `text-gray-4 text-center text-lg leading-none`,
+                    {
+                      fontFamily: "Cabin_600SemiBold",
+                    },
+                  )}
+                >
+                  No one here yet
+                </Text>
+
+                <Text
+                  style={tw.style(
+                    `text-gray-4 text-center text-lg leading-none`,
+                    {
+                      fontFamily: "Cabin_600SemiBold",
+                    },
+                  )}
+                >
+                  Invite friends to start paging
+                </Text>
+              </View>
+            )}
+          </View>
 
           {friends?.length === 0 ? (
-            <Button
-              onPress={() => {
-                localRef?.current?.close();
-                router.push("/friends");
-              }}
-              style={`h-[45px] self-center w-full ${
-                keyboardVisible ? "mb-2" : "mb-10"
-              }`}
-              variant="dark"
-            >
-              Invite friends
-            </Button>
+            <View style={tw`px-6`}>
+              <Button
+                onPress={() => {
+                  localRef?.current?.close();
+                  router.push("/friends");
+                }}
+                style={`h-[45px] self-center w-full ${
+                  keyboardVisible ? "mb-2" : "mb-10"
+                }`}
+                variant="dark"
+              >
+                Invite friends
+              </Button>
+            </View>
+          ) : selected?.length > 0 ? (
+            <>
+              <View style={tw`mb-5`}>
+                <View style={tw`bg-gray-3 h-[1px] w-full`} />
+                <BottomSheetTextInput
+                  maxLength={60}
+                  onChangeText={setNote}
+                  placeholder="Write a note..."
+                  placeholderTextColor="#858585"
+                  style={tw.style(`h-[45px] px-6 text-white`, {
+                    fontFamily: "Cabin_400Regular",
+                  })}
+                  value={note}
+                />
+                <View style={tw`bg-gray-3 h-[1px] w-full`} />
+              </View>
+
+              <View style={tw`px-6`}>
+                <Button
+                  onPress={() => {
+                    onSelected(selected, note.trim());
+
+                    setNote("");
+                    setQuery("");
+                    setSelected([]);
+                    localRef?.current?.close();
+                  }}
+                  style={`h-[45px] self-center w-full ${
+                    keyboardVisible ? "mb-2" : "mb-10"
+                  }`}
+                >
+                  Ask if they're free
+                </Button>
+              </View>
+            </>
           ) : null}
         </BlurView>
       </SafeView>
