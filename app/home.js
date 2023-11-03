@@ -11,6 +11,7 @@ import {
 
 import { isAfter } from "date-fns";
 import { Image } from "expo-image";
+import Toast from "react-native-toast-message";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "@tanstack/react-query";
 import { SplashScreen, router, useLocalSearchParams } from "expo-router";
@@ -423,6 +424,13 @@ export default function Home() {
         <FriendList
           friends={all}
           onSelected={async (friends, note) => {
+            Toast.show({
+              position: "bottom",
+              type: "main",
+              text1:
+                "Woo! We’ve sent your page and will notify you when anyone responds.",
+            });
+
             await Promise.all(
               friends?.map((friend) =>
                 page({

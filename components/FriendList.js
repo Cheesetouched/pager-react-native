@@ -198,6 +198,7 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
                   onChangeText={setNote}
                   placeholder="Write a note..."
                   placeholderTextColor="#858585"
+                  selectionColor="white"
                   style={tw.style(`h-[45px] px-6 text-white`, {
                     fontFamily: "Cabin_400Regular",
                   })}

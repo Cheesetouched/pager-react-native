@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { AppState, LogBox } from "react-native";
+import { AppState, LogBox, Text } from "react-native";
 
 import { Stack } from "expo-router";
+import { BlurView } from "expo-blur";
+import Toast from "react-native-toast-message";
 import { Mixpanel } from "mixpanel-react-native";
 import * as Notifications from "expo-notifications";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -34,6 +36,19 @@ Notifications.setNotificationHandler({
   }),
 });
 
+const toastConfig = {
+  main: ({ text1 }) => (
+    <BlurView
+      intensity={75}
+      style={tw`w-[80%] rounded-2xl overflow-hidden items-center justify-center border border-white/70 p-5`}
+    >
+      <Text style={tw.style(`text-white`, { fontFamily: "Cabin_600SemiBold" })}>
+        {text1}
+      </Text>
+    </BlurView>
+  ),
+};
+
 export default function Layout() {
   const alertRef = useRef();
   const responseListener = useRef();
@@ -63,62 +78,66 @@ export default function Layout() {
   }, []);
 
   return (
-    <GestureHandlerRootView style={tw`flex-1`}>
-      <AppContext.Provider value={{ appState, alert: alertRef, mixpanel }}>
-        <QueryClientProvider client={queryClient}>
-          <BottomSheetModalProvider>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="index" options={{ headerShown: false }} />
+    <>
+      <GestureHandlerRootView style={tw`flex-1`}>
+        <AppContext.Provider value={{ appState, alert: alertRef, mixpanel }}>
+          <QueryClientProvider client={queryClient}>
+            <BottomSheetModalProvider>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="index" options={{ headerShown: false }} />
 
-              <Stack.Screen
-                name="contact"
-                options={{
-                  presentation: "modal",
-                  contentStyle: { backgroundColor: "#00000000" },
-                }}
-              />
+                <Stack.Screen
+                  name="contact"
+                  options={{
+                    presentation: "modal",
+                    contentStyle: { backgroundColor: "#00000000" },
+                  }}
+                />
 
-              <Stack.Screen
-                name="pages"
-                options={{
-                  presentation: "modal",
-                  contentStyle: { backgroundColor: "#00000000" },
-                }}
-              />
+                <Stack.Screen
+                  name="pages"
+                  options={{
+                    presentation: "modal",
+                    contentStyle: { backgroundColor: "#00000000" },
+                  }}
+                />
 
-              <Stack.Screen
-                name="requests"
-                options={{
-                  presentation: "modal",
-                  contentStyle: { backgroundColor: "#00000000" },
-                }}
-              />
+                <Stack.Screen
+                  name="requests"
+                  options={{
+                    presentation: "modal",
+                    contentStyle: { backgroundColor: "#00000000" },
+                  }}
+                />
 
-              <Stack.Screen
-                name="page"
-                options={{ presentation: "transparentModal" }}
-              />
+                <Stack.Screen
+                  name="page"
+                  options={{ presentation: "transparentModal" }}
+                />
 
-              <Stack.Screen
-                name="external_page"
-                options={{ presentation: "transparentModal" }}
-              />
+                <Stack.Screen
+                  name="external_page"
+                  options={{ presentation: "transparentModal" }}
+                />
 
-              <Stack.Screen
-                name="(context)/welcome_context"
-                options={{ presentation: "fullScreenModal" }}
-              />
+                <Stack.Screen
+                  name="(context)/welcome_context"
+                  options={{ presentation: "fullScreenModal" }}
+                />
 
-              <Stack.Screen
-                name="(context)/status_context"
-                options={{ presentation: "fullScreenModal" }}
-              />
-            </Stack>
-          </BottomSheetModalProvider>
-        </QueryClientProvider>
+                <Stack.Screen
+                  name="(context)/status_context"
+                  options={{ presentation: "fullScreenModal" }}
+                />
+              </Stack>
+            </BottomSheetModalProvider>
+          </QueryClientProvider>
 
-        <Alert ref={alertRef} />
-      </AppContext.Provider>
-    </GestureHandlerRootView>
+          <Alert ref={alertRef} />
+        </AppContext.Provider>
+      </GestureHandlerRootView>
+
+      <Toast config={toastConfig} />
+    </>
   );
 }
