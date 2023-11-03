@@ -15,19 +15,13 @@ import PageIndicator from "@components/PageIndicator";
 const data = [
   {
     image: require("@assets/welcome_1.png"),
-    text1: "Page people to ask",
-    text2: "if they’re free",
+    text1: "Find time to chat up with friends",
+    text2: "Ask them if they’re free",
   },
   {
     image: require("@assets/welcome_2.png"),
-    text1: "Let others know",
-    text2: "when you’re free",
+    text1: "Let others know when you’re free",
     notifExample: true,
-  },
-  {
-    image: require("@assets/welcome_3.png"),
-    text1: "Stop the ‘are you free’",
-    text2: "texts. Forever.",
   },
 ];
 
@@ -47,7 +41,7 @@ export default function WelcomeContext() {
           <View style={tw`flex-1 items-center justify-center`}>
             <View style={tw`absolute items-center top-5`}>
               <Text
-                style={tw.style(`text-white text-2xl`, {
+                style={tw.style(`text-white text-[22px]`, {
                   fontFamily: "Cabin_600SemiBold",
                 })}
               >
@@ -55,7 +49,7 @@ export default function WelcomeContext() {
               </Text>
 
               <Text
-                style={tw.style(`text-white text-2xl`, {
+                style={tw.style(`text-gray-4 text-lg mt-1`, {
                   fontFamily: "Cabin_600SemiBold",
                 })}
               >
@@ -67,7 +61,7 @@ export default function WelcomeContext() {
               <NotifExample
                 title="Momo paged you"
                 subtitle="Let them know if you’re free to chat!"
-                style={tw.style(`absolute mx-12 top-[105px]`, {
+                style={tw.style(`absolute mx-12 top-[90px]`, {
                   transform: [{ rotate: "-1.5deg" }],
                 })}
               />
@@ -80,7 +74,7 @@ export default function WelcomeContext() {
         width={width}
       />
 
-      {position < 3 ? (
+      {position < 2 ? (
         <View style={tw`flex flex-row h-[5%]`}>
           <PageIndicator current={position} total={data.length} />
         </View>
