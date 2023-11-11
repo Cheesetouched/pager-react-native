@@ -34,7 +34,7 @@ const FriendList = forwardRef(({ friends, onSelected }, ref) => {
   const { keyboardVisible } = useKeyboard();
   const [selected, setSelected] = useState([]);
   const [allFriends, setAllFriends] = useState(friends);
-  const snapPoints = useMemo(() => ["75%", "100%"], []);
+  const snapPoints = useMemo(() => ["50%", "100%"], []);
 
   const evaluateCheck = useCallback(
     (user) => {
