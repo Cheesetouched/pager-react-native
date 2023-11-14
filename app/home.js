@@ -33,6 +33,7 @@ import MessageIcon from "@assets/svgs/MessageIcon";
 import FriendsIcon from "@assets/svgs/FriendsIcon";
 import useLocalStorage from "@hooks/useLocalStorage";
 import useGetPages from "@hooks/queries/useGetPages";
+import { default as AppImage } from "@components/Image";
 import NoFriendsSheet from "@components/NoFriendsSheet";
 import useGetFriends from "@hooks/queries/useGetFriends";
 import useGetRequests from "@hooks/queries/useGetRequests";
@@ -298,9 +299,10 @@ export default function Home() {
           onFriends={() => router.push("/requests")}
           onPages={() => router.push("/pages")}
           onSearch={() => router.push("/friends")}
+          userData={userData}
         />
 
-        {invites >= 1 ? (
+        {invites >= 1 || friends?.length >= 1 ? (
           free?.length > 0 || freeLater?.length > 0 ? (
             <View style={tw`flex flex-1`}>
               <FlatList
@@ -395,7 +397,7 @@ export default function Home() {
           </ScrollView>
         )}
 
-        {invites >= 1 ? (
+        {invites >= 1 || friends?.length >= 1 ? (
           <>
             {free?.length > 0 || freeLater?.length > 0 ? (
               <Pager onPress={() => friendListRef.current.show()} />
@@ -513,13 +515,14 @@ const FreeFriends = memo(({ freeLater, free, mixpanel }) => {
   );
 });
 
-function Header({ badges, onFriends, onPages, onSearch }) {
+function Header({ badges, onFriends, onPages, onSearch, userData }) {
   return (
-    <View style={tw`flex flex-row justify-center`}>
-      <TouchableOpacity onPress={onFriends} style={tw`absolute left-0`}>
-        <BadgeIcon count={badges?.requests}>
-          <FriendsIcon />
-        </BadgeIcon>
+    <View style={tw`flex flex-row justify-center items-start`}>
+      <TouchableOpacity
+        onPress={() => router.push("/profile")}
+        style={tw`absolute left-0`}
+      >
+        <AppImage src={userData?.dp} style="h-[28px] w-[28px] rounded-full" />
       </TouchableOpacity>
 
       <TouchableOpacity>
@@ -532,7 +535,13 @@ function Header({ badges, onFriends, onPages, onSearch }) {
         </Text>
       </TouchableOpacity>
 
-      <View style={tw`absolute flex-row items-center right-0 gap-x-6`}>
+      <View style={tw`absolute flex-row items-center right-0 gap-x-4`}>
+        <TouchableOpacity onPress={onFriends}>
+          <BadgeIcon count={badges?.requests}>
+            <FriendsIcon />
+          </BadgeIcon>
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={onPages}>
           <BadgeIcon count={badges?.pages}>
             <MessageIcon />

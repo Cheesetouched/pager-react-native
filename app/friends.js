@@ -129,7 +129,7 @@ export default function Friends() {
                       },
                     )}
                   >
-                    in beta - iOS only
+                    iOS only
                   </Text>
                 </View>
               </TouchableOpacity>

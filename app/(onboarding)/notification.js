@@ -133,6 +133,27 @@ export default function Notification() {
               {permission?.canAskAgain ? "Allow" : "Allow from settings"}
             </Button>
 
+            <Button
+              onPress={() => {
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: "(onboarding)/process",
+                      params: {
+                        ...params,
+                        pushToken: null,
+                      },
+                    },
+                  ],
+                });
+              }}
+              style="mt-5 mx-14"
+              variant="dark"
+            >
+              Skip
+            </Button>
+
             <NotifExample
               title="Evan paged you!"
               subtitle="Let them know if you're free to chat"

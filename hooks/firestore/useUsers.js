@@ -1,11 +1,33 @@
 import { useCallback } from "react";
 
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  deleteDoc,
+  doc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 
 import useFirebase from "@hooks/useFirebase";
 
 export default function useUsers() {
   const { firestore } = useFirebase();
+
+  const deleteUser = useCallback(
+    async (uid) => {
+      const user = await get(uid);
+      const userDoc = doc(firestore, "users", uid);
+
+      await Promise.all(
+        user?.friends?.map((friendUid) => {
+          update(friendUid, { friends: arrayRemove(uid) });
+        }),
+      );
+
+      return await deleteDoc(userDoc);
+    },
+    [firestore, get, update],
+  );
 
   const get = useCallback(
     async (uid) => {
@@ -41,5 +63,5 @@ export default function useUsers() {
     [firestore],
   );
 
-  return { get, getFriends, update };
+  return { deleteUser, get, getFriends, update };
 }

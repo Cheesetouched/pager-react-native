@@ -1,12 +1,22 @@
 import { useCallback } from "react";
 
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 import useFirebase from "@hooks/useFirebase";
 import { getBlobFromUri } from "@utils/helpers";
 
 export default function useStorage() {
   const { user, storage } = useFirebase();
+
+  const deleteDp = useCallback(async () => {
+    const imageRef = ref(storage, `${user?.uid}/dp.jpg`);
+    return await deleteObject(imageRef);
+  }, [storage, user?.uid]);
 
   const uploadDp = useCallback(
     async (uri) => {
@@ -22,5 +32,5 @@ export default function useStorage() {
     [storage, user?.uid],
   );
 
-  return { uploadDp };
+  return { deleteDp, uploadDp };
 }

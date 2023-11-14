@@ -43,8 +43,9 @@ export default function OutlineButton({
           {children ? (
             <Text
               style={tw.style(
-                `text-white text-center text-lg leading-tight`,
+                `text-center text-base leading-tight`,
                 `${textStyle ? textStyle : ""}`,
+                `${variant === "dark" ? "text-gray-4" : "text-white"}`,
                 { fontFamily },
               )}
             >

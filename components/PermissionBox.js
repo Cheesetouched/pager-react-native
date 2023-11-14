@@ -42,7 +42,11 @@ export default function PermissionBox({
       <View style={tw`flex flex-row h-[45px]`}>
         <TouchableOpacity
           disabled={loading}
-          onPress={onDeny}
+          onPress={() => {
+            if (!loading) {
+              onDeny();
+            }
+          }}
           style={tw`flex flex-1 items-center justify-center`}
         >
           <Text
@@ -55,7 +59,11 @@ export default function PermissionBox({
         <View style={tw`flex bg-gray-7 w-[1px]`} />
 
         <TouchableOpacity
-          onPress={onAllow}
+          onPress={() => {
+            if (!loading) {
+              onAllow();
+            }
+          }}
           style={tw`flex flex-1 items-center justify-center`}
         >
           {loading ? (

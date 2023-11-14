@@ -5,4 +5,6 @@ export default {
   MIXPANEL_PROJECT_TOKEN: "33c509c1fa0bc518072809317dd870c8",
   PAGER_BASE_URL: "https://pagr.is",
   PAGER_DOMAIN: "pagr.is",
+  PRIVACY_POLICY:
+    "https://pratsingh.notion.site/Privacy-Policy-Pager-af6a04c3138c4009bc1092a3d7b1b433",
 };
