@@ -22,7 +22,7 @@ import CloseIcon from "@assets/svgs/CloseIcon";
 import useAppContext from "@hooks/useAppContext";
 import useCheckHandle from "@hooks/queries/useCheckHandle";
 
-const minimumHandleLength = 5;
+const minimumHandleLength = 2;
 
 export default function Handle() {
   const mixpanel = useMixpanel();
